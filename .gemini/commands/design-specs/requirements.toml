@@ -1,0 +1,71 @@
+description = "Creates requirements.md and design.md based on issue ticket from github for <issue_number>"
+prompt = """
+
+Create a file requiements-{{args}}.md and design-{{args}}.md in folder .design-specs/specs/ int the root directory of this
+project. the folder have already existed. 
+
+**If exists FRONTEND section in ticket, use it only**
+**Important: DO NOT IMPLEMENT CODE IN THIS COMMAND!!**
+
+Follow this steps:
+
+## PHASE 1: Requirements Creation 
+
+1. Use gitHub mcp server.
+2. Check my projects (user: **rykhalskyi**) and then check issues of **underpressure** repository.
+3. Find issue ticket with {{args}} number
+4. If there's no ticket with {{args}} number on git hub notify user and return.
+
+5. check local folder .design-specs on the root of project. If folder does not exist notify user and return.
+Use the exact structure from `.design-specs/templates/requirements-template.md`
+6. **Generate Requirements Document**
+   - Use fetched from github ticket, if there's FRONTEND section - use it only.
+   - Use the requirements template structure precisely
+   - **Align with product.md**: Ensure requirements support the product vision and goals
+   - Create user stories in "As a [role], I want [feature], so that [benefit]" format
+   - Write acceptance criteria in EARS format (WHEN/IF/THEN statements)
+   - Consider edge cases and technical constraints
+   - **Reference steering documents**: Note how requirements align with product .design-specs/structure.md, .design-specs/tech.md, .design-specs/codestyle.md
+
+    ### Requirements Template Usage
+    - **Read and follow**: `.claude/templates/requirements-template.md`
+    - **Use exact structure**: Follow all sections and formatting from the template
+    - **Include all sections**: Don't omit any required template sections
+
+7. Create .design-specs/specs/requirements-{{args}}.md if file already exists update it. Write created requirements to it.
+8. Show to user changes you going to apply and ask if they are ok. After confirmation apply changes
+
+## PHASE 2: Design Creation
+
+**Template to Follow**: Use the exact structure from `.design-specs/templates/design-template.md`
+
+### Design Process
+1. **Load Previous Phase**
+   - Ensure .design-specs/specs/requirements-{{args}}.md exists and is approved
+   - Load requirements document for context
+
+2. **Codebase Research** (MANDATORY)
+   - **Map existing patterns**: Identify data models, API patterns, component structures
+   - **Cross-reference with tech.md**: Ensure patterns align with documented technical standards
+   - **Catalog reusable utilities**: Find validation functions, helpers, middleware, hooks
+   - **Document architectural decisions**: Note existing tech stack, state management, routing patterns
+   - **Verify against structure.md**: Ensure file organization follows project conventions
+   - **Identify integration points**: Map how new feature connects to existing auth, database, APIs
+
+3. **Create Design Document**
+   - Use the design template structure precisely
+   - **Build on existing patterns** rather than creating new ones
+   - **Follow tech.md standards**: Ensure design adheres to documented technical guidelines
+   - **Respect structure.md conventions**: Organize components according to project structure
+   - **Include Mermaid diagrams** for visual representation
+   - **Define clear interfaces** that integrate with existing systems
+
+### Design Template Usage
+- **Read and follow**: `.design-specs/templates/design-template.md`
+- **Use exact structure**: Follow all sections and formatting from the template
+- **Include Mermaid diagrams**: Add visual representations as shown in template
+
+4. Show to user changes you going to apply and ask if they are ok. Ask about confirmation. After confirmation apply changes
+ - Create a file  .design-specs/specs/design-{{args}}.md in folder .design-specs/specs/ , save created design to it
+
+"""

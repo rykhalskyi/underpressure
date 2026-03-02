@@ -1,0 +1,8 @@
+description = "Update design-specs steering documents"
+prompt = """
+
+ 1. use templates .design-specs/templates/tech-template.md .design-specs/templates/structure-template.md .design-specs/templates/codestyle-template.md
+ 1. Check project and update .design-specs/structure.md, .design-specs/tech.md, .design-specs/codestyle.md if needed
+ 2. Show to user changes you going to apply and ask if they are ok. After confirmation apply changes
+
+"""

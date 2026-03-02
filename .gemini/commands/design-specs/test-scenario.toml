@@ -1,0 +1,25 @@
+description = "Creates common language test scenario for issue <issue_number>"
+
+prompt = """
+Analyze the requirements and design for issue `{{args}}` and create a test scenario file in common language.
+
+### 1. Research & Instrumentation
+- Open `http://localhost:4200` with playwright mcp to locate the UI elements for each step.
+- In `src/app/testing/test-ids.ts`, add any missing `data-testid` constants.
+- In the relevant Angular components, import `TestIds` from `@testing/test-ids`, expose it to the template, and add the `[attr.data-testid]` attribute.
+- Ensure all elements required for the scenario have corresponding `data-testids`.
+
+### 2. Scenario Creation
+- **Inputs**: 
+    - Requirements: `.design-specs/specs/requirements-{{args}}.md`
+    - Design: `.design-specs/specs/design-{{args}}.md`
+    - Template: `.design-specs/templates/test-scenario-template.md`
+- **Output**: Create a new test scenario file `e2e/scenarios/issue-{{args}}-scenario.md`.
+- **Content**: 
+    - Describe the test steps and expected outcomes in common language.
+    - Use the exact structure from the template.
+    - Reference specific `data-testids` for all UI elements mentioned in the steps.
+    - If a `data-testid` doesn't exist yet, create it in `src/app/testing/test-ids.ts` and instrument the corresponding Angular component before finalizing the scenario.
+
+### Use .design-specs/testing.md for technical context on tests.
+"""

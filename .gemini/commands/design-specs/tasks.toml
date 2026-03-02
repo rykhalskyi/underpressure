@@ -1,0 +1,44 @@
+description = "Creates tasks from requirements and design for <issue_number>"
+prompt = """
+
+Analyze .design-specs/specs/requirements-{{args}}.md and .design-specs/specs/design-{{args}}.md and create a file tasks-{{args}}.md in folder .design-specs/specs/ int the root directory of this
+project. The folder have already existed
+
+**Important: DO NOT IMPLEMENT CODE IN THIS COMMAND!!**
+
+## Tasks Creation
+
+**Template to Follow**: Use the exact structure from `.design-specs/templates/tasks-template.md`
+
+### Task Planning Process
+1. **Load Previous Phases**
+   - Load both .design-specs/specs/requirements-{{args}}.md and .design-specs/specs/design-{{args}}.md for complete context
+   - Load steering .design-specs/structure.md, .design-specs/tech.md, .design-specs/codestyle.md for extra context
+
+2. **Generate Atomic Task List**
+   - Break design into atomic, executable coding tasks following these criteria:
+   
+   **Atomic Task Requirements**:
+   - **File Scope**: Each task touches 1-3 related files maximum
+   - **Time Boxing**: Completable in 15-30 minutes by an experienced developer
+   - **Single Purpose**: One testable outcome per task
+   - **Specific Files**: Must specify exact files to create/modify
+   - **Agent-Friendly**: Clear input/output with minimal context switching
+   
+   **Task Granularity Examples**:
+   - BAD: "Implement authentication system"
+   - GOOD: "Create User model in models/user.py with email/password fields"
+   - BAD: "Add user management features" 
+   - GOOD: "Add password hashing utility in utils/auth.py using bcrypt"
+   
+   **Implementation Guidelines**:
+   - **Follow structure.md**: Ensure tasks respect project file organization
+   - **Prioritize extending/adapting existing code** over building from scratch
+   - Use checkbox format with numbered hierarchy
+   - Each task should reference specific requirements AND existing code to leverage
+   - Focus ONLY on coding tasks (no deployment, user testing, etc.)
+   - Break large concepts into file-level operations
+
+3. Write created tasks to .design-specs/specs/tasks-{{args}}.md if file already exists update it.
+
+"""

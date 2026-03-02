@@ -1,0 +1,18 @@
+description = "Automate Playwright test creation from a scenario file"
+
+prompt = """
+Analyze the test scenario from `{{args}}` and implement a corresponding Playwright E2E test.
+
+### 1. Research & Instrumentation
+- Open `http://localhost:4200` with playwright mcp to locate the UI elements for each step.
+- In `src/app/testing/test-ids.ts`, add any missing `data-testid` constants.
+- In the relevant Angular components, import `TestIds` from `@testing/test-ids`, expose it to the template, and add the `[attr.data-testid]` attribute.
+
+### 2. Test Implementation
+- Create a new Playwright test in the `e2e/` directory.
+- Use `page.getByTestId()` for all instrumented elements.
+- For file uploads, use `page.locator('input[type="file"]').setInputFiles(filePath)`.
+- Ensure all visibility and text assertions from the scenario are covered.
+
+### Use .design-specs\testing.md file for more context
+"""
