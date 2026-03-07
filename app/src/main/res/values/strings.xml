@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">UnderPressure</string>
+    <string name="header_date">Date</string>
+    <string name="header_systolic">Sys</string>
+    <string name="header_diastolic">Dia</string>
+    <string name="header_pulse">Pulse</string>
+    <string name="empty_value">-</string>
 </resources>
