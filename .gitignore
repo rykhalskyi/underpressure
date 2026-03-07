@@ -40,3 +40,5 @@ replay_pid*
 .externalNativeBuild
 .cxx
 local.properties
+
+.gemini/settings.json
