@@ -3,6 +3,7 @@ package com.example.underpressure.ui.table
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -27,6 +28,25 @@ class MeasurementTableScreenTest {
     fun setUp() {
         viewModel = mockk(relaxed = true)
         every { viewModel.uiState } returns uiStateFlow
+    }
+
+    @Test
+    fun fab_isDisplayed_andTriggersClick() {
+        uiStateFlow.value = TableUiState(
+            isLoading = false,
+            isFabEnabled = true
+        )
+
+        composeTestRule.setContent {
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
+        }
+
+        composeTestRule.onNodeWithContentDescription("Add Measurement").assertIsDisplayed().performClick()
+
+        verify { viewModel.onFabClicked() }
     }
 
     @Test

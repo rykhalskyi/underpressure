@@ -25,5 +25,7 @@ data class TableUiState(
     val slotHeaders: List<String> = emptyList(),
     val items: List<DayMeasurementSummary> = emptyList(),
     val dialogState: MeasurementDialogState = MeasurementDialogState(),
+    val isFabEnabled: Boolean = false,
+    val fabTargetSlotIndex: Int? = null,
     val error: String? = null,
 )
