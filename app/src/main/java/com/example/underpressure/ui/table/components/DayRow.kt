@@ -12,19 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.underpressure.R
 import com.example.underpressure.ui.table.DayMeasurementSummary
 
 /**
- * A single row in the measurement table.
- *
- * @param summary The daily measurement data to display.
- * @param modifier Modifier to be applied to the row.
+ * A single row in the measurement table showing multiple slots.
  */
 @Composable
 fun DayRow(
     summary: DayMeasurementSummary,
+    slotCount: Int,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (summary.isToday) {
@@ -43,16 +43,17 @@ fun DayRow(
                 .fillMaxWidth()
         ) {
             TableCell(text = summary.date, weight = 1.5f, isTitle = true)
-            TableCell(text = summary.systolic?.toString() ?: stringResource(R.string.empty_value), weight = 1f)
-            TableCell(text = summary.diastolic?.toString() ?: stringResource(R.string.empty_value), weight = 1f)
-            TableCell(text = summary.pulse?.toString() ?: stringResource(R.string.empty_value), weight = 1f)
+            
+            for (i in 0 until slotCount) {
+                val data = summary.slots[i]
+                val text = data?.let { "${it.systolic}/${it.diastolic}/${it.pulse}" } 
+                    ?: stringResource(R.string.empty_value)
+                TableCell(text = text, weight = 1f)
+            }
         }
     }
 }
 
-/**
- * A simple cell in a row.
- */
 @Composable
 private fun RowScope.TableCell(
     text: String,
@@ -62,8 +63,10 @@ private fun RowScope.TableCell(
     Text(
         text = text,
         modifier = Modifier.weight(weight),
-        style = if (isTitle) MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold) 
-                else MaterialTheme.typography.bodyMedium,
-        textAlign = TextAlign.Start
+        style = if (isTitle) MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) 
+                else MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+        textAlign = TextAlign.Start,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
 }

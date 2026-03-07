@@ -7,44 +7,61 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.underpressure.data.local.database.AppDatabase
 import com.example.underpressure.data.repository.MeasurementRepositoryImpl
+import com.example.underpressure.data.repository.SettingsRepositoryImpl
+import com.example.underpressure.ui.settings.SettingsScreen
+import com.example.underpressure.ui.settings.SettingsViewModel
 import com.example.underpressure.ui.table.MeasurementTableScreen
 import com.example.underpressure.ui.table.MeasurementTableViewModel
 import com.example.underpressure.ui.theme.UnderPressureTheme
 
 class MainActivity : ComponentActivity() {
 
-    /**
-     * Factory for creating ViewModels with dependencies.
-     * In a real app, this would be handled by Hilt/Dagger.
-     */
     private val viewModelFactory by lazy {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val database = AppDatabase.getDatabase(applicationContext)
-                val repository = MeasurementRepositoryImpl(database.measurementDao())
-                return MeasurementTableViewModel(repository) as T
+                val settingsRepository = SettingsRepositoryImpl(database.appSettingsDao())
+                
+                return if (modelClass.isAssignableFrom(MeasurementTableViewModel::class.java)) {
+                    val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
+                    MeasurementTableViewModel(measurementRepository, settingsRepository) as T
+                } else if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+                    SettingsViewModel(settingsRepository) as T
+                } else {
+                    throw IllegalArgumentException("Unknown ViewModel class")
+                }
             }
         }
     }
 
-    private val viewModel: MeasurementTableViewModel by viewModels { viewModelFactory }
+    private val tableViewModel: MeasurementTableViewModel by viewModels { viewModelFactory }
+    private val settingsViewModel: SettingsViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             UnderPressureTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                var isSettingsOpen by remember { mutableStateOf(false) }
+
+                if (isSettingsOpen) {
+                    SettingsScreen(
+                        viewModel = settingsViewModel,
+                        onBack = { isSettingsOpen = false }
+                    )
+                } else {
                     MeasurementTableScreen(
-                        viewModel = viewModel,
-                        modifier = Modifier.padding(innerPadding)
+                        viewModel = tableViewModel,
+                        onSettingsClick = { isSettingsOpen = true }
                     )
                 }
             }

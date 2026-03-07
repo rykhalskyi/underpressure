@@ -17,6 +17,7 @@ data class AppSettingsEntity(
     @PrimaryKey
     val id: Int = 1,
     val masterAlarmEnabled: Boolean = false,
-    val slotTimes: List<String> = emptyList(),
-    val slotAlarmsEnabled: List<Boolean> = emptyList(),
+    val slotTimes: List<String> = listOf("07:00", "12:00", "18:00", "22:00"),
+    val slotAlarmsEnabled: List<Boolean> = listOf(false, false, false, false),
+    val slotActiveFlags: List<Boolean> = listOf(true, false, false, false),
 )

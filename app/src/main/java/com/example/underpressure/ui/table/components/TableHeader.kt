@@ -13,15 +13,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.underpressure.R
 
 /**
- * Header row for the measurement table.
- *
- * @param modifier Modifier to be applied to the header.
+ * Header row for the measurement table with dynamic slots.
  */
 @Composable
 fun TableHeader(
+    slotHeaders: List<String>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -31,15 +31,13 @@ fun TableHeader(
             .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
         HeaderCell(text = stringResource(R.string.header_date), weight = 1.5f)
-        HeaderCell(text = stringResource(R.string.header_systolic), weight = 1f)
-        HeaderCell(text = stringResource(R.string.header_diastolic), weight = 1f)
-        HeaderCell(text = stringResource(R.string.header_pulse), weight = 1f)
+        
+        slotHeaders.forEach { time ->
+            HeaderCell(text = time, weight = 1f)
+        }
     }
 }
 
-/**
- * A simple header cell.
- */
 @Composable
 private fun RowScope.HeaderCell(
     text: String,
@@ -48,8 +46,9 @@ private fun RowScope.HeaderCell(
     Text(
         text = text,
         modifier = Modifier.weight(weight),
-        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraBold),
+        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, fontSize = 10.sp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
+        maxLines = 1
     )
 }

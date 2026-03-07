@@ -1,7 +1,9 @@
 package com.example.underpressure.ui.table
 
+import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
+import com.example.underpressure.domain.repository.SettingsRepository
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -22,68 +24,64 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalCoroutinesApi::class)
 class MeasurementTableViewModelTest {
 
-    private lateinit var repository: MeasurementRepository
+    private lateinit var measurementRepository: MeasurementRepository
+    private lateinit var settingsRepository: SettingsRepository
     private lateinit var viewModel: MeasurementTableViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        repository = mockk()
+        measurementRepository = mockk()
+        settingsRepository = mockk()
     }
 
     @Test
     fun `uiState initially emits loading`() = runTest {
-        every { repository.getAllMeasurements() } returns flowOf(emptyList())
-        viewModel = MeasurementTableViewModel(repository)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(null)
         
-        // The stateIn initial value should be loading
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
+        
         assertEquals(TableUiState(isLoading = true), viewModel.uiState.value)
     }
 
     @Test
-    fun `uiState emits items when repository has data`() = runTest {
+    fun `uiState emits items with multiple slots`() = runTest {
         val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val measurements = listOf(
-            MeasurementEntity(id = 1, date = today, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70, updatedAt = 1000L),
-            MeasurementEntity(id = 2, date = "2024-01-01", slotIndex = 0, systolic = 130, diastolic = 90, pulse = 75, updatedAt = 500L)
+            MeasurementEntity(id = 1, date = today, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
+            MeasurementEntity(id = 2, date = today, slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75)
         )
-        every { repository.getAllMeasurements() } returns flowOf(measurements)
-        
-        viewModel = MeasurementTableViewModel(repository)
-        val state = viewModel.uiState.first { !it.isLoading }
-
-        assertEquals(2, state.items.size)
-        assertTrue(state.items.first { it.date == today }.isToday)
-        assertFalse(state.items.first { it.date == "2024-01-01" }.isToday)
-    }
-
-    @Test
-    fun `uiState takes latest measurement for each day`() = runTest {
-        val date = "2024-01-01"
-        val measurements = listOf(
-            MeasurementEntity(id = 1, date = date, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70, updatedAt = 1000L),
-            MeasurementEntity(id = 2, date = date, slotIndex = 1, systolic = 140, diastolic = 95, pulse = 80, updatedAt = 2000L)
+        // Only first 2 slots active
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("08:00", "20:00", "22:00", "00:00"),
+            slotActiveFlags = listOf(true, true, false, false)
         )
-        every { repository.getAllMeasurements() } returns flowOf(measurements)
         
-        viewModel = MeasurementTableViewModel(repository)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertEquals(1, state.items.size)
-        assertEquals(140, state.items[0].systolic)
-        assertEquals(95, state.items[0].diastolic)
-        assertEquals(80, state.items[0].pulse)
+        assertEquals(2, state.items[0].slots.size)
+        assertEquals(120, state.items[0].slots[0]?.systolic)
+        assertEquals(130, state.items[0].slots[1]?.systolic)
+        assertEquals(listOf("08:00", "20:00"), state.slotHeaders)
     }
 
     @Test
-    fun `uiState handles empty repository data`() = runTest {
-        every { repository.getAllMeasurements() } returns flowOf(emptyList())
+    fun `uiState handles missing settings`() = runTest {
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(null)
         
-        viewModel = MeasurementTableViewModel(repository)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
         val state = viewModel.uiState.first { !it.isLoading }
 
+        // Should have 1 default active slot header ("07:00")
+        assertEquals(listOf("07:00"), state.slotHeaders)
         assertTrue(state.items.isEmpty())
-        assertFalse(state.isLoading)
     }
 }

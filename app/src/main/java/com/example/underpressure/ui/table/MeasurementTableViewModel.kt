@@ -3,60 +3,65 @@ package com.example.underpressure.ui.table
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.underpressure.domain.repository.MeasurementRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.underpressure.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 /**
  * ViewModel for the Measurement Table Screen.
- * Responsible for transforming measurement data into a summarized daily format.
+ * Transforms raw measurements and settings into a summarized table format.
  */
 class MeasurementTableViewModel(
-    private val repository: MeasurementRepository
+    private val measurementRepository: MeasurementRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    /**
-     * Exposes the table UI state to the Compose layer.
-     * Groups measurements by date and takes the latest entry for each day.
-     */
-    val uiState: StateFlow<TableUiState> = repository.getAllMeasurements()
-        .map { measurements ->
-            val today = LocalDate.now().format(dateFormatter)
-            
-            // Group by date and pick the latest measurement (highest ID or timestamp)
-            val summarizedItems = measurements
-                .groupBy { it.date }
-                .map { (date, dailyMeasurements) ->
-                    // Assuming higher ID or later updatedAt means "latest"
-                    val latest = dailyMeasurements.maxByOrNull { it.updatedAt }
-                    DayMeasurementSummary(
-                        date = date,
-                        systolic = latest?.systolic,
-                        diastolic = latest?.diastolic,
-                        pulse = latest?.pulse,
-                        isToday = date == today
-                    )
-                }
-                .sortedByDescending { it.date }
+    val uiState: StateFlow<TableUiState> = combine(
+        measurementRepository.getAllMeasurements(),
+        settingsRepository.getSettings()
+    ) { measurements, settings ->
+        val today = LocalDate.now().format(dateFormatter)
+        
+        // Use default if settings are null
+        val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
+        val allTimes = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
+        
+        // Filter headers by active status
+        val headers = allTimes.filterIndexed { index, _ -> activeFlags.getOrElse(index) { false } }
+        val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
+        
+        val summarizedItems = measurements
+            .groupBy { it.date }
+            .map { (date, dailyMeasurements) ->
+                // Map only active slots to a 0-indexed map for DayRow
+                val activeSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
+                    dailyMeasurements.find { it.slotIndex == originalIndex }?.let { 
+                        uiIndex to SlotData(it.systolic, it.diastolic, it.pulse)
+                    }
+                }.toMap()
 
-            TableUiState(
-                isLoading = false,
-                items = summarizedItems
-            )
-        }
-        .onStart { 
-            // Optional: You could emit a loading state here if the repository is slow
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = TableUiState(isLoading = true)
+                DayMeasurementSummary(
+                    date = date,
+                    slots = activeSlots,
+                    isToday = date == today
+                )
+            }
+            .sortedByDescending { it.date }
+
+        TableUiState(
+            isLoading = false,
+            slotHeaders = headers,
+            items = summarizedItems
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = TableUiState(isLoading = true)
+    )
 }
