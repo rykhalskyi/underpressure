@@ -26,6 +26,9 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE date = :date ORDER BY createdAt DESC")
     fun getByDate(date: String): Flow<List<MeasurementEntity>>
 
+    @Query("SELECT * FROM measurements WHERE date = :date ORDER BY createdAt DESC")
+    suspend fun getByDateSync(date: String): List<MeasurementEntity>
+
     @Query("SELECT * FROM measurements ORDER BY date DESC, createdAt DESC")
     fun getAll(): Flow<List<MeasurementEntity>>
 

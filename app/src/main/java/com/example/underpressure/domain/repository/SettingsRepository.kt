@@ -17,4 +17,8 @@ interface SettingsRepository {
      * Returns null if no settings have been saved yet.
      */
     fun getSettings(): Flow<AppSettingsEntity?>
+    /**
+     * Retrieves the current application settings (one-shot).
+     */
+    suspend fun getSettingsSync(): AppSettingsEntity?
 }

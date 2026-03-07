@@ -1,5 +1,6 @@
 package com.example.underpressure.ui.table.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import com.example.underpressure.ui.table.DayMeasurementSummary
 fun DayRow(
     summary: DayMeasurementSummary,
     slotCount: Int,
+    onCellClick: (slotIndex: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (summary.isToday) {
@@ -48,7 +50,11 @@ fun DayRow(
                 val data = summary.slots[i]
                 val text = data?.let { "${it.systolic}/${it.diastolic}/${it.pulse}" } 
                     ?: stringResource(R.string.empty_value)
-                TableCell(text = text, weight = 1f)
+                TableCell(
+                    text = text, 
+                    weight = 1f,
+                    onClick = { onCellClick(i) }
+                )
             }
         }
     }
@@ -58,11 +64,14 @@ fun DayRow(
 private fun RowScope.TableCell(
     text: String,
     weight: Float,
-    isTitle: Boolean = false
+    isTitle: Boolean = false,
+    onClick: (() -> Unit)? = null
 ) {
     Text(
         text = text,
-        modifier = Modifier.weight(weight),
+        modifier = Modifier
+            .weight(weight)
+            .let { if (onClick != null) it.clickable(onClick = onClick) else it },
         style = if (isTitle) MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) 
                 else MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
         textAlign = TextAlign.Start,

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.underpressure.ui.table.components.DayRow
+import com.example.underpressure.ui.table.components.MeasurementEditDialog
 import com.example.underpressure.ui.table.components.TableHeader
 
 /**
@@ -77,7 +78,10 @@ fun MeasurementTableScreen(
                         ) { summary ->
                             DayRow(
                                 summary = summary,
-                                slotCount = uiState.slotHeaders.size
+                                slotCount = uiState.slotHeaders.size,
+                                onCellClick = { slotIndex -> 
+                                    viewModel.onCellClicked(summary.date, slotIndex)
+                                }
                             )
                             HorizontalDivider(
                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -88,6 +92,14 @@ fun MeasurementTableScreen(
                     }
                 }
             }
+        }
+
+        if (uiState.dialogState.isOpen) {
+            MeasurementEditDialog(
+                state = uiState.dialogState,
+                onSave = { viewModel.onSaveMeasurement(it) },
+                onDismiss = { viewModel.onDialogDismiss() }
+            )
         }
     }
 }

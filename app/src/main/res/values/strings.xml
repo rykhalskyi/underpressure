@@ -5,4 +5,13 @@
     <string name="header_diastolic">Dia</string>
     <string name="header_pulse">Pulse</string>
     <string name="empty_value">-</string>
+    
+    <!-- Edit Dialog -->
+    <string name="dialog_title_edit">Edit Measurement</string>
+    <string name="dialog_title_add">Add Measurement</string>
+    <string name="label_measurement_format">SYS/DIA @PULSE</string>
+    <string name="placeholder_measurement">120/80 @72</string>
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
 </resources>

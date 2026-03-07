@@ -30,6 +30,12 @@ interface MeasurementRepository {
     fun getMeasurementsByDate(date: String): Flow<List<MeasurementEntity>>
 
     /**
+     * Retrieves measurements for a specific date (one-shot).
+     * @param date The date in YYYY-MM-DD format.
+     */
+    suspend fun getMeasurementsByDateSync(date: String): List<MeasurementEntity>
+
+    /**
      * Retrieves all recorded blood pressure measurements.
      */
     fun getAllMeasurements(): Flow<List<MeasurementEntity>>

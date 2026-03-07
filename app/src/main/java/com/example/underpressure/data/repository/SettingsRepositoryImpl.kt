@@ -21,4 +21,8 @@ class SettingsRepositoryImpl(
     override fun getSettings(): Flow<AppSettingsEntity?> {
         return appSettingsDao.getSettings()
     }
+
+    override suspend fun getSettingsSync(): AppSettingsEntity? {
+        return appSettingsDao.getSettingsSync()
+    }
 }

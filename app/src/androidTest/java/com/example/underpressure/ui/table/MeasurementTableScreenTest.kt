@@ -1,11 +1,14 @@
 package com.example.underpressure.ui.table
 
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.example.underpressure.domain.repository.MeasurementRepository
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
@@ -13,63 +16,134 @@ import org.junit.Test
 
 class MeasurementTableScreenTest {
 
-    @get:Rule
+    @getRule
+    @JvmField
     val composeTestRule = createComposeRule()
 
-    private lateinit var repository: MeasurementRepository
     private lateinit var viewModel: MeasurementTableViewModel
     private val uiStateFlow = MutableStateFlow(TableUiState(isLoading = true))
 
     @Before
     fun setUp() {
-        repository = mockk()
-        every { repository.getAllMeasurements() } returns MutableStateFlow(emptyList())
-        viewModel = mockk()
+        viewModel = mockk(relaxed = true)
         every { viewModel.uiState } returns uiStateFlow
     }
 
     @Test
     fun tableHeaders_areDisplayed() {
-        uiStateFlow.value = TableUiState(isLoading = false, items = emptyList())
+        uiStateFlow.value = TableUiState(
+            isLoading = false, 
+            slotHeaders = listOf("Morning", "Evening"),
+            items = emptyList()
+        )
         
         composeTestRule.setContent {
-            MeasurementTableScreen(viewModel = viewModel)
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
         }
 
         composeTestRule.onNodeWithText("Date").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sys").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Dia").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Pulse").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Morning").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Evening").assertIsDisplayed()
     }
 
     @Test
     fun measurementRow_isDisplayed() {
-        val date = "2024-03-01"
+        val date = "2026-03-07"
         uiStateFlow.value = TableUiState(
             isLoading = false,
+            slotHeaders = listOf("Slot 1"),
             items = listOf(
-                DayMeasurementSummary(date = date, systolic = 120, diastolic = 80, pulse = 70)
+                DayMeasurementSummary(
+                    date = date, 
+                    slots = mapOf(0 to SlotData(120, 80, 70))
+                )
             )
         )
 
         composeTestRule.setContent {
-            MeasurementTableScreen(viewModel = viewModel)
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
         }
 
         composeTestRule.onNodeWithText(date).assertIsDisplayed()
-        composeTestRule.onNodeWithText("120").assertIsDisplayed()
+        composeTestRule.onNodeWithText("120/80/70").assertIsDisplayed()
     }
 
     @Test
-    fun loadingIndicator_isDisplayed_whenLoading() {
-        uiStateFlow.value = TableUiState(isLoading = true)
+    fun cellClick_triggersViewModel() {
+        val date = "2026-03-07"
+        uiStateFlow.value = TableUiState(
+            isLoading = false,
+            slotHeaders = listOf("Slot 1"),
+            items = listOf(
+                DayMeasurementSummary(date = date, slots = emptyMap())
+            )
+        )
 
         composeTestRule.setContent {
-            MeasurementTableScreen(viewModel = viewModel)
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
         }
 
-        // CircularProgressIndicator doesn't have text, but we can check it exists by its semantics if needed
-        // For simplicity, we verify that headers are NOT displayed yet if we handle it that way
-        composeTestRule.onNodeWithText("Date").assertDoesNotExist()
+        // Click on the empty cell (represented by "-")
+        composeTestRule.onNodeWithText("-").performClick()
+
+        verify { viewModel.onCellClicked(date, 0) }
+    }
+
+    @Test
+    fun dialog_isDisplayed_whenOpen() {
+        uiStateFlow.value = TableUiState(
+            isLoading = false,
+            dialogState = MeasurementDialogState(
+                isOpen = true,
+                date = "2026-03-07",
+                slotIndex = 0,
+                initialValue = ""
+            )
+        )
+
+        composeTestRule.setContent {
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
+        }
+
+        composeTestRule.onNodeWithText("Add Measurement").assertIsDisplayed()
+        composeTestRule.onNodeWithText("2026-03-07 - Slot 1").assertIsDisplayed()
+    }
+
+    @Test
+    fun dialogSave_callsViewModel_whenValid() {
+        uiStateFlow.value = TableUiState(
+            isLoading = false,
+            dialogState = MeasurementDialogState(
+                isOpen = true,
+                date = "2026-03-07",
+                slotIndex = 0
+            )
+        )
+
+        composeTestRule.setContent {
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                onSettingsClick = {}
+            )
+        }
+
+        val input = "120/80 @72"
+        composeTestRule.onNodeWithText("SYS/DIA @PULSE").performTextInput(input)
+        
+        composeTestRule.onNodeWithText("Save").assertIsEnabled().performClick()
+
+        verify { viewModel.onSaveMeasurement(input) }
     }
 }

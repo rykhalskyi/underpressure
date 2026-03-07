@@ -30,6 +30,10 @@ class MeasurementRepositoryImpl(
         return measurementDao.getByDate(date)
     }
 
+    override suspend fun getMeasurementsByDateSync(date: String): List<MeasurementEntity> {
+        return measurementDao.getByDateSync(date)
+    }
+
     override fun getAllMeasurements(): Flow<List<MeasurementEntity>> {
         return measurementDao.getAll()
     }
