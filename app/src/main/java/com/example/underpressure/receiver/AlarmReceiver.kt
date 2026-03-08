@@ -56,12 +56,15 @@ class AlarmReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
-            // notificationId is a unique int for each notification that you must define
+            if (!areNotificationsEnabled()) {
+                android.util.Log.e("AlarmReceiver", "Notifications are BLOCKED by the system settings")
+                return
+            }
+
             try {
                 notify(slotIndex, builder.build())
             } catch (e: SecurityException) {
-                // Handle missing permission for POST_NOTIFICATIONS on Android 13+
-                // In a real app, you should request permission in the UI
+                android.util.Log.e("AlarmReceiver", "Failed to show notification: Missing permission", e)
             }
         }
     }

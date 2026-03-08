@@ -19,6 +19,18 @@ class AlarmScheduler(private val context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     /**
+     * Checks if the app can schedule exact alarms.
+     * Required for Android 12 (API 31) and higher.
+     */
+    fun canScheduleExactAlarms(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+    }
+
+    /**
      * Reconciles all slot alarms based on current settings.
      * Schedules alarms for active slots with enabled alarms, and cancels the rest.
      *

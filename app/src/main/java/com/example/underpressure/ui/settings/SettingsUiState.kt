@@ -6,6 +6,7 @@ package com.example.underpressure.ui.settings
 data class SettingsUiState(
     val slots: List<SlotConfig> = emptyList(),
     val isMasterAlarmEnabled: Boolean = false,
+    val canScheduleExactAlarms: Boolean = true,
     val isLoading: Boolean = false,
     val error: String? = null
 )

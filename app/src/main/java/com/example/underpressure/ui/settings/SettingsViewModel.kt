@@ -28,6 +28,7 @@ class SettingsViewModel(
 
     init {
         loadSettings()
+        refreshPermissionStatus()
     }
 
     private fun loadSettings() {
@@ -49,6 +50,10 @@ class SettingsViewModel(
                     }
                 }
         }
+    }
+
+    fun refreshPermissionStatus() {
+        _uiState.update { it.copy(canScheduleExactAlarms = alarmScheduler.canScheduleExactAlarms()) }
     }
 
     fun updateMasterAlarmEnabled(isEnabled: Boolean) {
