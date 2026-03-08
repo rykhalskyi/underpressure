@@ -48,7 +48,7 @@ fun DayRow(
             
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
-                val text = data?.let { "${it.systolic}/${it.diastolic}/${it.pulse}" } 
+                val text = data?.let { "${it.systolic}/${it.diastolic}@${it.pulse}" }
                     ?: stringResource(R.string.empty_value)
                 TableCell(
                     text = text, 
@@ -73,7 +73,7 @@ private fun RowScope.TableCell(
             .weight(weight)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it },
         style = if (isTitle) MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold) 
-                else MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+                else MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
         textAlign = TextAlign.Start,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis

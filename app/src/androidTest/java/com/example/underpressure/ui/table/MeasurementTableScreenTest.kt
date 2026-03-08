@@ -17,17 +17,23 @@ import org.junit.Test
 
 class MeasurementTableScreenTest {
 
-    @getRule
-    @JvmField
+    @get:Rule
     val composeTestRule = createComposeRule()
 
     private lateinit var viewModel: MeasurementTableViewModel
+    private lateinit var searchViewModel: SearchViewModel
     private val uiStateFlow = MutableStateFlow(TableUiState(isLoading = true))
+    private val searchUiStateFlow = MutableStateFlow(SearchUiState())
+    private val searchQueryFlow = MutableStateFlow("")
 
     @Before
     fun setUp() {
         viewModel = mockk(relaxed = true)
+        searchViewModel = mockk(relaxed = true)
         every { viewModel.uiState } returns uiStateFlow
+        every { viewModel.scrollToDateEvent } returns MutableStateFlow("") // Mocked flow for LaunchedEffect
+        every { searchViewModel.uiState } returns searchUiStateFlow
+        every { searchViewModel.query } returns searchQueryFlow
     }
 
     @Test
@@ -40,6 +46,7 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
@@ -60,6 +67,7 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
@@ -86,12 +94,13 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
 
         composeTestRule.onNodeWithText(date).assertIsDisplayed()
-        composeTestRule.onNodeWithText("120/80/70").assertIsDisplayed()
+        composeTestRule.onNodeWithText("120/80@70").assertIsDisplayed()
     }
 
     @Test
@@ -108,6 +117,7 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
@@ -133,6 +143,7 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
@@ -155,6 +166,7 @@ class MeasurementTableScreenTest {
         composeTestRule.setContent {
             MeasurementTableScreen(
                 viewModel = viewModel,
+                searchViewModel = searchViewModel,
                 onSettingsClick = {}
             )
         }
