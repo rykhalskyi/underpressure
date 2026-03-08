@@ -1,9 +1,15 @@
 package com.example.underpressure.alarm
 
 import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import com.example.underpressure.data.local.entities.AppSettingsEntity
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import io.mockk.verify
+import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -17,10 +23,18 @@ class AlarmSchedulerTest {
 
     @Before
     fun setUp() {
+        mockkStatic(PendingIntent::class)
+        every { PendingIntent.getBroadcast(any(), any(), any(), any()) } returns mockk(relaxed = true)
+        
         context = mockk(relaxed = true)
         alarmManager = mockk(relaxed = true)
         every { context.getSystemService(Context.ALARM_SERVICE) } returns alarmManager
         alarmScheduler = AlarmScheduler(context)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
@@ -63,5 +77,42 @@ class AlarmSchedulerTest {
             resultCalendar.get(Calendar.DAY_OF_YEAR) == tomorrow.get(Calendar.DAY_OF_YEAR))
         assertTrue("Hour should match", resultCalendar.get(Calendar.HOUR_OF_DAY) == pastHour)
         assertTrue("Minute should match", resultCalendar.get(Calendar.MINUTE) == pastMinute)
+    }
+
+    @Test
+    fun `updateAlarms cancels all when masterAlarmEnabled is false`() {
+        // Arrange
+        val settings = AppSettingsEntity(
+            masterAlarmEnabled = false,
+            slotActiveFlags = listOf(true, true, true, true),
+            slotAlarmsEnabled = listOf(true, true, true, true)
+        )
+
+        // Act
+        alarmScheduler.updateAlarms(settings)
+
+        // Assert
+        // verify that alarmManager.cancel was called for all 4 slots
+        // pending intents are created internally so we check for cancel call
+        verify(exactly = 4) { alarmManager.cancel(any<android.app.PendingIntent>()) }
+    }
+
+    @Test
+    fun `updateAlarms schedules active slots when masterAlarmEnabled is true`() {
+        // Arrange
+        val settings = AppSettingsEntity(
+            masterAlarmEnabled = true,
+            slotActiveFlags = listOf(true, false, true, false),
+            slotAlarmsEnabled = listOf(true, true, true, true) // enabled but depends on active
+        )
+
+        // Act
+        alarmScheduler.updateAlarms(settings)
+
+        // Assert
+        // Slot 0 and 2 should be scheduled (2 times)
+        // Slot 1 and 3 should be canceled (2 times)
+        verify(exactly = 2) { alarmManager.setExactAndAllowWhileIdle(any(), any<Long>(), any<android.app.PendingIntent>()) }
+        verify(exactly = 2) { alarmManager.cancel(any<android.app.PendingIntent>()) }
     }
 }

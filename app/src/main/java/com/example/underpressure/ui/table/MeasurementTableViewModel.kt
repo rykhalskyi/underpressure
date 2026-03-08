@@ -2,6 +2,8 @@ package com.example.underpressure.ui.table
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.underpressure.alarm.AlarmScheduler
+import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
@@ -34,7 +36,8 @@ import kotlin.math.abs
 class MeasurementTableViewModel(
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
-    private val clock: Clock = Clock.systemDefaultZone()
+    private val clock: Clock = Clock.systemDefaultZone(),
+    private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -140,13 +143,26 @@ class MeasurementTableViewModel(
             items = summarizedItems,
             dialogState = dialogState,
             isFabEnabled = fabTargetSlotIndex != null,
-            fabTargetSlotIndex = fabTargetSlotIndex
+            fabTargetSlotIndex = fabTargetSlotIndex,
+            isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TableUiState(isLoading = true)
     )
+
+    /**
+     * Toggles the master alarm setting and updates the system alarms.
+     */
+    fun toggleMasterAlarm() {
+        viewModelScope.launch {
+            val currentSettings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            val newSettings = currentSettings.copy(masterAlarmEnabled = !currentSettings.masterAlarmEnabled)
+            settingsRepository.saveSettings(newSettings)
+            alarmScheduler.updateAlarms(newSettings)
+        }
+    }
 
     /**
      * Called when a date is selected from the search dialog.

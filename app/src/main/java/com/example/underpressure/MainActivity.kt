@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 val alarmScheduler = AlarmScheduler(applicationContext)
                 
                 return if (modelClass.isAssignableFrom(MeasurementTableViewModel::class.java)) {
-                    MeasurementTableViewModel(measurementRepository, settingsRepository) as T
+                    MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
                 } else if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
                     SettingsViewModel(settingsRepository, alarmScheduler) as T
                 } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {

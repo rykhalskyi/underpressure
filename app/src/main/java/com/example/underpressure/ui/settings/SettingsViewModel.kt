@@ -43,11 +43,17 @@ class SettingsViewModel(
                         it.copy(
                             isLoading = false,
                             slots = entity.toSlotConfigs(),
+                            isMasterAlarmEnabled = entity.masterAlarmEnabled,
                             error = null
                         )
                     }
                 }
         }
+    }
+
+    fun updateMasterAlarmEnabled(isEnabled: Boolean) {
+        val settings = currentSettings ?: return
+        saveSettings(settings.copy(masterAlarmEnabled = isEnabled))
     }
 
     fun updateSlotTime(index: Int, time: String) {
