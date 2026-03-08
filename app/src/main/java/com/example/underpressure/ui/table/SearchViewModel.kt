@@ -3,6 +3,7 @@ package com.example.underpressure.ui.table
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.underpressure.domain.repository.MeasurementRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +23,7 @@ import java.time.format.DateTimeParseException
 /**
  * ViewModel for the Search Dialog.
  */
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel(
     private val measurementRepository: MeasurementRepository
 ) : ViewModel() {
@@ -33,7 +35,6 @@ class SearchViewModel(
 
     private val _isLoading = MutableStateFlow(false)
 
-    @OptIn(FlowPreview::class)
     val uiState: StateFlow<SearchUiState> = _query
         .debounce(300L)
         .distinctUntilChanged()

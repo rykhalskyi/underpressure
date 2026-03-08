@@ -4,14 +4,18 @@ import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -30,7 +34,7 @@ class MeasurementTableViewModelTest {
     private lateinit var measurementRepository: MeasurementRepository
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var viewModel: MeasurementTableViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
+    private val testDispatcher = StandardTestDispatcher()
     
     // Fixed clock for testing: 2023-10-27 at 12:00:00
     private val fixedClock = Clock.fixed(Instant.parse("2023-10-27T12:00:00Z"), ZoneId.of("UTC"))
@@ -41,6 +45,11 @@ class MeasurementTableViewModelTest {
         Dispatchers.setMain(testDispatcher)
         measurementRepository = mockk()
         settingsRepository = mockk()
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -64,6 +73,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        
+        advanceTimeBy(1) // Trigger initial flow emissions
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertTrue(state.isFabEnabled)
@@ -81,6 +92,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        
+        advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertFalse(state.isFabEnabled)
@@ -101,6 +114,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        
+        advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertFalse(state.isFabEnabled)
@@ -119,6 +134,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        
+        advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertTrue(state.isFabEnabled)
@@ -127,10 +144,10 @@ class MeasurementTableViewModelTest {
 
     @Test
     fun `uiState emits items with multiple slots`() = runTest {
-        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val todayStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val measurements = listOf(
-            MeasurementEntity(id = 1, date = today, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
-            MeasurementEntity(id = 2, date = today, slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75)
+            MeasurementEntity(id = 1, date = todayStr, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
+            MeasurementEntity(id = 2, date = todayStr, slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75)
         )
         // Only first 2 slots active
         val settings = AppSettingsEntity(
@@ -142,6 +159,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
+        
+        advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertEquals(1, state.items.size)
@@ -157,6 +176,8 @@ class MeasurementTableViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(null)
         
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
+        
+        advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
 
         // Should have 1 default active slot header ("07:00")

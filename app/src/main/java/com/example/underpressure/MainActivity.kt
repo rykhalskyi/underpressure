@@ -5,14 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.local.database.AppDatabase
 import com.example.underpressure.data.repository.MeasurementRepositoryImpl
 import com.example.underpressure.data.repository.SettingsRepositoryImpl
@@ -32,11 +31,12 @@ class MainActivity : ComponentActivity() {
                 val database = AppDatabase.getDatabase(applicationContext)
                 val settingsRepository = SettingsRepositoryImpl(database.appSettingsDao())
                 val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
+                val alarmScheduler = AlarmScheduler(applicationContext)
                 
                 return if (modelClass.isAssignableFrom(MeasurementTableViewModel::class.java)) {
                     MeasurementTableViewModel(measurementRepository, settingsRepository) as T
                 } else if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-                    SettingsViewModel(settingsRepository) as T
+                    SettingsViewModel(settingsRepository, alarmScheduler) as T
                 } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
                     SearchViewModel(measurementRepository) as T
                 } else {

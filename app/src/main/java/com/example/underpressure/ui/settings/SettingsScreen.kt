@@ -88,7 +88,8 @@ fun SettingsScreen(
                         SlotRow(
                             slot = slot,
                             onTimeClick = { showTimePickerForIndex = index },
-                            onActiveChange = { viewModel.updateSlotActive(index, it) }
+                            onActiveChange = { viewModel.updateSlotActive(index, it) },
+                            onAlarmChange = { viewModel.updateSlotAlarmEnabled(index, it) }
                         )
                         HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
                     }

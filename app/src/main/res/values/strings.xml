@@ -14,4 +14,13 @@
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
     <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Measurement Reminders</string>
+    <string name="notification_title">Time for Measurement</string>
+    <string name="notification_message">It\'s time to record your blood pressure for slot %1$d.</string>
+
+    <!-- Settings -->
+    <string name="label_active">Active</string>
+    <string name="label_alarm">Remind</string>
 </resources>

@@ -2,8 +2,11 @@ package com.example.underpressure.ui.table
 
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -17,21 +20,17 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelTest {
 
-    @Mock
     private lateinit var repository: MeasurementRepository
     private lateinit var viewModel: SearchViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
-        MockitoAnnotations.openMocks(this)
+        repository = mockk()
         Dispatchers.setMain(testDispatcher)
         viewModel = SearchViewModel(repository)
     }
@@ -53,14 +52,14 @@ class SearchViewModelTest {
     fun `numeric search updates results`() = runTest {
         val query = "120"
         val mockResults = listOf(
-            MeasurementEntity(1, "2024-03-01", 0, 120, 80, 60, 0)
+            MeasurementEntity(1, "2024-03-01", 0, 120, 80, 60)
         )
-        `when`(repository.searchMeasurements(query)).thenReturn(flowOf(mockResults))
+        every { repository.searchMeasurements(query) } returns flowOf(mockResults)
 
         viewModel.updateQuery(query)
-        advanceTimeBy(400) // Debounce
+        advanceTimeBy(1000) // Debounce (300ms) + buffer
 
-        val state = viewModel.uiState.value
+        val state = viewModel.uiState.first { it.query == query }
         assertEquals(query, state.query)
         assertEquals(mockResults, state.results)
         assertFalse(state.isLoading)
@@ -71,9 +70,9 @@ class SearchViewModelTest {
     fun `invalid date format shows error`() = runTest {
         val query = "2024-03"
         viewModel.updateQuery(query)
-        advanceTimeBy(400) // Debounce
+        advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.value
+        val state = viewModel.uiState.first { it.query == query }
         assertEquals(query, state.query)
         assertNotNull(state.dateError)
         assertTrue(state.results.isEmpty())
@@ -83,9 +82,9 @@ class SearchViewModelTest {
     fun `valid date format shows no error`() = runTest {
         val query = "2024-03-01"
         viewModel.updateQuery(query)
-        advanceTimeBy(400) // Debounce
+        advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.value
+        val state = viewModel.uiState.first { it.query == query }
         assertEquals(query, state.query)
         assertEquals(null, state.dateError)
     }

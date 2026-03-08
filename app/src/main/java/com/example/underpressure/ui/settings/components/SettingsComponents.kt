@@ -3,16 +3,12 @@ package com.example.underpressure.ui.settings.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -20,8 +16,11 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.example.underpressure.R
 import com.example.underpressure.ui.settings.SlotConfig
 
 /**
@@ -32,6 +31,7 @@ fun SlotRow(
     slot: SlotConfig,
     onTimeClick: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
+    onAlarmChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -55,16 +55,65 @@ fun SlotRow(
             )
         }
 
-        if (slot.isToggleable) {
-            Switch(
-                checked = slot.isActive,
-                onCheckedChange = onActiveChange
-            )
-        } else {
-            // Placeholder to maintain alignment for slot 1
-            Spacer(modifier = Modifier.width(48.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Alarm toggle - only enabled if slot is active
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.label_alarm),
+                    style = MaterialTheme.typography.labelSmall
+                )
+                Switch(
+                    checked = slot.isAlarmEnabled,
+                    onCheckedChange = onAlarmChange,
+                    enabled = slot.isActive,
+                    scale = 0.8f // Slightly smaller
+                )
+            }
+
+            // Active toggle
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = stringResource(R.string.label_active),
+                    style = MaterialTheme.typography.labelSmall
+                )
+                if (slot.isToggleable) {
+                    Switch(
+                        checked = slot.isActive,
+                        onCheckedChange = onActiveChange,
+                        scale = 0.8f
+                    )
+                } else {
+                    // Always active for slot 1
+                    Switch(
+                        checked = true,
+                        onCheckedChange = {},
+                        enabled = false,
+                        scale = 0.8f
+                    )
+                }
+            }
         }
     }
+}
+
+// Extension to scale Switch
+@Composable
+fun Switch(
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    scale: Float = 1f
+) {
+    androidx.compose.material3.Switch(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        modifier = modifier.scale(scale),
+        enabled = enabled
+    )
 }
 
 /**
