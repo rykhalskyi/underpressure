@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -130,6 +131,8 @@ class RoomDatabaseTest {
         val finalResult = appSettingsDao.getSettings().first()
         assertEquals(false, finalResult?.masterAlarmEnabled)
         assertEquals(1, finalResult?.id) // Ensure ID remains 1
+    }
+
     @Test
     fun searchByValue_returnsPartialMatches() = runTest {
         val m1 = MeasurementEntity(1, "2024-03-01", 0, 120, 80, 60, 0)

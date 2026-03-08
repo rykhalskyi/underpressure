@@ -46,7 +46,7 @@ private fun RowScope.HeaderCell(
     Text(
         text = text,
         modifier = Modifier.weight(weight),
-        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, fontSize = 10.sp),
+        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, fontSize = 12.sp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Start,
         maxLines = 1
