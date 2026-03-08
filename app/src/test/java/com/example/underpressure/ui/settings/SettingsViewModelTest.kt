@@ -1,11 +1,13 @@
 package com.example.underpressure.ui.settings
 
+import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.domain.repository.SettingsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -22,6 +24,7 @@ import org.junit.Test
 class SettingsViewModelTest {
 
     private lateinit var settingsRepository: SettingsRepository
+    private lateinit var alarmScheduler: AlarmScheduler
     private lateinit var viewModel: SettingsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -29,6 +32,7 @@ class SettingsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         settingsRepository = mockk()
+        alarmScheduler = mockk(relaxed = true)
     }
 
     @Test
@@ -39,7 +43,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -54,12 +58,12 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSlotTime calls repository save`() = runTest {
+    fun `updateSlotTime calls repository save and alarm scheduler`() = runTest {
         val settings = AppSettingsEntity()
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
         viewModel.updateSlotTime(1, "14:30")
 
         coVerify {
@@ -67,21 +71,27 @@ class SettingsViewModelTest {
                 it.slotTimes[1] == "14:30"
             })
         }
+        verify {
+            alarmScheduler.updateAlarms(any())
+        }
     }
 
     @Test
-    fun `updateSlotActive calls repository save for slots 2-4`() = runTest {
+    fun `updateSlotActive calls repository save and alarm scheduler for slots 2-4`() = runTest {
         val settings = AppSettingsEntity()
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
         viewModel.updateSlotActive(1, true)
 
         coVerify {
             settingsRepository.saveSettings(match {
                 it.slotActiveFlags[1] == true
             })
+        }
+        verify {
+            alarmScheduler.updateAlarms(any())
         }
     }
 
@@ -90,11 +100,33 @@ class SettingsViewModelTest {
         val settings = AppSettingsEntity(slotActiveFlags = listOf(true, false, false, false))
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
         viewModel.updateSlotActive(0, false)
 
         coVerify(exactly = 0) {
             settingsRepository.saveSettings(any())
+        }
+        verify(exactly = 0) {
+            alarmScheduler.updateAlarms(any())
+        }
+    }
+
+    @Test
+    fun `updateSlotAlarmEnabled calls repository save and alarm scheduler`() = runTest {
+        val settings = AppSettingsEntity()
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel.updateSlotAlarmEnabled(2, true)
+
+        coVerify {
+            settingsRepository.saveSettings(match {
+                it.slotAlarmsEnabled[2] == true
+            })
+        }
+        verify {
+            alarmScheduler.updateAlarms(any())
         }
     }
 }

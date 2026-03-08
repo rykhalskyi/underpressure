@@ -2,6 +2,7 @@ package com.example.underpressure.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
  * Handles loading and updating measurement slot configurations.
  */
 class SettingsViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
@@ -67,10 +69,20 @@ class SettingsViewModel(
         saveSettings(settings.copy(slotActiveFlags = newActiveFlags))
     }
 
+    fun updateSlotAlarmEnabled(index: Int, isEnabled: Boolean) {
+        val settings = currentSettings ?: return
+        val newAlarmsEnabled = settings.slotAlarmsEnabled.toMutableList().apply {
+            this[index] = isEnabled
+        }
+        saveSettings(settings.copy(slotAlarmsEnabled = newAlarmsEnabled))
+    }
+
     private fun saveSettings(settings: AppSettingsEntity) {
         viewModelScope.launch {
             try {
                 settingsRepository.saveSettings(settings)
+                // Schedule/Update alarms after successful save
+                alarmScheduler.updateAlarms(settings)
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = "Failed to save settings: ${e.message}") }
             }
