@@ -20,6 +20,7 @@ import com.example.underpressure.ui.settings.SettingsScreen
 import com.example.underpressure.ui.settings.SettingsViewModel
 import com.example.underpressure.ui.table.MeasurementTableScreen
 import com.example.underpressure.ui.table.MeasurementTableViewModel
+import com.example.underpressure.ui.table.SearchViewModel
 import com.example.underpressure.ui.theme.UnderPressureTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,12 +31,14 @@ class MainActivity : ComponentActivity() {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 val database = AppDatabase.getDatabase(applicationContext)
                 val settingsRepository = SettingsRepositoryImpl(database.appSettingsDao())
+                val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
                 
                 return if (modelClass.isAssignableFrom(MeasurementTableViewModel::class.java)) {
-                    val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
                     MeasurementTableViewModel(measurementRepository, settingsRepository) as T
                 } else if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
                     SettingsViewModel(settingsRepository) as T
+                } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
+                    SearchViewModel(measurementRepository) as T
                 } else {
                     throw IllegalArgumentException("Unknown ViewModel class")
                 }
@@ -45,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     private val tableViewModel: MeasurementTableViewModel by viewModels { viewModelFactory }
     private val settingsViewModel: SettingsViewModel by viewModels { viewModelFactory }
+    private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +65,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     MeasurementTableScreen(
                         viewModel = tableViewModel,
+                        searchViewModel = searchViewModel,
                         onSettingsClick = { isSettingsOpen = true }
                     )
                 }

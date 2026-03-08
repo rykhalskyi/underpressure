@@ -41,6 +41,11 @@ interface MeasurementRepository {
     fun getAllMeasurements(): Flow<List<MeasurementEntity>>
 
     /**
+     * Searches for measurements by partial numeric value matches.
+     */
+    fun searchMeasurements(query: String): Flow<List<MeasurementEntity>>
+
+    /**
      * Retrieves measurements where any value (systolic, diastolic, or pulse) matches the given value.
      */
     fun getMeasurementsByValue(value: Int): Flow<List<MeasurementEntity>>

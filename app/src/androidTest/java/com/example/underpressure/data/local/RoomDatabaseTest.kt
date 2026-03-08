@@ -130,5 +130,25 @@ class RoomDatabaseTest {
         val finalResult = appSettingsDao.getSettings().first()
         assertEquals(false, finalResult?.masterAlarmEnabled)
         assertEquals(1, finalResult?.id) // Ensure ID remains 1
+    @Test
+    fun searchByValue_returnsPartialMatches() = runTest {
+        val m1 = MeasurementEntity(1, "2024-03-01", 0, 120, 80, 60, 0)
+        val m2 = MeasurementEntity(2, "2024-03-02", 0, 130, 85, 65, 0)
+        val m3 = MeasurementEntity(3, "2024-03-03", 0, 140, 120, 70, 0)
+
+        measurementDao.insert(m1)
+        measurementDao.insert(m2)
+        measurementDao.insert(m3)
+
+        // Search for "120"
+        val results = measurementDao.searchByValue("%120%").first()
+        assertEquals(2, results.size)
+        assertTrue(results.any { it.systolic == 120 })
+        assertTrue(results.any { it.diastolic == 120 })
+
+        // Search for "30"
+        val results2 = measurementDao.searchByValue("%30%").first()
+        assertEquals(1, results2.size)
+        assertEquals(130, results2[0].systolic)
     }
 }

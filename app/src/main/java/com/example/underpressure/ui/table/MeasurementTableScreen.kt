@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -21,6 +23,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,9 +35,12 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.underpressure.ui.table.components.DayRow
 import com.example.underpressure.ui.table.components.MeasurementEditDialog
+import com.example.underpressure.ui.table.components.SearchDialog
 import com.example.underpressure.ui.table.components.TableHeader
+import kotlinx.coroutines.launch
 
 /**
  * Root screen for the Measurement Table feature (Multi-slot view).
@@ -40,11 +49,15 @@ import com.example.underpressure.ui.table.components.TableHeader
 @Composable
 fun MeasurementTableScreen(
     viewModel: MeasurementTableViewModel,
+    searchViewModel: SearchViewModel,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    var isSearchDialogOpen by remember { mutableStateOf(false) }
+    val lazyListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -56,12 +69,29 @@ fun MeasurementTableScreen(
         // Clean up observer on dispose
     }
 
+    LaunchedEffect(viewModel.scrollToDateEvent) {
+        viewModel.scrollToDateEvent.collect { date ->
+            val index = uiState.items.indexOfFirst { it.date == date }
+            if (index != -1) {
+                coroutineScope.launch {
+                    lazyListState.animateScrollToItem(index)
+                }
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { Text("UnderPressure") },
                 actions = {
+                    IconButton(onClick = { isSearchDialogOpen = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search"
+                        )
+                    }
                     IconButton(onClick = onSettingsClick) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -106,7 +136,10 @@ fun MeasurementTableScreen(
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     TableHeader(slotHeaders = uiState.slotHeaders)
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState
+                    ) {
                         items(
                             items = uiState.items,
                             key = { it.date }
@@ -134,6 +167,17 @@ fun MeasurementTableScreen(
                 state = uiState.dialogState,
                 onSave = { viewModel.onSaveMeasurement(it) },
                 onDismiss = { viewModel.onDialogDismiss() }
+            )
+        }
+
+        if (isSearchDialogOpen) {
+            SearchDialog(
+                viewModel = searchViewModel,
+                onDismiss = { isSearchDialogOpen = false },
+                onResultClick = { date ->
+                    isSearchDialogOpen = false
+                    viewModel.onDateSelectedFromSearch(date)
+                }
             )
         }
     }

@@ -8,9 +8,12 @@ import com.example.underpressure.domain.repository.SettingsRepository
 import com.example.underpressure.domain.validation.BloodPressureValidator
 import com.example.underpressure.domain.validation.ValidationResult
 import android.util.Log
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -40,6 +43,9 @@ class MeasurementTableViewModel(
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
+    
+    private val _scrollToDateEvent = MutableSharedFlow<String>()
+    val scrollToDateEvent: SharedFlow<String> = _scrollToDateEvent.asSharedFlow()
 
     // Emits a value every minute to trigger UI refresh (especially for FAB eligibility)
     private val tickFlow = flow {
@@ -141,6 +147,15 @@ class MeasurementTableViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TableUiState(isLoading = true)
     )
+
+    /**
+     * Called when a date is selected from the search dialog.
+     */
+    fun onDateSelectedFromSearch(date: String) {
+        viewModelScope.launch {
+            _scrollToDateEvent.emit(date)
+        }
+    }
 
     /**
      * Forces a refresh of the UI state (e.g., when returning from Settings).
