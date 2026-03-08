@@ -99,6 +99,33 @@ fun SlotRow(
     }
 }
 
+/**
+ * A row for the master alarm toggle.
+ */
+@Composable
+fun GlobalAlarmRow(
+    enabled: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Global Alarm Reminders",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(1f)
+        )
+        Switch(
+            checked = enabled,
+            onCheckedChange = onCheckedChange
+        )
+    }
+}
+
 // Extension to scale Switch
 @Composable
 fun Switch(

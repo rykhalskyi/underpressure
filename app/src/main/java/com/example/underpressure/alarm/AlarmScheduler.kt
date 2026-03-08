@@ -30,7 +30,7 @@ class AlarmScheduler(private val context: Context) {
             val isAlarmEnabled = settings.slotAlarmsEnabled.getOrElse(i) { false }
             val time = settings.slotTimes.getOrElse(i) { "07:00" }
 
-            if (isActive && isAlarmEnabled) {
+            if (settings.masterAlarmEnabled && isActive && isAlarmEnabled) {
                 scheduleAlarm(i, time)
             } else {
                 cancelAlarm(i)

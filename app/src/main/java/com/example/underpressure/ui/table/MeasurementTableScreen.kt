@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,6 +87,16 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text("UnderPressure") },
                 actions = {
+                    IconButton(onClick = { viewModel.toggleMasterAlarm() }) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Toggle Alarms",
+                            tint = if (uiState.isMasterAlarmEnabled) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                        )
+                    }
                     IconButton(onClick = { isSearchDialogOpen = true }) {
                         Icon(
                             imageVector = Icons.Default.Search,

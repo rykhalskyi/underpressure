@@ -1,11 +1,13 @@
 package com.example.underpressure.ui.table
 
+import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -33,6 +35,7 @@ class MeasurementTableViewModelTest {
 
     private lateinit var measurementRepository: MeasurementRepository
     private lateinit var settingsRepository: SettingsRepository
+    private lateinit var alarmScheduler: AlarmScheduler
     private lateinit var viewModel: MeasurementTableViewModel
     private val testDispatcher = StandardTestDispatcher()
     
@@ -45,6 +48,7 @@ class MeasurementTableViewModelTest {
         Dispatchers.setMain(testDispatcher)
         measurementRepository = mockk()
         settingsRepository = mockk()
+        alarmScheduler = mockk(relaxed = true)
     }
 
     @After
@@ -57,7 +61,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(null)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         assertEquals(TableUiState(isLoading = true), viewModel.uiState.value)
     }
@@ -72,7 +76,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         advanceTimeBy(1) // Trigger initial flow emissions
         val state = viewModel.uiState.first { !it.isLoading }
@@ -91,7 +95,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
@@ -113,7 +117,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
@@ -133,7 +137,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
@@ -158,7 +162,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler)
         
         advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }
@@ -175,7 +179,7 @@ class MeasurementTableViewModelTest {
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(null)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler)
         
         advanceTimeBy(1)
         val state = viewModel.uiState.first { !it.isLoading }

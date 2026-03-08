@@ -18,6 +18,9 @@ data class MeasurementDialogState(
  * @property slotHeaders List of times (strings) to be used as column headers for slots.
  * @property items List of summarized daily measurements to display.
  * @property dialogState State for the measurement entry/edit dialog.
+ * @property isFabEnabled True if a slot is currently eligible for measurement entry.
+ * @property fabTargetSlotIndex The slot index the FAB should target, if enabled.
+ * @property isMasterAlarmEnabled True if the global alarm reminder switch is ON.
  * @property error Error message if data load fails.
  */
 data class TableUiState(
@@ -27,5 +30,6 @@ data class TableUiState(
     val dialogState: MeasurementDialogState = MeasurementDialogState(),
     val isFabEnabled: Boolean = false,
     val fabTargetSlotIndex: Int? = null,
+    val isMasterAlarmEnabled: Boolean = false,
     val error: String? = null,
 )

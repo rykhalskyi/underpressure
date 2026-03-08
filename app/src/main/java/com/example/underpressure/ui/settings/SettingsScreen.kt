@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.underpressure.ui.settings.components.GlobalAlarmRow
 import com.example.underpressure.ui.settings.components.SlotRow
 import com.example.underpressure.ui.settings.components.TimePickerDialog
 
@@ -92,6 +93,12 @@ fun SettingsScreen(
                             onAlarmChange = { viewModel.updateSlotAlarmEnabled(index, it) }
                         )
                         HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+                    item {
+                        GlobalAlarmRow(
+                            enabled = uiState.isMasterAlarmEnabled,
+                            onCheckedChange = { viewModel.updateMasterAlarmEnabled(it) }
+                        )
                     }
                 }
             }
