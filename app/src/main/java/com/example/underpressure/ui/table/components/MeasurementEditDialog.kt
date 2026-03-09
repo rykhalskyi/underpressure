@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,19 @@ import com.example.underpressure.R
 import com.example.underpressure.domain.validation.BloodPressureValidator
 import com.example.underpressure.domain.validation.ValidationResult
 import com.example.underpressure.ui.table.MeasurementDialogState
+
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import com.example.underpressure.ui.camera.CameraCaptureActivity
 
 /**
  * Dialog for entering or editing a blood pressure measurement.
@@ -44,6 +58,25 @@ fun MeasurementEditDialog(
     val isError = textValue.isNotEmpty() && validationResult is ValidationResult.Error
     
     val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.getStringExtra("ocr_result")?.let {
+                textValue = it
+            }
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            cameraLauncher.launch(Intent(context, CameraCaptureActivity::class.java))
+        }
+    }
 
     LaunchedEffect(state.isOpen) {
         if (state.isOpen) {
@@ -88,6 +121,25 @@ fun MeasurementEditDialog(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
+
+                Spacer(modifier = Modifier.padding(vertical = 4.dp))
+
+                TextButton(
+                    onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(text = stringResource(R.string.button_read_camera))
+                    }
+                }
             }
         },
         confirmButton = {

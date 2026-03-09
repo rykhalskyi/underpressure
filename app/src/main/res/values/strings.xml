@@ -15,6 +15,14 @@
     <string name="button_cancel">Cancel</string>
     <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
 
+    <!-- OCR & Camera -->
+    <string name="button_read_camera">Read from Camera</string>
+    <string name="camera_capture_button">Capture</string>
+    <string name="ocr_processing">Processing image…</string>
+    <string name="ocr_error_no_text">No numbers detected. Please try again.</string>
+    <string name="ocr_error_failed">Recognition failed. Please enter manually.</string>
+    <string name="camera_permission_denied">Camera permission is required to read measurements.</string>
+
     <!-- Notifications -->
     <string name="notification_channel_name">Measurement Reminders</string>
     <string name="notification_title">Time for Measurement</string>
