@@ -79,9 +79,14 @@ dependencies {
     implementation(libs.google.mlkit.textrecognition)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    // OpenCV
+    implementation(libs.opencv)
+    testImplementation(libs.openpnp.opencv)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.mockk.android)

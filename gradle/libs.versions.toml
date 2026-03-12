@@ -13,6 +13,9 @@ ksp = "2.0.21-1.0.26"
 mockk = "1.13.13"
 camerax = "1.4.0"
 mlkit-text-recognition = "16.0.1"
+opencv = "4.10.0"
+openpnp-opencv = "4.9.0-0"
+robolectric = "4.14.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +44,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.3.0" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 # CameraX
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax" }
@@ -50,6 +54,8 @@ androidx-camera-view = { group = "androidx.camera", name = "camera-view", versio
 
 # ML Kit
 google-mlkit-textrecognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkit-text-recognition" }
+opencv = { group = "org.opencv", name = "opencv", version.ref = "opencv" }
+openpnp-opencv = { group = "org.openpnp", name = "opencv", version.ref = "openpnp-opencv" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

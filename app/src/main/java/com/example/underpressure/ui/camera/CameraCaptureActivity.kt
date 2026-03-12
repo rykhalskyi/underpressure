@@ -35,6 +35,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.underpressure.R
 import com.example.underpressure.ocr.BloodPressureOcrManager
 import com.example.underpressure.ocr.OcrParser
+import com.example.underpressure.ocr.OcrResult
 import com.example.underpressure.ui.theme.UnderPressureTheme
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
@@ -171,15 +172,10 @@ class CameraCaptureActivity : ComponentActivity() {
                         }
                         Button(onClick = {
                             isProcessing = true
-                            takePhoto { rawResult ->
+                            takePhoto { result ->
                                 isProcessing = false
-                                if (rawResult != null) {
-                                    val parsed = ocrParser.parse(rawResult)
-                                    if (parsed != null) {
-                                        setResultAndFinish(parsed.toFormattedString())
-                                    } else {
-                                        debugText = rawResult
-                                    }
+                                if (result != null) {
+                                    setResultAndFinish(result.toFormattedString())
                                 } else {
                                     Toast.makeText(context, R.string.ocr_error_failed, Toast.LENGTH_SHORT).show()
                                 }
@@ -191,7 +187,7 @@ class CameraCaptureActivity : ComponentActivity() {
                 }
             }
 
-            // Debug Dialog
+            // Debug Dialog (simplified as we now get OcrResult)
             debugText?.let { text ->
                 AlertDialog(
                     onDismissRequest = { debugText = null },
@@ -220,7 +216,7 @@ class CameraCaptureActivity : ComponentActivity() {
         }
     }
 
-    private fun takePhoto(onResult: (String?) -> Unit) {
+    private fun takePhoto(onResult: (OcrResult?) -> Unit) {
         val imageCapture = imageCapture ?: return
 
         imageCapture.takePicture(
@@ -231,8 +227,8 @@ class CameraCaptureActivity : ComponentActivity() {
                     image.close()
                     if (bitmap != null) {
                         lifecycleScope.launch {
-                            val rawText = ocrManager.recognizeText(bitmap)
-                            onResult(rawText)
+                            val result = ocrManager.recognize(bitmap)
+                            onResult(result)
                         }
                     } else {
                         onResult(null)
