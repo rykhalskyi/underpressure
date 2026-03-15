@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.underpressure.R
 import com.example.underpressure.ui.table.DayMeasurementSummary
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 /**
  * A single row in the measurement table showing multiple slots.
@@ -29,10 +31,13 @@ fun DayRow(
     onCellClick: (slotIndex: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (summary.isToday) {
-        MaterialTheme.colorScheme.secondaryContainer
-    } else {
-        MaterialTheme.colorScheme.surface
+    val date = LocalDate.parse(summary.date)
+    val isWeekend = date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY
+
+    val backgroundColor = when {
+        summary.isToday -> MaterialTheme.colorScheme.secondaryContainer
+        isWeekend -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
+        else -> MaterialTheme.colorScheme.surface
     }
 
     Surface(

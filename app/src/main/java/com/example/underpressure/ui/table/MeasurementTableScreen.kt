@@ -136,7 +136,7 @@ fun MeasurementTableScreen(
                             tint = if (uiState.isMasterAlarmEnabled) 
                                 MaterialTheme.colorScheme.primary 
                             else 
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
                         )
                     }
                     IconButton(onClick = { isSearchDialogOpen = true }) {
