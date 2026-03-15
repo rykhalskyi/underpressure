@@ -1,0 +1,32 @@
+description = "Reviews code changes against design specs and best practices"
+prompt = """
+Perform a comprehensive code review of the current changes.
+
+1. **Information Gathering**
+   - Start by identifying the scope of changes. Use `git status` and `git diff` (consider staged changes with `--staged` or branch differences like `main...HEAD`) to understand what is being reviewed.
+   - Read the following documents for context and standards:
+     - `.design-specs/templates/review-template.md` (Format)
+     - `.design-specs/templates/review-checklist.md` (Checklist)
+     - `.design-specs/codestyle.md` (Coding Standards)
+     - `.design-specs/structure.md` (Project Architecture)
+     - `.design-specs/tech.md` (Technical Stack)
+     - `.design-specs/testing.md` (Testing Requirements)
+
+2. **Review Execution**
+   - Analyze the diff thoroughly. Look for:
+     - Logic correctness and edge case handling.
+     - Security vulnerabilities (hardcoded secrets, input validation, etc.).
+     - Performance implications.
+     - Alignment with the project's architectural patterns and technical stack.
+     - Adherence to naming conventions and code style.
+     - Presence and quality of tests for new functionality.
+   - Use the "Code Review Quick Checklist" to guide your analysis.
+
+3. **Review Output**
+   - Structure your response strictly according to the "PR Review Template".
+   - Use the defined severity labels: 🔴 `[blocking]`, 🟡 `[important]`, 🟢 `[nit]`, 💡 `[suggestion]`, ❓ `[question]`, 🎉 `[praise]`.
+   - Provide clear explanations for your findings and include specific code suggestions for improvements or fixes.
+   - Ensure the "Verdict" section reflects the overall state of the changes.
+
+If no changes are detected or the diff is empty, state so and ask the user for the specific changes they would like you to review.
+"""
