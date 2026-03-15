@@ -167,3 +167,56 @@ val items = listOf(
 
 **Rationale:**
 This minimizes diff noise when adding new items and makes the code cleaner.
+
+---
+
+## State Management: ViewModel State Update
+
+**Problem:**
+Updating `MutableStateFlow` using `value = value.copy(...)` is not thread-safe and can lead to race conditions if multiple updates happen concurrently.
+
+```kotlin
+// Problematic: Not thread-safe
+_uiState.value = _uiState.value.copy(isLoading = false)
+```
+
+**Recommendation:**
+Always use the `.update { ... }` extension function for `MutableStateFlow` to ensure atomic updates.
+
+```kotlin
+// Correct: Thread-safe update
+_uiState.update { it.copy(isLoading = false) }
+```
+
+**Rationale:**
+The `update` function ensures that the state transition is atomic and based on the most recent value, preventing lost updates in concurrent environments.
+
+---
+
+## Architecture: Dependency Injection (Constructor Injection)
+
+**Problem:**
+Hardcoding dependencies inside classes (e.g., creating a Repository inside a ViewModel) makes the code difficult to test and violates the Dependency Inversion Principle.
+
+```kotlin
+// Problematic: Hard to test
+class SettingsViewModel : ViewModel() {
+    private val repository = SettingsRepositoryImpl() // Hardcoded dependency
+}
+```
+
+**Recommendation:**
+Use constructor injection for all dependencies. Pass interfaces instead of concrete implementations where possible.
+
+```kotlin
+// Correct: Dependencies injected via constructor
+class SettingsViewModel(
+    private val settingsRepository: SettingsRepository,
+    private val alarmScheduler: AlarmScheduler
+) : ViewModel() {
+    // ...
+}
+```
+
+**Rationale:**
+Constructor injection makes dependencies explicit, facilitates easy unit testing with mocks, and allows for better decoupling of components.

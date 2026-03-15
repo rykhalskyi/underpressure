@@ -11,20 +11,25 @@ UnderPressure/
 │   │   │   │   └── com/example/underpressure/
 │   │   │   │       ├── alarm/     # Alarm scheduling and management
 │   │   │   │       ├── data/      # Data layer (Local DB, Repositories)
-│   │   │   │       │   ├── local/ # Room entities, DAOs, Database, Converters
+│   │   │   │       │   ├── local/ # Room database implementation
+│   │   │   │       │   │   ├── converters/ # Room TypeConverters
+│   │   │   │       │   │   ├── dao/        # Data Access Objects
+│   │   │   │       │   │   ├── database/   # RoomDatabase definition
+│   │   │   │       │   │   └── entities/   # Room Entities
 │   │   │   │       │   └── repository/ # Repository implementations
 │   │   │   │       ├── domain/    # Domain layer (Models, Interfaces, Use Cases)
 │   │   │   │       │   ├── repository/ # Repository interfaces
 │   │   │   │       │   └── validation/ # Business logic validators
 │   │   │   │       ├── receiver/  # Broadcast receivers (Alarm, Boot)
 │   │   │   │       ├── ui/        # UI layer (Screens, ViewModels, Theme)
-│   │   │   │       │   ├── settings/ # Settings screen and components
-│   │   │   │       │   ├── table/    # Measurement table screen and components
+│   │   │   │       │   ├── settings/ # Settings screen
+│   │   │   │       │   │   └── components/ # UI components specific to settings
+│   │   │   │       │   ├── table/    # Measurement table screen
 │   │   │   │       │   └── theme/    # Material 3 theme definitions
 │   │   │   │       └── MainActivity.kt # Entry point activity
 │   │   │   ├── res/            # Android resources (strings, drawables, etc.)
-│   │   │   │   ├── values/     # strings.xml, colors.xml, themes.xml
-│   │   │   │   └── drawable/   # Vector and raster graphics
+│   │   │   ├── assets/         # Static assets
+│   │   │   │   └── tessdata/   # Tesseract OCR data (placeholder)
 │   │   │   └── AndroidManifest.xml # App manifest
 │   │   ├── test/               # Local unit tests (JUnit, MockK)
 │   │   └── androidTest/        # Instrumented tests (Compose UI Test, Espresso, UI Automator)
@@ -32,7 +37,15 @@ UnderPressure/
 ├── gradle/                     # Gradle wrapper and version catalog
 │   └── libs.versions.toml      # Centralized dependency management
 ├── .design-specs/              # Project design and technical documentation
+│   ├── specs/                  # Detailed design and requirements specs
+│   ├── templates/              # Markdown templates for documentation
+│   ├── codestyle.md            # Coding standards
+│   ├── structure.md            # Project structure
+│   ├── tech.md                 # Tech stack
+│   └── testing.md              # Testing strategy
 ├── .gemini/                    # Gemini CLI configuration and skills
+│   ├── commands/               # Custom Gemini commands
+│   └── skills/                 # Gemini specialized skills
 ├── build.gradle.kts            # Project-level build configuration
 ├── settings.gradle.kts         # Project settings and module inclusion
 └── README.md                   # Project overview

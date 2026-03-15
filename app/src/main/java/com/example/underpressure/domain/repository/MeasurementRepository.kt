@@ -41,6 +41,11 @@ interface MeasurementRepository {
     fun getAllMeasurements(): Flow<List<MeasurementEntity>>
 
     /**
+     * Retrieves all recorded blood pressure measurements (one-shot).
+     */
+    suspend fun getAllMeasurementsSync(): List<MeasurementEntity>
+
+    /**
      * Searches for measurements by partial numeric value matches.
      */
     fun searchMeasurements(query: String): Flow<List<MeasurementEntity>>

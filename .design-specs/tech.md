@@ -8,7 +8,7 @@ This is a modern **Android mobile application** built for the Android platform.
 ### Primary Language(s)
 - **Language**: Kotlin 2.0.21
 - **Runtime/Compiler**: JVM 11
-- **Language-specific tools**: Kotlin Symbol Processing (KSP) 2.0.21-1.0.26, Kotlin Coroutines for asynchronous programming.
+- **Language-specific tools**: Kotlin Symbol Processing (KSP) 2.0.21-1.0.26, Kotlin Coroutines (1.10.1) for asynchronous programming.
 
 ### Key Dependencies/Libraries
 - **Jetpack Compose (BOM 2024.09.00)**: Modern toolkit for building native UI.
@@ -45,8 +45,9 @@ This is a modern **Android mobile application** built for the Android platform.
 - **Static Analysis**: Android Lint.
 - **Formatting**: ktlint (via Gradle plugin).
 - **Testing Frameworks**: 
-    - **Unit Tests**: JUnit 4, MockK, Kotlinx Coroutines Test.
-    - **Instrumentation Tests**: Compose UI Test, Espresso, UI Automator, MockK Android.
+    - **Unit Tests**: JUnit 4.13.2, MockK 1.13.13, Kotlinx Coroutines Test 1.10.1.
+    - **Instrumentation Tests**: Compose UI Test, Espresso 3.7.0, UI Automator 2.3.0, MockK Android 1.13.13.
+    - **Architecture Testing**: AndroidX Arch Core Testing 2.2.0.
 - **Documentation**: Dokka (Planned).
 
 ### Version Control & Collaboration

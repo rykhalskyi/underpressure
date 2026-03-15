@@ -38,6 +38,10 @@ class MeasurementRepositoryImpl(
         return measurementDao.getAll()
     }
 
+    override suspend fun getAllMeasurementsSync(): List<MeasurementEntity> {
+        return measurementDao.getAllSync()
+    }
+
     override fun searchMeasurements(query: String): Flow<List<MeasurementEntity>> {
         val formattedQuery = "%$query%"
         return measurementDao.searchByValue(formattedQuery)
