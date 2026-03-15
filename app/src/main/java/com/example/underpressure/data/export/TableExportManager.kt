@@ -64,6 +64,19 @@ class TableExportManager(
         tableFormatter.formatCsv(headers, rows)
     }
 
+    /**
+     * Retrieves the range of dates for which measurements exist.
+     */
+    suspend fun getDateRange(): Pair<LocalDate?, LocalDate?> = withContext(Dispatchers.IO) {
+        val minDateStr = measurementRepository.getMinDate()
+        val maxDateStr = measurementRepository.getMaxDate()
+        
+        val minDate = minDateStr?.let { LocalDate.parse(it, dateFormatter) }
+        val maxDate = maxDateStr?.let { LocalDate.parse(it, dateFormatter) }
+        
+        minDate to maxDate
+    }
+
     private suspend fun prepareExportData(
         from: LocalDate?,
         to: LocalDate?,

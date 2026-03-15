@@ -50,4 +50,12 @@ class MeasurementRepositoryImpl(
     override fun getMeasurementsByValue(value: Int): Flow<List<MeasurementEntity>> {
         return measurementDao.getByValue(value)
     }
+
+    override suspend fun getMinDate(): String? {
+        return measurementDao.getMinDate()
+    }
+
+    override suspend fun getMaxDate(): String? {
+        return measurementDao.getMaxDate()
+    }
 }

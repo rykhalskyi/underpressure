@@ -55,7 +55,7 @@ fun ShareDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Share Data",
+                        text = "Share Measurements",
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -74,6 +74,8 @@ fun ShareDialog(
                         DateSelectorButton(
                             label = "From",
                             date = uiState.fromDate,
+                            minDate = uiState.minDate,
+                            maxDate = uiState.maxDate,
                             onDateSelected = { date ->
                                 viewModel.updateDateRange(date, uiState.toDate)
                             },
@@ -83,6 +85,8 @@ fun ShareDialog(
                         DateSelectorButton(
                             label = "To",
                             date = uiState.toDate,
+                            minDate = uiState.minDate,
+                            maxDate = uiState.maxDate,
                             onDateSelected = { date ->
                                 viewModel.updateDateRange(uiState.fromDate, date)
                             },

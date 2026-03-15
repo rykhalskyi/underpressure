@@ -15,6 +15,8 @@ data class ShareUiState(
     val isOpen: Boolean = false,
     val fromDate: LocalDate? = null,
     val toDate: LocalDate? = null,
+    val minDate: LocalDate? = null,
+    val maxDate: LocalDate? = null,
     val dateError: String? = null,
     val isProcessing: Boolean = false
 )

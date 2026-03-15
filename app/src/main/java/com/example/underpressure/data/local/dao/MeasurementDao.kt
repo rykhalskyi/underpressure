@@ -40,4 +40,10 @@ interface MeasurementDao {
 
     @Query("SELECT * FROM measurements WHERE systolic = :value OR diastolic = :value OR pulse = :value")
     fun getByValue(value: Int): Flow<List<MeasurementEntity>>
+
+    @Query("SELECT MIN(date) FROM measurements")
+    suspend fun getMinDate(): String?
+
+    @Query("SELECT MAX(date) FROM measurements")
+    suspend fun getMaxDate(): String?
 }

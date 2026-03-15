@@ -35,7 +35,16 @@ class ShareViewModel(
     val shareEvents = _shareEvents.asSharedFlow()
 
     fun onOpenDialog() {
-        _uiState.update { it.copy(isOpen = true) }
+        viewModelScope.launch {
+            val (minDate, maxDate) = exportManager.getDateRange()
+            _uiState.update { 
+                it.copy(
+                    isOpen = true,
+                    minDate = minDate,
+                    maxDate = maxDate
+                ) 
+            }
+        }
     }
 
     fun onDismissDialog() {

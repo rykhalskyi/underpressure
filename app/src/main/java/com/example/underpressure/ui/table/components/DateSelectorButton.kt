@@ -7,6 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.SelectableDates
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,8 @@ import java.time.format.DateTimeFormatter
 fun DateSelectorButton(
     label: String,
     date: LocalDate?,
+    minDate: LocalDate?,
+    maxDate: LocalDate?,
     onDateSelected: (LocalDate?) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -37,8 +40,25 @@ fun DateSelectorButton(
     }
 
     if (showDatePicker) {
+        val selectableDates = remember(minDate, maxDate) {
+            object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    // DatePicker uses UTC for selectable dates
+                    val selectedLocalDate = Instant.ofEpochMilli(utcTimeMillis)
+                        .atZone(ZoneId.of("UTC"))
+                        .toLocalDate()
+                    
+                    val isAfterMin = minDate == null || !selectedLocalDate.isBefore(minDate)
+                    val isBeforeMax = maxDate == null || !selectedLocalDate.isAfter(maxDate)
+                    
+                    return isAfterMin && isBeforeMax
+                }
+            }
+        }
+
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+            initialSelectedDateMillis = date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli(),
+            selectableDates = selectableDates
         )
 
         DatePickerDialog(
