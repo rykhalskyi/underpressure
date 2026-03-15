@@ -50,6 +50,9 @@ import com.example.underpressure.ui.settings.components.GlobalAlarmRow
 import com.example.underpressure.ui.settings.components.SlotRow
 import com.example.underpressure.ui.settings.components.TimePickerDialog
 
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
+
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
  */
@@ -95,12 +98,12 @@ fun SettingsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.title_settings)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Go back"
+                            contentDescription = stringResource(R.string.cd_go_back)
                         )
                     }
                 }
@@ -117,7 +120,7 @@ fun SettingsScreen(
                 CircularProgressIndicator()
             } else if (uiState.error != null) {
                 Text(
-                    text = uiState.error ?: "Error loading settings",
+                    text = uiState.error ?: stringResource(R.string.error_loading_settings),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -144,7 +147,7 @@ fun SettingsScreen(
 
                     item {
                         Text(
-                            text = "Measurement Slots",
+                            text = stringResource(R.string.header_measurement_slots),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(vertical = 16.dp)
                         )
@@ -208,16 +211,16 @@ fun ExactAlarmWarning(
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Exact Alarms Disabled",
+                    text = stringResource(R.string.warning_exact_alarms_title),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = "Alarms may be delayed by up to an hour. Please grant permission for precise timing.",
+                    text = stringResource(R.string.warning_exact_alarms_body),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
             TextButton(onClick = onGrantClick) {
-                Text("GRANT")
+                Text(stringResource(R.string.button_grant))
             }
         }
     }

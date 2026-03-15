@@ -42,7 +42,7 @@ fun SlotRow(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Slot ${slot.number}",
+                text = stringResource(R.string.label_slot_number, slot.number),
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
@@ -115,7 +115,7 @@ fun GlobalAlarmRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Global Alarm Reminders",
+            text = stringResource(R.string.label_global_alarm),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.weight(1f)
         )
@@ -173,7 +173,7 @@ fun TimePickerDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Select Time",
+                    text = stringResource(R.string.dialog_title_select_time),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.align(Alignment.Start).padding(bottom = 16.dp)
                 )
@@ -185,7 +185,7 @@ fun TimePickerDialog(
                     horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.button_cancel))
                     }
                     TextButton(
                         onClick = {
@@ -193,7 +193,7 @@ fun TimePickerDialog(
                             onConfirm(formattedTime)
                         }
                     ) {
-                        Text("OK")
+                        Text(stringResource(R.string.button_ok))
                     }
                 }
             }

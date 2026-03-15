@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import com.example.underpressure.R
 
 /**
  * ViewModel for the Search Dialog.
@@ -70,7 +71,7 @@ class SearchViewModel(
             SearchUiState(query = query) // Valid date format, result will be handled by navigation
         } catch (e: DateTimeParseException) {
             _isLoading.value = false
-            SearchUiState(query = query, dateError = "Invalid date format (YYYY-MM-DD)")
+            SearchUiState(query = query, dateErrorRes = R.string.error_invalid_date)
         }
     )
 

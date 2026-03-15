@@ -1,0 +1,73 @@
+<resources>
+    <!-- App General -->
+    <string name="app_name">UnderPressure</string>
+    <string name="empty_value">-</string>
+    <string name="unknown_error">Невідома помилка</string>
+    <string name="button_save">Зберегти</string>
+    <string name="button_cancel">Скасувати</string>
+    <string name="button_ok">OK</string>
+    <string name="button_confirm">Підтвердити</string>
+    <string name="button_clear">Очистити</string>
+    <string name="button_close">Закрити</string>
+    <string name="button_grant">НАДАТИ</string>
+
+    <!-- Table Screen Headers -->
+    <string name="header_date">Дата</string>
+    <string name="header_systolic">Сис</string>
+    <string name="header_diastolic">Діа</string>
+    <string name="header_pulse">Пульс</string>
+    
+    <!-- Table Screen Actions (Accessibility) -->
+    <string name="cd_toggle_alarms">Перемкнути будильники</string>
+    <string name="cd_search">Пошук</string>
+    <string name="cd_share">Поділитися</string>
+    <string name="cd_settings">Відкрити налаштування</string>
+    <string name="cd_add_measurement">Додати вимірювання</string>
+    <string name="cd_go_back">Назад</string>
+
+    <!-- Measurement Edit Dialog -->
+    <string name="dialog_title_edit">Редагувати вимірювання</string>
+    <string name="dialog_title_add">Додати вимірювання</string>
+    <string name="label_measurement_format">СИС/ДІА @ПУЛЬС</string>
+    <string name="placeholder_measurement">120/80 @72</string>
+    <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
+    <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
+    <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
+
+    <!-- Search Dialog -->
+    <string name="dialog_title_search">Пошук вимірювань</string>
+    <string name="label_search_hint">Введіть дату (РРРР-ММ-ДД) або значення</string>
+    <string name="message_no_results">Результатів не знайдено</string>
+    <string name="button_jump_to_date">Перейти до дати: %1$s</string>
+    <string name="label_measurement_details">Систолічний: %1$d, Діастолічний: %2$d, Пульс: %3$d</string>
+    <string name="error_invalid_date">Невірний формат дати (РРРР-ММ-ДД)</string>
+
+    <!-- Share Dialog -->
+    <string name="dialog_title_share">Поділитися вимірюваннями</string>
+    <string name="label_select_date_range">Виберіть діапазон дат (опціонально)</string>
+    <string name="label_date_from">З</string>
+    <string name="label_date_to">По</string>
+    <string name="button_share_message">Поділитися як повідомлення</string>
+    <string name="button_export_csv">Експортувати в CSV</string>
+    <string name="share_chooser_title">Поділитися журналом тиску</string>
+    <string name="export_chooser_title">Експорт CSV</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Налаштування</string>
+    <string name="header_measurement_slots">Слоти вимірювань</string>
+    <string name="label_slot_number">Слот %1$d</string>
+    <string name="label_global_alarm">Глобальні нагадування</string>
+    <string name="label_active">Активно</string>
+    <string name="label_alarm">Нагадати</string>
+    <string name="dialog_title_select_time">Виберіть час</string>
+    <string name="error_loading_settings">Помилка завантаження налаштувань</string>
+
+    <!-- Exact Alarm Warning -->
+    <string name="warning_exact_alarms_title">Точні будильники вимкнено</string>
+    <string name="warning_exact_alarms_body">Будильники можуть затримуватися до години. Будь ласка, надайте дозвіл для точного часу.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Нагадування про вимірювання</string>
+    <string name="notification_title">Час для вимірювання</string>
+    <string name="notification_message">Настав час записати ваш артеріальний тиск для слота %1$d.</string>
+</resources>

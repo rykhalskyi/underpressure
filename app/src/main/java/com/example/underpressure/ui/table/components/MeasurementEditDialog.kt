@@ -64,7 +64,7 @@ fun MeasurementEditDialog(
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "${state.date} - Slot ${state.slotIndex + 1}",
+                    text = stringResource(R.string.dialog_measurement_slot_info, state.date, state.slotIndex + 1),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

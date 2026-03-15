@@ -53,8 +53,9 @@ fun DayRow(
             
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
-                val text = data?.let { "${it.systolic}/${it.diastolic}@${it.pulse}" }
-                    ?: stringResource(R.string.empty_value)
+                val text = data?.let { 
+                    stringResource(R.string.measurement_value_format, it.systolic, it.diastolic, it.pulse) 
+                } ?: stringResource(R.string.empty_value)
                 TableCell(
                     text = text, 
                     weight = 1f,

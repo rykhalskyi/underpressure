@@ -7,6 +7,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.platform.app.InstrumentationRegistry
+import com.example.underpressure.R
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,6 +24,8 @@ class MeasurementTableScreenTest {
 
     private lateinit var viewModel: MeasurementTableViewModel
     private lateinit var searchViewModel: SearchViewModel
+    private lateinit var shareViewModel: ShareViewModel
+    
     private val uiStateFlow = MutableStateFlow(TableUiState(isLoading = true))
     private val searchUiStateFlow = MutableStateFlow(SearchUiState())
     private val searchQueryFlow = MutableStateFlow("")
@@ -30,14 +34,21 @@ class MeasurementTableScreenTest {
     fun setUp() {
         viewModel = mockk(relaxed = true)
         searchViewModel = mockk(relaxed = true)
+        shareViewModel = mockk(relaxed = true)
+        
         every { viewModel.uiState } returns uiStateFlow
         every { viewModel.scrollToDateEvent } returns MutableStateFlow("") // Mocked flow for LaunchedEffect
         every { searchViewModel.uiState } returns searchUiStateFlow
         every { searchViewModel.query } returns searchQueryFlow
+        every { shareViewModel.uiState } returns MutableStateFlow(ShareUiState())
+        every { shareViewModel.shareEvents } returns MutableStateFlow(ShareViewModel.ShareEvent.ShareText(""))
     }
 
     @Test
     fun fab_isDisplayed_andTriggersClick() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val cd = context.getString(R.string.cd_add_measurement)
+        
         uiStateFlow.value = TableUiState(
             isLoading = false,
             isFabEnabled = true
@@ -47,17 +58,21 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
-        composeTestRule.onNodeWithContentDescription("Add Measurement").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithContentDescription(cd).assertIsDisplayed().performClick()
 
         verify { viewModel.onFabClicked() }
     }
 
     @Test
     fun tableHeaders_areDisplayed() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val dateHeader = context.getString(R.string.header_date)
+        
         uiStateFlow.value = TableUiState(
             isLoading = false, 
             slotHeaders = listOf("Morning", "Evening"),
@@ -68,11 +83,12 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
-        composeTestRule.onNodeWithText("Date").assertIsDisplayed()
+        composeTestRule.onNodeWithText(dateHeader).assertIsDisplayed()
         composeTestRule.onNodeWithText("Morning").assertIsDisplayed()
         composeTestRule.onNodeWithText("Evening").assertIsDisplayed()
     }
@@ -95,17 +111,22 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
         composeTestRule.onNodeWithText(date).assertIsDisplayed()
+        // Format is Sys/Dia@Pulse (no space now, or matched exactly)
         composeTestRule.onNodeWithText("120/80@70").assertIsDisplayed()
     }
 
     @Test
     fun cellClick_triggersViewModel() {
         val date = "2026-03-07"
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val emptyVal = context.getString(R.string.empty_value)
+        
         uiStateFlow.value = TableUiState(
             isLoading = false,
             slotHeaders = listOf("Slot 1"),
@@ -118,18 +139,23 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
-        // Click on the empty cell (represented by "-")
-        composeTestRule.onNodeWithText("-").performClick()
+        // Click on the empty cell
+        composeTestRule.onNodeWithText(emptyVal).performClick()
 
         verify { viewModel.onCellClicked(date, 0) }
     }
 
     @Test
     fun dialog_isDisplayed_whenOpen() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val title = context.getString(R.string.dialog_title_add)
+        val info = context.getString(R.string.dialog_measurement_slot_info, "2026-03-07", 1)
+        
         uiStateFlow.value = TableUiState(
             isLoading = false,
             dialogState = MeasurementDialogState(
@@ -144,16 +170,21 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
-        composeTestRule.onNodeWithText("Add Measurement").assertIsDisplayed()
-        composeTestRule.onNodeWithText("2026-03-07 - Slot 1").assertIsDisplayed()
+        composeTestRule.onNodeWithText(title).assertIsDisplayed()
+        composeTestRule.onNodeWithText(info).assertIsDisplayed()
     }
 
     @Test
     fun dialogSave_callsViewModel_whenValid() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val label = context.getString(R.string.label_measurement_format)
+        val save = context.getString(R.string.button_save)
+        
         uiStateFlow.value = TableUiState(
             isLoading = false,
             dialogState = MeasurementDialogState(
@@ -167,14 +198,15 @@ class MeasurementTableScreenTest {
             MeasurementTableScreen(
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
                 onSettingsClick = {}
             )
         }
 
         val input = "120/80 @72"
-        composeTestRule.onNodeWithText("SYS/DIA @PULSE").performTextInput(input)
+        composeTestRule.onNodeWithText(label).performTextInput(input)
         
-        composeTestRule.onNodeWithText("Save").assertIsEnabled().performClick()
+        composeTestRule.onNodeWithText(save).assertIsEnabled().performClick()
 
         verify { viewModel.onSaveMeasurement(input) }
     }

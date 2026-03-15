@@ -1,0 +1,73 @@
+<resources>
+    <!-- App General -->
+    <string name="app_name">UnderPressure</string>
+    <string name="empty_value">-</string>
+    <string name="unknown_error">Unbekannter Fehler</string>
+    <string name="button_save">Speichern</string>
+    <string name="button_cancel">Abbrechen</string>
+    <string name="button_ok">OK</string>
+    <string name="button_confirm">Bestätigen</string>
+    <string name="button_clear">Löschen</string>
+    <string name="button_close">Schließen</string>
+    <string name="button_grant">GEWÄHREN</string>
+
+    <!-- Table Screen Headers -->
+    <string name="header_date">Datum</string>
+    <string name="header_systolic">Sys</string>
+    <string name="header_diastolic">Dia</string>
+    <string name="header_pulse">Puls</string>
+    
+    <!-- Table Screen Actions (Accessibility) -->
+    <string name="cd_toggle_alarms">Alarme umschalten</string>
+    <string name="cd_search">Suche</string>
+    <string name="cd_share">Teilen</string>
+    <string name="cd_settings">Einstellungen öffnen</string>
+    <string name="cd_add_measurement">Messung hinzufügen</string>
+    <string name="cd_go_back">Zurück</string>
+
+    <!-- Measurement Edit Dialog -->
+    <string name="dialog_title_edit">Messung bearbeiten</string>
+    <string name="dialog_title_add">Messung hinzufügen</string>
+    <string name="label_measurement_format">SYS/DIA @PULS</string>
+    <string name="placeholder_measurement">120/80 @72</string>
+    <string name="error_invalid_format">Ungültiges Format. Verwenden Sie: SYS/DIA @PULS</string>
+    <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
+    <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
+
+    <!-- Search Dialog -->
+    <string name="dialog_title_search">Messungen suchen</string>
+    <string name="label_search_hint">Datum (JJJJ-MM-TT) oder Wert eingeben</string>
+    <string name="message_no_results">Keine Ergebnisse gefunden</string>
+    <string name="button_jump_to_date">Zum Datum springen: %1$s</string>
+    <string name="label_measurement_details">Systolisch: %1$d, Diastolisch: %2$d, Puls: %3$d</string>
+    <string name="error_invalid_date">Ungültiges Datumsformat (JJJJ-MM-TT)</string>
+
+    <!-- Share Dialog -->
+    <string name="dialog_title_share">Messungen teilen</string>
+    <string name="label_select_date_range">Datumsbereich auswählen (Optional)</string>
+    <string name="label_date_from">Von</string>
+    <string name="label_date_to">Bis</string>
+    <string name="button_share_message">Als Nachricht teilen</string>
+    <string name="button_export_csv">Als CSV exportieren</string>
+    <string name="share_chooser_title">Blutdruckprotokoll teilen</string>
+    <string name="export_chooser_title">CSV exportieren</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Einstellungen</string>
+    <string name="header_measurement_slots">Messzeitfenster</string>
+    <string name="label_slot_number">Slot %1$d</string>
+    <string name="label_global_alarm">Globale Alarmerinnerungen</string>
+    <string name="label_active">Aktiv</string>
+    <string name="label_alarm">Erinnern</string>
+    <string name="dialog_title_select_time">Zeit auswählen</string>
+    <string name="error_loading_settings">Fehler beim Laden der Einstellungen</string>
+
+    <!-- Exact Alarm Warning -->
+    <string name="warning_exact_alarms_title">Genaue Alarme deaktiviert</string>
+    <string name="warning_exact_alarms_body">Alarme können sich um bis zu eine Stunde verzögern. Bitte erteilen Sie die Erlaubnis für präzises Timing.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Messung-Erinnerungen</string>
+    <string name="notification_title">Zeit für die Messung</string>
+    <string name="notification_message">Es ist Zeit, Ihren Blutdruck für Slot %1$d aufzuzeichnen.</string>
+</resources>

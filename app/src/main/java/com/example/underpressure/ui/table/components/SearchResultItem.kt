@@ -14,6 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.underpressure.data.local.entities.MeasurementEntity
 
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
+
 /**
  * A reusable component to display an individual search result.
  */
@@ -37,7 +40,12 @@ fun SearchResultItem(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Systolic: ${measurement.systolic}, Diastolic: ${measurement.diastolic}, Pulse: ${measurement.pulse}",
+                text = stringResource(
+                    R.string.label_measurement_details, 
+                    measurement.systolic, 
+                    measurement.diastolic, 
+                    measurement.pulse
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

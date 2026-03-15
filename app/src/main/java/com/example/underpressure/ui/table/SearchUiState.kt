@@ -9,6 +9,6 @@ data class SearchUiState(
     val query: String = "",
     val results: List<MeasurementEntity> = emptyList(),
     val isLoading: Boolean = false,
-    val dateError: String? = null,
+    val dateErrorRes: Int? = null,
     val isNoResults: Boolean = false
 )

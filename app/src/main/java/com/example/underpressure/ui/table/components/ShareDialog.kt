@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.underpressure.ui.table.ShareViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -55,13 +57,13 @@ fun ShareDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Share Measurements",
+                        text = stringResource(R.string.dialog_title_share),
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Select Date Range (Optional)",
+                        text = stringResource(R.string.label_select_date_range),
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -72,7 +74,7 @@ fun ShareDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         DateSelectorButton(
-                            label = "From",
+                            label = stringResource(R.string.label_date_from),
                             date = uiState.fromDate,
                             minDate = uiState.minDate,
                             maxDate = uiState.maxDate,
@@ -83,7 +85,7 @@ fun ShareDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         DateSelectorButton(
-                            label = "To",
+                            label = stringResource(R.string.label_date_to),
                             date = uiState.toDate,
                             minDate = uiState.minDate,
                             maxDate = uiState.maxDate,
@@ -111,7 +113,7 @@ fun ShareDialog(
                         enabled = !uiState.isProcessing && uiState.dateError == null,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Share as Message")
+                        Text(stringResource(R.string.button_share_message))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
@@ -119,11 +121,11 @@ fun ShareDialog(
                         enabled = !uiState.isProcessing && uiState.dateError == null,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Export CSV")
+                        Text(stringResource(R.string.button_export_csv))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.button_cancel))
                     }
                 }
             }

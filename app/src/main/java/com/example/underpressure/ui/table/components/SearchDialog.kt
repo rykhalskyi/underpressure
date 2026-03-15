@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.underpressure.ui.table.SearchViewModel
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
 
 /**
  * A dialog providing the search interface.
@@ -39,7 +41,7 @@ fun SearchDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Search Measurements") },
+        title = { Text(stringResource(R.string.dialog_title_search)) },
         text = {
             Column(
                 modifier = Modifier
@@ -49,11 +51,14 @@ fun SearchDialog(
                 OutlinedTextField(
                     value = query,
                     onValueChange = { viewModel.updateQuery(it) },
-                    label = { Text("Enter date (YYYY-MM-DD) or value") },
-                    isError = uiState.dateError != null,
+                    label = { Text(stringResource(R.string.label_search_hint)) },
+                    isError = uiState.dateErrorRes != null,
                     supportingText = {
-                        if (uiState.dateError != null) {
-                            Text(text = uiState.dateError!!, color = MaterialTheme.colorScheme.error)
+                        if (uiState.dateErrorRes != null) {
+                            Text(
+                                text = stringResource(uiState.dateErrorRes!!), 
+                                color = MaterialTheme.colorScheme.error
+                            )
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -70,7 +75,7 @@ fun SearchDialog(
                         CircularProgressIndicator()
                     } else if (uiState.isNoResults) {
                         Text(
-                            text = "No results found",
+                            text = stringResource(R.string.message_no_results),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -88,13 +93,13 @@ fun SearchDialog(
                             }
                             
                             // Special case for valid date query that has no specific result list
-                            if (uiState.query.isNotBlank() && uiState.dateError == null && uiState.results.isEmpty()) {
+                            if (uiState.query.isNotBlank() && uiState.dateErrorRes == null && uiState.results.isEmpty()) {
                                 item {
                                     TextButton(
                                         onClick = { onResultClick(uiState.query) },
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        Text("Jump to Date: ${uiState.query}")
+                                        Text(stringResource(R.string.button_jump_to_date, uiState.query))
                                     }
                                 }
                             }
@@ -105,7 +110,7 @@ fun SearchDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Close")
+                Text(stringResource(R.string.button_close))
             }
         },
         modifier = modifier

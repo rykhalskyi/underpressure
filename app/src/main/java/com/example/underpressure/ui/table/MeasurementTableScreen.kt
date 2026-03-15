@@ -50,6 +50,9 @@ import com.example.underpressure.ui.table.components.MeasurementEditDialog
 import com.example.underpressure.ui.table.components.SearchDialog
 import com.example.underpressure.ui.table.components.TableHeader
 
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeasurementTableScreen(
@@ -86,7 +89,7 @@ fun MeasurementTableScreen(
                         putExtra(Intent.EXTRA_TEXT, event.text)
                         type = "text/plain"
                     }
-                    val shareIntent = Intent.createChooser(sendIntent, "Share Blood Pressure Log")
+                    val shareIntent = Intent.createChooser(sendIntent, context.getString(R.string.share_chooser_title))
                     context.startActivity(shareIntent)
                     shareViewModel.onDismissDialog()
                 }
@@ -102,7 +105,7 @@ fun MeasurementTableScreen(
                         type = "text/csv"
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    val shareIntent = Intent.createChooser(sendIntent, "Export CSV")
+                    val shareIntent = Intent.createChooser(sendIntent, context.getString(R.string.export_chooser_title))
                     context.startActivity(shareIntent)
                     shareViewModel.onDismissDialog()
                 }
@@ -127,12 +130,12 @@ fun MeasurementTableScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("UnderPressure") },
+                title = { Text(stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = { viewModel.toggleMasterAlarm() }) {
                         Icon(
                             imageVector = Icons.Default.Notifications,
-                            contentDescription = "Toggle Alarms",
+                            contentDescription = stringResource(R.string.cd_toggle_alarms),
                             tint = if (uiState.isMasterAlarmEnabled) 
                                 MaterialTheme.colorScheme.primary 
                             else 
@@ -142,19 +145,19 @@ fun MeasurementTableScreen(
                     IconButton(onClick = { isSearchDialogOpen = true }) {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+                            contentDescription = stringResource(R.string.cd_search)
                         )
                     }
                     IconButton(onClick = { shareViewModel.onOpenDialog() }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Share"
+                            contentDescription = stringResource(R.string.cd_share)
                         )
                     }
                     IconButton(onClick = onSettingsClick) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Open Settings"
+                            contentDescription = stringResource(R.string.cd_settings)
                         )
                     }
                 }
@@ -174,7 +177,7 @@ fun MeasurementTableScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Measurement"
+                    contentDescription = stringResource(R.string.cd_add_measurement)
                 )
             }
         }
@@ -189,7 +192,7 @@ fun MeasurementTableScreen(
                 CircularProgressIndicator()
             } else if (uiState.error != null) {
                 Text(
-                    text = uiState.error ?: "Unknown Error",
+                    text = uiState.error ?: stringResource(R.string.unknown_error),
                     color = MaterialTheme.colorScheme.error
                 )
             } else {

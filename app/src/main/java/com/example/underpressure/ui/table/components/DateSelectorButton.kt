@@ -18,6 +18,8 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import androidx.compose.ui.res.stringResource
+import com.example.underpressure.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +77,7 @@ fun DateSelectorButton(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.button_ok))
                 }
             },
             dismissButton = {
@@ -83,7 +85,7 @@ fun DateSelectorButton(
                     onDateSelected(null) // Clear date option
                     showDatePicker = false 
                 }) {
-                    Text("Clear")
+                    Text(stringResource(R.string.button_clear))
                 }
             }
         ) {
