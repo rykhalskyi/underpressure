@@ -41,6 +41,11 @@ interface MeasurementRepository {
     fun getAllMeasurements(): Flow<List<MeasurementEntity>>
 
     /**
+     * Retrieves all recorded blood pressure measurements (one-shot).
+     */
+    suspend fun getAllMeasurementsSync(): List<MeasurementEntity>
+
+    /**
      * Searches for measurements by partial numeric value matches.
      */
     fun searchMeasurements(query: String): Flow<List<MeasurementEntity>>
@@ -49,4 +54,14 @@ interface MeasurementRepository {
      * Retrieves measurements where any value (systolic, diastolic, or pulse) matches the given value.
      */
     fun getMeasurementsByValue(value: Int): Flow<List<MeasurementEntity>>
+
+    /**
+     * Retrieves the earliest measurement date in the database.
+     */
+    suspend fun getMinDate(): String?
+
+    /**
+     * Retrieves the latest measurement date in the database.
+     */
+    suspend fun getMaxDate(): String?
 }

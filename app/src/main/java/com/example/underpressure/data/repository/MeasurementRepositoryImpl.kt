@@ -38,6 +38,10 @@ class MeasurementRepositoryImpl(
         return measurementDao.getAll()
     }
 
+    override suspend fun getAllMeasurementsSync(): List<MeasurementEntity> {
+        return measurementDao.getAllSync()
+    }
+
     override fun searchMeasurements(query: String): Flow<List<MeasurementEntity>> {
         val formattedQuery = "%$query%"
         return measurementDao.searchByValue(formattedQuery)
@@ -45,5 +49,13 @@ class MeasurementRepositoryImpl(
 
     override fun getMeasurementsByValue(value: Int): Flow<List<MeasurementEntity>> {
         return measurementDao.getByValue(value)
+    }
+
+    override suspend fun getMinDate(): String? {
+        return measurementDao.getMinDate()
+    }
+
+    override suspend fun getMaxDate(): String? {
+        return measurementDao.getMaxDate()
     }
 }

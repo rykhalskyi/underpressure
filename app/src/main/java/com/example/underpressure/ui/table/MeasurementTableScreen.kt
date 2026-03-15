@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,27 +31,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import android.content.Intent
+import androidx.core.content.FileProvider
+import com.example.underpressure.ui.table.ShareViewModel.ShareEvent
+import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarHost
+import com.example.underpressure.ui.table.components.ShareDialog
 import com.example.underpressure.ui.table.components.DayRow
 import com.example.underpressure.ui.table.components.MeasurementEditDialog
 import com.example.underpressure.ui.table.components.SearchDialog
 import com.example.underpressure.ui.table.components.TableHeader
-import kotlinx.coroutines.launch
 
-/**
- * Root screen for the Measurement Table feature (Multi-slot view).
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeasurementTableScreen(
     viewModel: MeasurementTableViewModel,
     searchViewModel: SearchViewModel,
+    shareViewModel: ShareViewModel,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -59,6 +64,8 @@ fun MeasurementTableScreen(
     var isSearchDialogOpen by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -70,19 +77,54 @@ fun MeasurementTableScreen(
         // Clean up observer on dispose
     }
 
-    LaunchedEffect(viewModel.scrollToDateEvent) {
-        viewModel.scrollToDateEvent.collect { date ->
-            val index = uiState.items.indexOfFirst { it.date == date }
-            if (index != -1) {
-                coroutineScope.launch {
-                    lazyListState.animateScrollToItem(index)
+    LaunchedEffect(shareViewModel.shareEvents) {
+        shareViewModel.shareEvents.collectLatest { event ->
+            when (event) {
+                is ShareEvent.ShareText -> {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, event.text)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, "Share Blood Pressure Log")
+                    context.startActivity(shareIntent)
+                    shareViewModel.onDismissDialog()
+                }
+                is ShareEvent.ShareFile -> {
+                    val uri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        event.file
+                    )
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        type = "text/csv"
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, "Export CSV")
+                    context.startActivity(shareIntent)
+                    shareViewModel.onDismissDialog()
+                }
+                is ShareEvent.Error -> {
+                    snackbarHostState.showSnackbar(event.message)
                 }
             }
         }
     }
 
+    LaunchedEffect(viewModel.scrollToDateEvent) {
+        viewModel.scrollToDateEvent.collect { date ->
+             val index = uiState.items.indexOfFirst { it.date == date }
+             if (index != -1) {
+                 lazyListState.animateScrollToItem(index)
+             }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("UnderPressure") },
@@ -94,13 +136,19 @@ fun MeasurementTableScreen(
                             tint = if (uiState.isMasterAlarmEnabled) 
                                 MaterialTheme.colorScheme.primary 
                             else 
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
                         )
                     }
                     IconButton(onClick = { isSearchDialogOpen = true }) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search"
+                        )
+                    }
+                    IconButton(onClick = { shareViewModel.onOpenDialog() }) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share"
                         )
                     }
                     IconButton(onClick = onSettingsClick) {
@@ -191,5 +239,10 @@ fun MeasurementTableScreen(
                 }
             )
         }
+
+        ShareDialog(
+            viewModel = shareViewModel,
+            onDismiss = { shareViewModel.onDismissDialog() }
+        )
     }
 }
