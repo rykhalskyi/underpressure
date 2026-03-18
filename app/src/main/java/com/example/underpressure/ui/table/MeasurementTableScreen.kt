@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
@@ -60,6 +61,7 @@ fun MeasurementTableScreen(
     searchViewModel: SearchViewModel,
     shareViewModel: ShareViewModel,
     onSettingsClick: () -> Unit,
+    onChartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -132,6 +134,12 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
+                    IconButton(onClick = onChartClick) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ShowChart,
+                            contentDescription = stringResource(R.string.cd_chart)
+                        )
+                    }
                     IconButton(onClick = { viewModel.toggleMasterAlarm() }) {
                         Icon(
                             imageVector = Icons.Default.Notifications,

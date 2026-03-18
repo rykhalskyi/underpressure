@@ -12,10 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.underpressure.alarm.AlarmScheduler
+import com.example.underpressure.data.export.ChartExportManager
 import com.example.underpressure.data.export.TableExportManager
 import com.example.underpressure.data.local.database.AppDatabase
 import com.example.underpressure.data.repository.MeasurementRepositoryImpl
 import com.example.underpressure.data.repository.SettingsRepositoryImpl
+import com.example.underpressure.ui.chart.ChartScreen
+import com.example.underpressure.ui.chart.ChartViewModel
 import com.example.underpressure.ui.settings.SettingsScreen
 import com.example.underpressure.ui.settings.SettingsViewModel
 import com.example.underpressure.ui.table.MeasurementTableScreen
@@ -23,6 +26,12 @@ import com.example.underpressure.ui.table.MeasurementTableViewModel
 import com.example.underpressure.ui.table.SearchViewModel
 import com.example.underpressure.ui.table.ShareViewModel
 import com.example.underpressure.ui.theme.UnderPressureTheme
+
+enum class Screen {
+    Table,
+    Settings,
+    Chart
+}
 
 class MainActivity : ComponentActivity() {
 
@@ -35,17 +44,25 @@ class MainActivity : ComponentActivity() {
                 val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
                 val alarmScheduler = AlarmScheduler(applicationContext)
                 
-                return if (modelClass.isAssignableFrom(MeasurementTableViewModel::class.java)) {
-                    MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
-                } else if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-                    SettingsViewModel(settingsRepository, alarmScheduler) as T
-                } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-                    SearchViewModel(measurementRepository) as T
-                } else if (modelClass.isAssignableFrom(ShareViewModel::class.java)) {
-                    val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository)
-                    ShareViewModel(exportManager) as T
-                } else {
-                    throw IllegalArgumentException("Unknown ViewModel class")
+                return when {
+                    modelClass.isAssignableFrom(MeasurementTableViewModel::class.java) -> {
+                        MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
+                    }
+                    modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
+                        SettingsViewModel(settingsRepository, alarmScheduler) as T
+                    }
+                    modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
+                        SearchViewModel(measurementRepository) as T
+                    }
+                    modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
+                        val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository)
+                        ShareViewModel(exportManager) as T
+                    }
+                    modelClass.isAssignableFrom(ChartViewModel::class.java) -> {
+                        val chartExportManager = ChartExportManager(applicationContext)
+                        ChartViewModel(measurementRepository, settingsRepository, chartExportManager) as T
+                    }
+                    else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
                 }
             }
         }
@@ -55,26 +72,37 @@ class MainActivity : ComponentActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels { viewModelFactory }
     private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
     private val shareViewModel: ShareViewModel by viewModels { viewModelFactory }
+    private val chartViewModel: ChartViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             UnderPressureTheme {
-                var isSettingsOpen by remember { mutableStateOf(false) }
+                var currentScreen by remember { mutableStateOf(Screen.Table) }
 
-                if (isSettingsOpen) {
-                    SettingsScreen(
-                        viewModel = settingsViewModel,
-                        onBack = { isSettingsOpen = false }
-                    )
-                } else {
-                    MeasurementTableScreen(
-                        viewModel = tableViewModel,
-                        searchViewModel = searchViewModel,
-                        shareViewModel = shareViewModel,
-                        onSettingsClick = { isSettingsOpen = true }
-                    )
+                when (currentScreen) {
+                    Screen.Table -> {
+                        MeasurementTableScreen(
+                            viewModel = tableViewModel,
+                            searchViewModel = searchViewModel,
+                            shareViewModel = shareViewModel,
+                            onSettingsClick = { currentScreen = Screen.Settings },
+                            onChartClick = { currentScreen = Screen.Chart }
+                        )
+                    }
+                    Screen.Settings -> {
+                        SettingsScreen(
+                            viewModel = settingsViewModel,
+                            onBack = { currentScreen = Screen.Table }
+                        )
+                    }
+                    Screen.Chart -> {
+                        ChartScreen(
+                            viewModel = chartViewModel,
+                            onBack = { currentScreen = Screen.Table }
+                        )
+                    }
                 }
             }
         }

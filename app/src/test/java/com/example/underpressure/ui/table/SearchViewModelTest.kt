@@ -74,7 +74,7 @@ class SearchViewModelTest {
 
         val state = viewModel.uiState.first { it.query == query }
         assertEquals(query, state.query)
-        assertNotNull(state.dateError)
+        assertNotNull(state.dateErrorRes)
         assertTrue(state.results.isEmpty())
     }
 
@@ -86,6 +86,6 @@ class SearchViewModelTest {
 
         val state = viewModel.uiState.first { it.query == query }
         assertEquals(query, state.query)
-        assertEquals(null, state.dateError)
+        assertEquals(null, state.dateErrorRes)
     }
 }

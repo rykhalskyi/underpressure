@@ -70,4 +70,14 @@
     <string name="notification_channel_name">Measurement Reminders</string>
     <string name="notification_title">Time for Measurement</string>
     <string name="notification_message">It\'s time to record your blood pressure for slot %1$d.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">Blood Pressure Chart</string>
+    <string name="cd_chart">Blood Pressure Chart</string>
+    <string name="button_configure">Configure</string>
+    <string name="dialog_title_chart_config">Chart Configuration</string>
+    <string name="label_select_slots">Select Slots</string>
+    <string name="label_select_types">Select Measurement Types</string>
+    <string name="button_apply">Apply</string>
+    <string name="error_no_slots_selected">Please select at least one slot and one type.</string>
 </resources>
