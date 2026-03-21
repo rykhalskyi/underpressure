@@ -48,6 +48,7 @@ fun BloodPressureChart(
                 isScaleYEnabled = true
                 setPinchZoom(true)
                 setDrawGridBackground(false)
+                setDrawMarkers(true)
 
                 xAxis.apply {
                     position = XAxis.XAxisPosition.BOTTOM
@@ -75,6 +76,9 @@ fun BloodPressureChart(
             }
         },
         update = { chart ->
+            // Update marker
+            chart.marker = BloodPressureMarkerView(chart, startDate)
+            
             // Update colors to handle Dark/Light mode switching
             chart.xAxis.textColor = textColor
             chart.axisLeft.textColor = textColor
