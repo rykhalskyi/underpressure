@@ -252,6 +252,8 @@ class MeasurementTableViewModel(
 
                 if (currentState.existingMeasurementId == null) {
                     measurementRepository.saveMeasurement(entity)
+                    // Dismiss notification if it was already showing for this slot
+                    alarmScheduler.dismissNotification(currentState.slotIndex)
                 } else {
                     measurementRepository.updateMeasurement(entity)
                 }

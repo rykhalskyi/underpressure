@@ -85,6 +85,16 @@ class AlarmScheduler(private val context: Context) {
         alarmManager.cancel(intent)
     }
 
+    /**
+     * Dismisses any active notification for a specific slot.
+     *
+     * @param slotIndex The index of the slot (0-3).
+     */
+    fun dismissNotification(slotIndex: Int) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+        notificationManager.cancel(slotIndex)
+    }
+
     private fun createPendingIntent(slotIndex: Int, timeStr: String? = null): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(EXTRA_SLOT_INDEX, slotIndex)
