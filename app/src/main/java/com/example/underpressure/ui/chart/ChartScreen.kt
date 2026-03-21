@@ -137,6 +137,7 @@ fun ChartScreen(
                 } else {
                     BloodPressureChart(
                         lineData = uiState.lineData,
+                        startDate = uiState.startDate,
                         modifier = Modifier.fillMaxSize(),
                         onChartReady = { captureChartBitmap = it }
                     )

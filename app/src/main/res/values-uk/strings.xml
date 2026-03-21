@@ -70,4 +70,14 @@
     <string name="notification_channel_name">Нагадування про вимірювання</string>
     <string name="notification_title">Час для вимірювання</string>
     <string name="notification_message">Настав час записати ваш артеріальний тиск для слота %1$d.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">Графік артеріального тиску</string>
+    <string name="cd_chart">Графік артеріального тиску</string>
+    <string name="button_configure">Налаштувати</string>
+    <string name="dialog_title_chart_config">Конфігурація графіка</string>
+    <string name="label_select_slots">Виберіть слоти</string>
+    <string name="label_select_types">Виберіть типи вимірювань</string>
+    <string name="button_apply">Застосувати</string>
+    <string name="error_no_slots_selected">Будь ласка, виберіть принаймні один слот і один тип.</string>
 </resources>

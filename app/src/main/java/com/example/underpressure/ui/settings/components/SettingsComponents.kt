@@ -31,7 +31,6 @@ fun SlotRow(
     slot: SlotConfig,
     onTimeClick: () -> Unit,
     onActiveChange: (Boolean) -> Unit,
-    onAlarmChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -56,23 +55,6 @@ fun SlotRow(
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Alarm toggle - only enabled if slot is active
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(end = 16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.label_alarm),
-                    style = MaterialTheme.typography.labelSmall
-                )
-                Switch(
-                    checked = slot.isAlarmEnabled,
-                    onCheckedChange = onAlarmChange,
-                    enabled = slot.isActive,
-                    scale = 0.8f // Slightly smaller
-                )
-            }
-
             // Active toggle
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(

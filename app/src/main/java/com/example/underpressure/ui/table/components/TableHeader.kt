@@ -28,12 +28,20 @@ fun TableHeader(
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(vertical = 8.dp, horizontal = 12.dp)
     ) {
-        HeaderCell(text = stringResource(R.string.header_date), weight = 1.5f)
+        HeaderCell(
+            text = stringResource(R.string.header_date),
+            weight = 1.3f,
+            textAlign = TextAlign.Start
+        )
         
         slotHeaders.forEach { time ->
-            HeaderCell(text = time, weight = 1f)
+            HeaderCell(
+                text = time,
+                weight = 1f,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -41,14 +49,18 @@ fun TableHeader(
 @Composable
 private fun RowScope.HeaderCell(
     text: String,
-    weight: Float
+    weight: Float,
+    textAlign: TextAlign
 ) {
     Text(
         text = text,
         modifier = Modifier.weight(weight),
-        style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold, fontSize = 12.sp),
+        style = MaterialTheme.typography.labelSmall.copy(
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 12.sp
+        ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Start,
+        textAlign = textAlign,
         maxLines = 1
     )
 }

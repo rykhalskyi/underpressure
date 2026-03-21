@@ -184,6 +184,9 @@ class MeasurementTableViewModel(
      * Called when a table cell is clicked.
      */
     fun onCellClicked(date: String, uiSlotIndex: Int) {
+        val todayStr = LocalDate.now(clock).format(dateFormatter)
+        if (date != todayStr) return
+
         viewModelScope.launch {
             // We need to find the original slot index based on settings
             val settings = settingsRepository.getSettingsSync() 
@@ -252,6 +255,8 @@ class MeasurementTableViewModel(
 
                 if (currentState.existingMeasurementId == null) {
                     measurementRepository.saveMeasurement(entity)
+                    // Dismiss notification if it was already showing for this slot
+                    alarmScheduler.dismissNotification(currentState.slotIndex)
                 } else {
                     measurementRepository.updateMeasurement(entity)
                 }

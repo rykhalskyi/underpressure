@@ -77,15 +77,10 @@ class SettingsViewModel(
         val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
             this[index] = isActive
         }
-        saveSettings(settings.copy(slotActiveFlags = newActiveFlags))
-    }
-
-    fun updateSlotAlarmEnabled(index: Int, isEnabled: Boolean) {
-        val settings = currentSettings ?: return
         val newAlarmsEnabled = settings.slotAlarmsEnabled.toMutableList().apply {
-            this[index] = isEnabled
+            this[index] = isActive
         }
-        saveSettings(settings.copy(slotAlarmsEnabled = newAlarmsEnabled))
+        saveSettings(settings.copy(slotActiveFlags = newActiveFlags, slotAlarmsEnabled = newAlarmsEnabled))
     }
 
     private fun saveSettings(settings: AppSettingsEntity) {

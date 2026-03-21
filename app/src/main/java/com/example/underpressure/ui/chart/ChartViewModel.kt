@@ -69,9 +69,12 @@ class ChartViewModel(
 
     val uiState: StateFlow<ChartUiState> = combine(
         measurementRepository.getAllMeasurements(),
+        settingsRepository.getSettings(),
         configFlow
-    ) { measurements: List<MeasurementEntity>, config: ConfigState ->
+    ) { measurements: List<MeasurementEntity>, settings, config: ConfigState ->
         
+        val slotTimes = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
+
         if (measurements.isEmpty()) {
             return@combine ChartUiState(
                 isLoading = false,
@@ -81,7 +84,8 @@ class ChartViewModel(
                 fromDate = config.fromDate,
                 toDate = config.toDate,
                 isConfigSheetOpen = config.isOpen,
-                errorMessage = "No data available"
+                errorMessage = "No data available",
+                slotTimes = slotTimes
             )
         }
 
@@ -102,7 +106,8 @@ class ChartViewModel(
                 fromDate = config.fromDate,
                 toDate = config.toDate,
                 isConfigSheetOpen = config.isOpen,
-                errorMessage = "No data in selected date range"
+                errorMessage = "No data in selected date range",
+                slotTimes = slotTimes
             )
         }
 
@@ -116,6 +121,7 @@ class ChartViewModel(
         config.slots.forEach { slotIndex ->
             val slotMeasurements = filtered.filter { it.slotIndex == slotIndex }
             if (slotMeasurements.isNotEmpty()) {
+                val slotTimeLabel = slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
                 config.types.forEach { type ->
                     val entries = slotMeasurements.map { m ->
                         val date = LocalDate.parse(m.date, dateFormatter)
@@ -128,7 +134,7 @@ class ChartViewModel(
                         Entry(days, value)
                     }.sortedBy { it.x }
 
-                    val label = "Slot ${slotIndex + 1} - ${type.name}"
+                    val label = "$slotTimeLabel - ${type.name}"
                     val dataSet = LineDataSet(entries, label).apply {
                         val colorVal = slotColors.getOrElse(slotIndex) { Color.BLACK }
                         color = colorVal
@@ -152,12 +158,14 @@ class ChartViewModel(
         ChartUiState(
             isLoading = false,
             lineData = if (dataSets.isNotEmpty()) LineData(dataSets.toList()) else null,
+            startDate = minDate,
             selectedSlots = config.slots,
             selectedTypes = config.types,
             fromDate = config.fromDate,
             toDate = config.toDate,
             isConfigSheetOpen = config.isOpen,
-            errorMessage = if (dataSets.isEmpty()) "Select at least one slot and type" else null
+            errorMessage = if (dataSets.isEmpty()) "Select at least one slot and type" else null,
+            slotTimes = slotTimes
         )
     }.stateIn(
         scope = viewModelScope,
