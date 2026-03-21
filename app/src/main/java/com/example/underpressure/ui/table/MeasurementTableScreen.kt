@@ -15,10 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -67,6 +70,7 @@ fun MeasurementTableScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     var isSearchDialogOpen by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -134,38 +138,84 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
-                    IconButton(onClick = onChartClick) {
+                    IconButton(onClick = { showMenu = !showMenu }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ShowChart,
-                            contentDescription = stringResource(R.string.cd_chart)
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "More options"
                         )
                     }
-                    IconButton(onClick = { viewModel.toggleMasterAlarm() }) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = stringResource(R.string.cd_toggle_alarms),
-                            tint = if (uiState.isMasterAlarmEnabled) 
-                                MaterialTheme.colorScheme.primary 
-                            else 
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.cd_chart)) },
+                            onClick = {
+                                showMenu = false
+                                onChartClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ShowChart,
+                                    contentDescription = null
+                                )
+                            }
                         )
-                    }
-                    IconButton(onClick = { isSearchDialogOpen = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.cd_search)
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.cd_toggle_alarms)) },
+                            onClick = {
+                                showMenu = false
+                                viewModel.toggleMasterAlarm()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Notifications,
+                                    contentDescription = null,
+                                    tint = if (uiState.isMasterAlarmEnabled) 
+                                        MaterialTheme.colorScheme.primary 
+                                    else 
+                                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                                )
+                            }
                         )
-                    }
-                    IconButton(onClick = { shareViewModel.onOpenDialog() }) {
-                        Icon(
-                            imageVector = Icons.Default.Share,
-                            contentDescription = stringResource(R.string.cd_share)
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.cd_search)) },
+                            onClick = {
+                                showMenu = false
+                                isSearchDialogOpen = true
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = null
+                                )
+                            }
                         )
-                    }
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.cd_settings)
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.cd_share)) },
+                            onClick = {
+                                showMenu = false
+                                shareViewModel.onOpenDialog()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Share,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.title_settings)) },
+                            onClick = {
+                                showMenu = false
+                                onSettingsClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
                         )
                     }
                 }
