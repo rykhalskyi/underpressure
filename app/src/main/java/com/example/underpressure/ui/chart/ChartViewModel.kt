@@ -152,6 +152,7 @@ class ChartViewModel(
         ChartUiState(
             isLoading = false,
             lineData = if (dataSets.isNotEmpty()) LineData(dataSets.toList()) else null,
+            startDate = minDate,
             selectedSlots = config.slots,
             selectedTypes = config.types,
             fromDate = config.fromDate,
