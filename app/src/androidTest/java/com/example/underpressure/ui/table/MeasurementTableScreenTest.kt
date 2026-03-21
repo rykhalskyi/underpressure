@@ -131,7 +131,7 @@ class MeasurementTableScreenTest {
             isLoading = false,
             slotHeaders = listOf("Slot 1"),
             items = listOf(
-                DayMeasurementSummary(date = date, slots = emptyMap())
+                DayMeasurementSummary(date = date, slots = emptyMap(), isToday = true)
             )
         )
 

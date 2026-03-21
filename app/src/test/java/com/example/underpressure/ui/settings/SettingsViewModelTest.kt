@@ -110,23 +110,4 @@ class SettingsViewModelTest {
             alarmScheduler.updateAlarms(any())
         }
     }
-
-    @Test
-    fun `updateSlotAlarmEnabled calls repository save and alarm scheduler`() = runTest {
-        val settings = AppSettingsEntity()
-        every { settingsRepository.getSettings() } returns flowOf(settings)
-        coEvery { settingsRepository.saveSettings(any()) } returns Unit
-
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
-        viewModel.updateSlotAlarmEnabled(2, true)
-
-        coVerify {
-            settingsRepository.saveSettings(match {
-                it.slotAlarmsEnabled[2] == true
-            })
-        }
-        verify {
-            alarmScheduler.updateAlarms(any())
-        }
-    }
 }

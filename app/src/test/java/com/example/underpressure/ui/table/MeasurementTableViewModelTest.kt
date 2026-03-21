@@ -5,6 +5,7 @@ import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -187,5 +188,47 @@ class MeasurementTableViewModelTest {
         // Should have 1 default active slot header ("07:00")
         assertEquals(listOf("07:00"), state.slotHeaders)
         assertTrue(state.items.isEmpty())
+    }
+
+    @Test
+    fun `onCellClicked opens dialog for today's date`() = runTest {
+        val settings = AppSettingsEntity(
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { measurementRepository.getMeasurementsByDateSync(today) } returns emptyList()
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        viewModel.onCellClicked(today, 0)
+        
+        val state = viewModel.uiState.first { it.dialogState.isOpen }
+        assertTrue(state.dialogState.isOpen)
+        assertEquals(today, state.dialogState.date)
+    }
+
+    @Test
+    fun `onCellClicked does not open dialog for past date`() = runTest {
+        val pastDate = "2023-10-26"
+        val settings = AppSettingsEntity(
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        // Wait for initial state
+        viewModel.uiState.first { !it.isLoading }
+        
+        viewModel.onCellClicked(pastDate, 0)
+        
+        // Give it some time to potentially process (though it shouldn't)
+        testDispatcher.scheduler.runCurrent()
+        val state = viewModel.uiState.value
+        assertFalse(state.dialogState.isOpen)
     }
 }
