@@ -70,4 +70,14 @@
     <string name="notification_channel_name">Messung-Erinnerungen</string>
     <string name="notification_title">Zeit für die Messung</string>
     <string name="notification_message">Es ist Zeit, Ihren Blutdruck für Slot %1$d aufzuzeichnen.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">Blutdruckdiagramm</string>
+    <string name="cd_chart">Blutdruckdiagramm</string>
+    <string name="button_configure">Konfigurieren</string>
+    <string name="dialog_title_chart_config">Diagrammkonfiguration</string>
+    <string name="label_select_slots">Zeitfenster auswählen</string>
+    <string name="label_select_types">Messungsarten auswählen</string>
+    <string name="button_apply">Anwenden</string>
+    <string name="error_no_slots_selected">Bitte wählen Sie mindestens ein Zeitfenster und eine Art aus.</string>
 </resources>
