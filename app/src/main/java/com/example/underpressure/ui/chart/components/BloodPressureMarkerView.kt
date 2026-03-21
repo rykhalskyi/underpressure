@@ -26,17 +26,30 @@ class BloodPressureMarkerView(
         val sb = StringBuilder()
         val data = chart.data
         if (data != null) {
+            val selectedDataSet = data.getDataSetByIndex(highlight.dataSetIndex)
+            val selectedLabel = selectedDataSet.label ?: ""
+            // Extract slot time from label "HH:mm - TYPE"
+            val slotTime = selectedLabel.split(" - ").firstOrNull() ?: ""
+            
             for (i in 0 until data.dataSetCount) {
                 val dataSet = data.getDataSetByIndex(i)
-                val entryAtX = dataSet.getEntryForXValue(e.x, Float.NaN)
-                if (entryAtX != null && entryAtX.x == e.x) {
-                    if (sb.isNotEmpty()) sb.append("\n")
-                    sb.append("${dataSet.label}: ${entryAtX.y.toInt()}")
+                val label = dataSet.label ?: ""
+                if (label.startsWith(slotTime)) {
+                    val entryAtX = dataSet.getEntryForXValue(e.x, Float.NaN)
+                    if (entryAtX != null && entryAtX.x == e.x) {
+                        if (sb.isNotEmpty()) sb.append("\n")
+                        // Show only the type part of the label
+                        val type = label.split(" - ").lastOrNull() ?: label
+                        sb.append("$type: ${entryAtX.y.toInt()}")
+                    }
                 }
             }
+            
+            tvDate.text = "$dateText $slotTime"
+        } else {
+            tvDate.text = dateText
         }
         
-        tvDate.text = dateText
         tvValue.text = sb.toString()
 
         super.refreshContent(e, highlight)

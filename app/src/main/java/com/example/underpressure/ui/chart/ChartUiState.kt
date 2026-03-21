@@ -24,5 +24,6 @@ data class ChartUiState(
     val fromDate: LocalDate? = null,
     val toDate: LocalDate? = null,
     val isConfigSheetOpen: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val slotTimes: List<String> = emptyList()
 )
