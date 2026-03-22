@@ -28,6 +28,7 @@ fun BloodPressureChart(
     lineData: LineData?,
     startDate: LocalDate?,
     modifier: Modifier = Modifier,
+    showXAxisLabels: Boolean = true,
     onChartReady: ((() -> Bitmap) -> Unit)? = null
 ) {
 
@@ -54,6 +55,7 @@ fun BloodPressureChart(
                     position = XAxis.XAxisPosition.BOTTOM
                     setDrawGridLines(false)
                     granularity = 1f
+                    setDrawLabels(showXAxisLabels)
                 }
 
                 axisLeft.apply {
@@ -87,6 +89,8 @@ fun BloodPressureChart(
             // Optional: Update grid line colors to match theme
             chart.axisLeft.gridColor = gridColor
             chart.xAxis.gridColor = gridColor
+
+            chart.xAxis.setDrawLabels(showXAxisLabels)
 
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {

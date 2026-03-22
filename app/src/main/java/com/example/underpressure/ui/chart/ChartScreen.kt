@@ -104,7 +104,7 @@ fun ChartScreen(
                                 viewModel.onShareChart(bitmap)
                             }
                         },
-                        enabled = uiState.lineData != null
+                        enabled = uiState.bpLineData != null || uiState.pulseLineData != null
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -120,27 +120,49 @@ fun ChartScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator()
-                } else if (uiState.errorMessage != null && uiState.lineData == null) {
-                    Text(
-                        text = uiState.errorMessage ?: "",
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else if (uiState.errorMessage != null && uiState.bpLineData == null && uiState.pulseLineData == null) {
+                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = uiState.errorMessage ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 } else {
-                    BloodPressureChart(
-                        lineData = uiState.lineData,
-                        startDate = uiState.startDate,
-                        modifier = Modifier.fillMaxSize(),
-                        onChartReady = { captureChartBitmap = it }
-                    )
+                    // Blood Pressure Chart
+                    if (uiState.bpLineData != null) {
+                        BloodPressureChart(
+                            lineData = uiState.bpLineData,
+                            startDate = uiState.startDate,
+                            modifier = Modifier
+                                .weight(if (uiState.pulseLineData != null) 2f else 1f)
+                                .fillMaxWidth(),
+                            showXAxisLabels = uiState.pulseLineData == null,
+                            onChartReady = { captureChartBitmap = it }
+                        )
+                    }
+
+                    // Pulse Chart
+                    if (uiState.pulseLineData != null) {
+                        BloodPressureChart(
+                            lineData = uiState.pulseLineData,
+                            startDate = uiState.startDate,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            onChartReady = if (uiState.bpLineData == null) { it -> captureChartBitmap = it } else null
+                        )
+                    }
                 }
             }
 

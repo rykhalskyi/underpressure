@@ -17,7 +17,8 @@ import java.time.LocalDate
  */
 data class ChartUiState(
     val isLoading: Boolean = true,
-    val lineData: LineData? = null,
+    val bpLineData: LineData? = null,
+    val pulseLineData: LineData? = null,
     val startDate: LocalDate? = null,
     val selectedSlots: Set<Int> = setOf(0, 1, 2, 3),
     val selectedTypes: Set<MeasurementType> = setOf(MeasurementType.SYS, MeasurementType.DIA),

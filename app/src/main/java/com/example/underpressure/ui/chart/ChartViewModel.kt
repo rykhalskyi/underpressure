@@ -78,7 +78,8 @@ class ChartViewModel(
         if (measurements.isEmpty()) {
             return@combine ChartUiState(
                 isLoading = false,
-                lineData = null,
+                bpLineData = null,
+                pulseLineData = null,
                 selectedSlots = config.slots,
                 selectedTypes = config.types,
                 fromDate = config.fromDate,
@@ -100,7 +101,8 @@ class ChartViewModel(
         if (filtered.isEmpty()) {
              return@combine ChartUiState(
                 isLoading = false,
-                lineData = null,
+                bpLineData = null,
+                pulseLineData = null,
                 selectedSlots = config.slots,
                 selectedTypes = config.types,
                 fromDate = config.fromDate,
@@ -115,7 +117,8 @@ class ChartViewModel(
         val minDateStr = filtered.minBy { it.date }.date
         val minDate = LocalDate.parse(minDateStr, dateFormatter)
 
-        val dataSets = mutableListOf<LineDataSet>()
+        val bpDataSets = mutableListOf<LineDataSet>()
+        val pulseDataSets = mutableListOf<LineDataSet>()
 
         // Generate datasets per slot and measurement type
         config.slots.forEach { slotIndex ->
@@ -150,21 +153,26 @@ class ChartViewModel(
                         mode = LineDataSet.Mode.LINEAR
                         setDrawValues(false)
                     }
-                    dataSets.add(dataSet)
+                    if (type == MeasurementType.PULSE) {
+                        pulseDataSets.add(dataSet)
+                    } else {
+                        bpDataSets.add(dataSet)
+                    }
                 }
             }
         }
 
         ChartUiState(
             isLoading = false,
-            lineData = if (dataSets.isNotEmpty()) LineData(dataSets.toList()) else null,
+            bpLineData = if (bpDataSets.isNotEmpty()) LineData(bpDataSets.toList()) else null,
+            pulseLineData = if (pulseDataSets.isNotEmpty()) LineData(pulseDataSets.toList()) else null,
             startDate = minDate,
             selectedSlots = config.slots,
             selectedTypes = config.types,
             fromDate = config.fromDate,
             toDate = config.toDate,
             isConfigSheetOpen = config.isOpen,
-            errorMessage = if (dataSets.isEmpty()) "Select at least one slot and type" else null,
+            errorMessage = if (bpDataSets.isEmpty() && pulseDataSets.isEmpty()) "Select at least one slot and type" else null,
             slotTimes = slotTimes
         )
     }.stateIn(
