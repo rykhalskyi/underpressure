@@ -35,6 +35,7 @@ fun BloodPressureChart(
     // Get colors from the current Compose theme
     val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val gridColor = MaterialTheme.colorScheme.outlineVariant.toArgb()
+    val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
     val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd") }
 
 
@@ -72,6 +73,7 @@ fun BloodPressureChart(
                 onChartReady?.invoke {
                     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                     val canvas = Canvas(bitmap)
+                    canvas.drawColor(backgroundColor)
                     draw(canvas)
                     bitmap
                 }

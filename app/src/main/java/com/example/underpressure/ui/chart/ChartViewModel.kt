@@ -3,6 +3,7 @@ package com.example.underpressure.ui.chart
 import android.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.underpressure.R
 import com.example.underpressure.data.export.ChartExportManager
 import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.domain.repository.MeasurementRepository
@@ -33,8 +34,6 @@ class ChartViewModel(
     private val chartExportManager: ChartExportManager
 ) : ViewModel() {
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
     private val _selectedSlots = MutableStateFlow(setOf(0, 1, 2, 3))
     private val _selectedTypes = MutableStateFlow(setOf(MeasurementType.SYS, MeasurementType.DIA))
     private val _fromDate = MutableStateFlow<LocalDate?>(null)
@@ -43,19 +42,11 @@ class ChartViewModel(
 
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
-        data class Error(val message: String) : ChartEvent()
+        data class Error(val messageResId: Int, val arg: String? = null) : ChartEvent()
     }
 
     private val _events = MutableSharedFlow<ChartEvent>()
     val events = _events.asSharedFlow()
-
-    // Slot colors (Distinguishable)
-    private val slotColors = listOf(
-        Color.parseColor("#2196F3"), // Blue
-        Color.parseColor("#4CAF50"), // Green
-        Color.parseColor("#FF9800"), // Orange
-        Color.parseColor("#E91E63")  // Pink
-    )
 
     private val configFlow = combine(
         _selectedSlots,
@@ -85,14 +76,14 @@ class ChartViewModel(
                 fromDate = config.fromDate,
                 toDate = config.toDate,
                 isConfigSheetOpen = config.isOpen,
-                errorMessage = "No data available",
+                errorMessageResId = R.string.error_no_data,
                 slotTimes = slotTimes
             )
         }
 
         // Filter by date range
         val filtered = measurements.filter { m ->
-            val date = LocalDate.parse(m.date, dateFormatter)
+            val date = LocalDate.parse(m.date, DATE_FORMATTER)
             val afterFrom = config.fromDate == null || !date.isBefore(config.fromDate)
             val beforeTo = config.toDate == null || !date.isAfter(config.toDate)
             afterFrom && beforeTo
@@ -108,14 +99,14 @@ class ChartViewModel(
                 fromDate = config.fromDate,
                 toDate = config.toDate,
                 isConfigSheetOpen = config.isOpen,
-                errorMessage = "No data in selected date range",
+                errorMessageResId = R.string.error_no_data_in_range,
                 slotTimes = slotTimes
             )
         }
 
         // Find min date for X-axis baseline (0-indexed days)
         val minDateStr = filtered.minBy { it.date }.date
-        val minDate = LocalDate.parse(minDateStr, dateFormatter)
+        val minDate = LocalDate.parse(minDateStr, DATE_FORMATTER)
 
         val bpDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
@@ -127,7 +118,7 @@ class ChartViewModel(
                 val slotTimeLabel = slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
                 config.types.forEach { type ->
                     val entries = slotMeasurements.map { m ->
-                        val date = LocalDate.parse(m.date, dateFormatter)
+                        val date = LocalDate.parse(m.date, DATE_FORMATTER)
                         val days = ChronoUnit.DAYS.between(minDate, date).toFloat()
                         val value = when (type) {
                             MeasurementType.SYS -> m.systolic.toFloat()
@@ -139,7 +130,7 @@ class ChartViewModel(
 
                     val label = "$slotTimeLabel - ${type.name}"
                     val dataSet = LineDataSet(entries, label).apply {
-                        val colorVal = slotColors.getOrElse(slotIndex) { Color.BLACK }
+                        val colorVal = SLOT_COLORS.getOrElse(slotIndex) { Color.BLACK }
                         color = colorVal
                         setCircleColor(colorVal)
                         lineWidth = when (type) {
@@ -172,14 +163,24 @@ class ChartViewModel(
             fromDate = config.fromDate,
             toDate = config.toDate,
             isConfigSheetOpen = config.isOpen,
-            errorMessage = if (bpDataSets.isEmpty() && pulseDataSets.isEmpty()) "Select at least one slot and type" else null,
+            errorMessageResId = if (bpDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
             slotTimes = slotTimes
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(),
         initialValue = ChartUiState(isLoading = true)
     )
+
+    companion object {
+        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        private val SLOT_COLORS = listOf(
+            Color.parseColor("#2196F3"), // Blue
+            Color.parseColor("#4CAF50"), // Green
+            Color.parseColor("#FF9800"), // Orange
+            Color.parseColor("#E91E63")  // Pink
+        )
+    }
 
     private data class ConfigState(
         val slots: Set<Int>,
@@ -212,7 +213,7 @@ class ChartViewModel(
                 val file = chartExportManager.saveChartToCache(bitmap)
                 _events.emit(ChartEvent.ShareFile(file))
             } catch (e: Exception) {
-                _events.emit(ChartEvent.Error("Failed to export chart: ${e.message}"))
+                _events.emit(ChartEvent.Error(R.string.error_failed_to_export, e.message))
             }
         }
     }

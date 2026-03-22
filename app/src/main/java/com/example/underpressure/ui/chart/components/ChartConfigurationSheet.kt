@@ -97,7 +97,12 @@ fun ChartConfigurationSheet(
                             tempTypes = if (checked) tempTypes + type else tempTypes - type
                         }
                     )
-                    Text(text = type.name)
+                    val typeLabel = when (type) {
+                        MeasurementType.SYS -> stringResource(R.string.header_systolic)
+                        MeasurementType.DIA -> stringResource(R.string.header_diastolic)
+                        MeasurementType.PULSE -> stringResource(R.string.header_pulse)
+                    }
+                    Text(text = typeLabel)
                 }
             }
 
@@ -109,7 +114,7 @@ fun ChartConfigurationSheet(
                     value = fromDateStr,
                     onValueChange = { fromDateStr = it },
                     label = { Text(stringResource(R.string.label_date_from)) },
-                    placeholder = { Text("YYYY-MM-DD") },
+                    placeholder = { Text(stringResource(R.string.placeholder_date)) },
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -117,7 +122,7 @@ fun ChartConfigurationSheet(
                     value = toDateStr,
                     onValueChange = { toDateStr = it },
                     label = { Text(stringResource(R.string.label_date_to)) },
-                    placeholder = { Text("YYYY-MM-DD") },
+                    placeholder = { Text(stringResource(R.string.placeholder_date)) },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -129,29 +134,33 @@ fun ChartConfigurationSheet(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            val errorSelectAtLeastOne = stringResource(R.string.error_no_slots_selected)
+            val errorInvalidDateFormat = stringResource(R.string.error_invalid_date_format)
+            val errorFromAfterTo = stringResource(R.string.error_from_after_to)
+
             Button(
                 onClick = {
                     if (tempSlots.isEmpty() || tempTypes.isEmpty()) {
-                        error = "Please select at least one slot and one type"
+                        error = errorSelectAtLeastOne
                         return@Button
                     }
                     
                     val parsedFrom = try {
                         if (fromDateStr.isNotBlank()) LocalDate.parse(fromDateStr) else null
                     } catch (e: DateTimeParseException) {
-                        error = "Invalid 'From' date format"
+                        error = errorInvalidDateFormat
                         return@Button
                     }
 
                     val parsedTo = try {
                         if (toDateStr.isNotBlank()) LocalDate.parse(toDateStr) else null
                     } catch (e: DateTimeParseException) {
-                        error = "Invalid 'To' date format"
+                        error = errorInvalidDateFormat
                         return@Button
                     }
 
                     if (parsedFrom != null && parsedTo != null && parsedFrom.isAfter(parsedTo)) {
-                        error = "From date cannot be after To date"
+                        error = errorFromAfterTo
                         return@Button
                     }
 
