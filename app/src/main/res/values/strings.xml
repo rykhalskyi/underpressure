@@ -87,4 +87,8 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
+    <!-- About Section -->
+    <string name="header_about">About</string>
+    <string name="label_version">Version %1$s</string>
+    <string name="label_repo">Source Code (GitHub)</string>
 </resources>

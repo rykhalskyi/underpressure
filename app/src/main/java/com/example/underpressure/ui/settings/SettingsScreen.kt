@@ -53,6 +53,11 @@ import com.example.underpressure.ui.settings.components.TimePickerDialog
 import androidx.compose.ui.res.stringResource
 import com.example.underpressure.R
 
+import android.content.pm.PackageManager
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ListItem
+
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
  */
@@ -67,6 +72,22 @@ fun SettingsScreen(
     var showTimePickerForIndex by remember { mutableStateOf<Int?>(null) }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    val versionName = remember {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager.getPackageInfo(
+                    context.packageName,
+                    PackageManager.PackageInfoFlags.of(0)
+                ).versionName
+            } else {
+                @Suppress("DEPRECATION")
+                context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            }
+        } catch (e: Exception) {
+            "Unknown"
+        }
+    }
 
     // Refresh permission status when returning to the app
     DisposableEffect(lifecycleOwner) {
@@ -164,6 +185,38 @@ fun SettingsScreen(
                         GlobalAlarmRow(
                             enabled = uiState.isMasterAlarmEnabled,
                             onCheckedChange = { viewModel.updateMasterAlarmEnabled(it) }
+                        )
+                    }
+
+                    item {
+                        Text(
+                            text = stringResource(R.string.header_about),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.label_version, versionName ?: "Unknown")) },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.Info,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.label_repo)) },
+                            supportingContent = { Text("https://github.com/rykhalskyi/underpressure") },
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rykhalskyi/underpressure"))
+                                context.startActivity(intent)
+                            }
                         )
                     }
                 }

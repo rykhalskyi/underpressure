@@ -80,4 +80,8 @@
     <string name="label_select_types">Messungsarten auswählen</string>
     <string name="button_apply">Anwenden</string>
     <string name="error_no_slots_selected">Bitte wählen Sie mindestens ein Zeitfenster und eine Art aus.</string>
+    <!-- About Section -->
+    <string name="header_about">Über</string>
+    <string name="label_version">Version %1$s</string>
+    <string name="label_repo">Quellcode (GitHub)</string>
 </resources>
