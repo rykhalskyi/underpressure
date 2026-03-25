@@ -28,12 +28,14 @@ fun BloodPressureChart(
     lineData: LineData?,
     startDate: LocalDate?,
     modifier: Modifier = Modifier,
+    showXAxisLabels: Boolean = true,
     onChartReady: ((() -> Bitmap) -> Unit)? = null
 ) {
 
     // Get colors from the current Compose theme
     val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val gridColor = MaterialTheme.colorScheme.outlineVariant.toArgb()
+    val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
     val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd") }
 
 
@@ -54,6 +56,7 @@ fun BloodPressureChart(
                     position = XAxis.XAxisPosition.BOTTOM
                     setDrawGridLines(false)
                     granularity = 1f
+                    setDrawLabels(showXAxisLabels)
                 }
 
                 axisLeft.apply {
@@ -70,6 +73,7 @@ fun BloodPressureChart(
                 onChartReady?.invoke {
                     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
                     val canvas = Canvas(bitmap)
+                    canvas.drawColor(backgroundColor)
                     draw(canvas)
                     bitmap
                 }
@@ -87,6 +91,8 @@ fun BloodPressureChart(
             // Optional: Update grid line colors to match theme
             chart.axisLeft.gridColor = gridColor
             chart.xAxis.gridColor = gridColor
+
+            chart.xAxis.setDrawLabels(showXAxisLabels)
 
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {

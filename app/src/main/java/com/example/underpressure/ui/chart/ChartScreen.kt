@@ -2,6 +2,7 @@ package com.example.underpressure.ui.chart
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +57,8 @@ fun ChartScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val sheetState = rememberModalBottomSheetState()
     
-    var captureChartBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var captureBPBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var capturePulseBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
 
     LaunchedEffect(viewModel.events) {
         viewModel.events.collectLatest { event ->
@@ -77,7 +79,12 @@ fun ChartScreen(
                     context.startActivity(shareIntent)
                 }
                 is ChartViewModel.ChartEvent.Error -> {
-                    snackbarHostState.showSnackbar(event.message)
+                    val message = if (event.arg != null) {
+                        context.getString(event.messageResId, event.arg)
+                    } else {
+                        context.getString(event.messageResId)
+                    }
+                    snackbarHostState.showSnackbar(message)
                 }
             }
         }
@@ -100,11 +107,19 @@ fun ChartScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            captureChartBitmap?.invoke()?.let { bitmap ->
-                                viewModel.onShareChart(bitmap)
+                            val bpBitmap = captureBPBitmap?.invoke()
+                            val pulseBitmap = capturePulseBitmap?.invoke()
+                            
+                            val finalBitmap = when {
+                                bpBitmap != null && pulseBitmap != null -> combineBitmaps(bpBitmap, pulseBitmap)
+                                bpBitmap != null -> bpBitmap
+                                pulseBitmap != null -> pulseBitmap
+                                else -> null
                             }
+                            
+                            finalBitmap?.let { viewModel.onShareChart(it) }
                         },
-                        enabled = uiState.lineData != null
+                        enabled = uiState.bpLineData != null || uiState.pulseLineData != null
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -120,27 +135,45 @@ fun ChartScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator()
-                } else if (uiState.errorMessage != null && uiState.lineData == null) {
+                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                } else if (uiState.errorMessageResId != null && uiState.bpLineData == null && uiState.pulseLineData == null) {
                     Text(
-                        text = uiState.errorMessage ?: "",
+                        text = stringResource(uiState.errorMessageResId!!),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp)
                     )
                 } else {
-                    BloodPressureChart(
-                        lineData = uiState.lineData,
-                        startDate = uiState.startDate,
-                        modifier = Modifier.fillMaxSize(),
-                        onChartReady = { captureChartBitmap = it }
-                    )
+                    // Blood Pressure Chart
+                    if (uiState.bpLineData != null) {
+                        BloodPressureChart(
+                            lineData = uiState.bpLineData,
+                            startDate = uiState.startDate,
+                            modifier = Modifier
+                                .weight(if (uiState.pulseLineData != null) 2f else 1f)
+                                .fillMaxWidth(),
+                            showXAxisLabels = uiState.pulseLineData == null,
+                            onChartReady = { captureBPBitmap = it }
+                        )
+                    }
+
+                    // Pulse Chart
+                    if (uiState.pulseLineData != null) {
+                        BloodPressureChart(
+                            lineData = uiState.pulseLineData,
+                            startDate = uiState.startDate,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            onChartReady = { capturePulseBitmap = it }
+                        )
+                    }
                 }
             }
 
@@ -176,4 +209,14 @@ fun ChartScreen(
             )
         }
     }
+}
+
+private fun combineBitmaps(top: Bitmap, bottom: Bitmap): Bitmap {
+    val width = maxOf(top.width, bottom.width)
+    val height = top.height + bottom.height
+    val combined = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(combined)
+    canvas.drawBitmap(top, 0f, 0f, null)
+    canvas.drawBitmap(bottom, 0f, top.height.toFloat(), null)
+    return combined
 }

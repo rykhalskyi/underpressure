@@ -80,4 +80,8 @@
     <string name="label_select_types">Виберіть типи вимірювань</string>
     <string name="button_apply">Застосувати</string>
     <string name="error_no_slots_selected">Будь ласка, виберіть принаймні один слот і один тип.</string>
+    <!-- About Section -->
+    <string name="header_about">Про програму</string>
+    <string name="label_version">Версія %1$s</string>
+    <string name="label_repo">Вихідний код (GitHub)</string>
 </resources>

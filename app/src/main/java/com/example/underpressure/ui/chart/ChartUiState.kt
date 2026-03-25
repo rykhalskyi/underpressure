@@ -17,13 +17,14 @@ import java.time.LocalDate
  */
 data class ChartUiState(
     val isLoading: Boolean = true,
-    val lineData: LineData? = null,
+    val bpLineData: LineData? = null,
+    val pulseLineData: LineData? = null,
     val startDate: LocalDate? = null,
     val selectedSlots: Set<Int> = setOf(0, 1, 2, 3),
     val selectedTypes: Set<MeasurementType> = setOf(MeasurementType.SYS, MeasurementType.DIA),
     val fromDate: LocalDate? = null,
     val toDate: LocalDate? = null,
     val isConfigSheetOpen: Boolean = false,
-    val errorMessage: String? = null,
+    val errorMessageResId: Int? = null,
     val slotTimes: List<String> = emptyList()
 )

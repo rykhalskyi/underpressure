@@ -59,7 +59,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
@@ -84,7 +85,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
@@ -112,7 +114,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
@@ -140,7 +143,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
@@ -171,7 +175,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
@@ -199,7 +204,8 @@ class MeasurementTableScreenTest {
                 viewModel = viewModel,
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
-                onSettingsClick = {}
+                onSettingsClick = {},
+                onChartClick = {}
             )
         }
 
