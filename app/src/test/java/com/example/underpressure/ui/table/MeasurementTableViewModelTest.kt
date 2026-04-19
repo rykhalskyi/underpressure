@@ -231,4 +231,92 @@ class MeasurementTableViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.dialogState.isOpen)
     }
+
+    @Test
+    fun `uiState displayItems contains correct tiered hierarchy`() = runTest {
+        // Mock data: Today is 2023-10-27
+        // One measurement today, one in previous month, one in previous year
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = "2023-10-27", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
+            MeasurementEntity(id = 2, date = "2023-09-15", slotIndex = 0, systolic = 110, diastolic = 75, pulse = 65),
+            MeasurementEntity(id = 3, date = "2022-12-01", slotIndex = 0, systolic = 115, diastolic = 78, pulse = 68)
+        )
+        val settings = AppSettingsEntity(slotActiveFlags = listOf(true))
+        
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        advanceTimeBy(1)
+        val state = viewModel.uiState.first { !it.isLoading }
+
+        // Expected Hierarchy (Default):
+        // 2023 (Expanded)
+        //   October (Expanded)
+        //     2023-10-27 (Row)
+        //   September (Collapsed)
+        // 2022 (Collapsed)
+
+        assertEquals(5, state.displayItems.size)
+        assertTrue(state.displayItems[0] is TableItem.YearHeader && (state.displayItems[0] as TableItem.YearHeader).year == 2023 && (state.displayItems[0] as TableItem.YearHeader).isExpanded)
+        assertTrue(state.displayItems[1] is TableItem.MonthHeader && (state.displayItems[1] as TableItem.MonthHeader).monthName == "October" && (state.displayItems[1] as TableItem.MonthHeader).isExpanded)
+        assertTrue(state.displayItems[2] is TableItem.DayRow && (state.displayItems[2] as TableItem.DayRow).summary.date == "2023-10-27")
+        assertTrue(state.displayItems[3] is TableItem.MonthHeader && (state.displayItems[3] as TableItem.MonthHeader).monthName == "September" && !(state.displayItems[3] as TableItem.MonthHeader).isExpanded)
+        assertTrue(state.displayItems[4] is TableItem.YearHeader && (state.displayItems[4] as TableItem.YearHeader).year == 2022 && !(state.displayItems[4] as TableItem.YearHeader).isExpanded)
+    }
+
+    @Test
+    fun `toggleYearExpansion updates displayItems`() = runTest {
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = "2022-12-01", slotIndex = 0, systolic = 115, diastolic = 78, pulse = 68)
+        )
+        val settings = AppSettingsEntity(slotActiveFlags = listOf(true))
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+
+        advanceTimeBy(1)
+        var state = viewModel.uiState.first { !it.isLoading }
+
+        // Only 2022 should be present because only it has measurements
+        assertEquals(1, state.displayItems.size)
+        assertTrue(state.displayItems[0] is TableItem.YearHeader && (state.displayItems[0] as TableItem.YearHeader).year == 2022 && !(state.displayItems[0] as TableItem.YearHeader).isExpanded)
+
+        viewModel.toggleYearExpansion(2022)
+        testDispatcher.scheduler.runCurrent()
+        state = viewModel.uiState.value
+
+        // Now 2022 should be expanded
+        assertTrue(state.displayItems[0] is TableItem.YearHeader && (state.displayItems[0] as TableItem.YearHeader).year == 2022 && (state.displayItems[0] as TableItem.YearHeader).isExpanded)
+        // Should show MonthHeader for December
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "December" })
+    }
+
+    @Test
+    fun `toggleMonthExpansion updates displayItems`() = runTest {
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = "2023-09-15", slotIndex = 0, systolic = 110, diastolic = 75, pulse = 65)
+        )
+        val settings = AppSettingsEntity(slotActiveFlags = listOf(true))
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        advanceTimeBy(1)
+        var state = viewModel.uiState.first { !it.isLoading }
+        
+        // 2023 is expanded, but September (prev month) is collapsed by default
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "September" && !it.isExpanded })
+        
+        viewModel.toggleMonthExpansion("2023-09")
+        testDispatcher.scheduler.runCurrent()
+        state = viewModel.uiState.value
+        
+        // Now September should be expanded
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "September" && it.isExpanded })
+        assertTrue(state.displayItems.any { it is TableItem.DayRow && it.summary.date == "2023-09-15" })
+    }
 }

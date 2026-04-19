@@ -1,5 +1,6 @@
 package com.example.underpressure.ui.table
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,11 +54,13 @@ import com.example.underpressure.ui.table.components.DayRow
 import com.example.underpressure.ui.table.components.MeasurementEditDialog
 import com.example.underpressure.ui.table.components.SearchDialog
 import com.example.underpressure.ui.table.components.TableHeader
+import com.example.underpressure.ui.table.components.YearHeader
+import com.example.underpressure.ui.table.components.MonthHeader
 
 import androidx.compose.ui.res.stringResource
 import com.example.underpressure.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MeasurementTableScreen(
     viewModel: MeasurementTableViewModel,
@@ -72,7 +75,6 @@ fun MeasurementTableScreen(
     var isSearchDialogOpen by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -83,7 +85,6 @@ fun MeasurementTableScreen(
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-        // Clean up observer on dispose
     }
 
     LaunchedEffect(shareViewModel.shareEvents) {
@@ -276,21 +277,46 @@ fun MeasurementTableScreen(
                         state = lazyListState
                     ) {
                         items(
-                            items = uiState.items,
-                            key = { it.date }
-                        ) { summary ->
-                            DayRow(
-                                summary = summary,
-                                slotCount = uiState.slotHeaders.size,
-                                onCellClick = { slotIndex -> 
-                                    viewModel.onCellClicked(summary.date, slotIndex)
+                            items = uiState.displayItems,
+                            key = { item ->
+                                when (item) {
+                                    is TableItem.YearHeader -> "year-${item.year}"
+                                    is TableItem.MonthHeader -> "month-${item.yearMonth}"
+                                    is TableItem.DayRow -> "day-${item.summary.date}"
                                 }
-                            )
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = 0.5.dp,
-                                color = MaterialTheme.colorScheme.outlineVariant
-                            )
+                            }
+                        ) { item ->
+                            when (item) {
+                                is TableItem.YearHeader -> {
+                                    YearHeader(
+                                        year = item.year,
+                                        isExpanded = item.isExpanded,
+                                        onClick = { viewModel.toggleYearExpansion(item.year) }
+                                    )
+                                }
+                                is TableItem.MonthHeader -> {
+                                    MonthHeader(
+                                        monthName = item.monthName,
+                                        isExpanded = item.isExpanded,
+                                        summary = item.summary,
+                                        onClick = { viewModel.toggleMonthExpansion(item.yearMonth) }
+                                    )
+                                }
+                                is TableItem.DayRow -> {
+                                    DayRow(
+                                        summary = item.summary,
+                                        slotCount = uiState.slotHeaders.size,
+                                        onCellClick = { slotIndex -> 
+                                            viewModel.onCellClicked(item.summary.date, slotIndex)
+                                        }
+                                    )
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        thickness = 0.5.dp,
+                                        color = MaterialTheme.colorScheme.outlineVariant
+                                    )
+                                }
+                            }
                         }
                     }
                 }
