@@ -256,30 +256,6 @@ class MeasurementTableViewModel(
         manualRefreshTrigger.value = System.currentTimeMillis()
     }
 
-    // --- DEBUG SEED DATA - REMOVE AFTER TESTING ISSUE 32 ---
-    fun seedData() {
-        viewModelScope.launch {
-            val start = LocalDate.now(clock).minusMonths(18)
-            for (i in 0..540) {
-                val date = start.plusDays(i.toLong()).format(dateFormatter)
-                // Add two measurements per day for variety
-                for (slot in 0..1) {
-                    measurementRepository.saveMeasurement(
-                        MeasurementEntity(
-                            date = date,
-                            slotIndex = slot,
-                            systolic = (115..145).random(),
-                            diastolic = (75..95).random(),
-                            pulse = (65..85).random()
-                        )
-                    )
-                }
-            }
-            refresh()
-        }
-    }
-    // -------------------------------------------------------
-
     /**
      * Called when a table cell is clicked.
      */

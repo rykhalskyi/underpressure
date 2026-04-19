@@ -218,21 +218,6 @@ fun MeasurementTableScreen(
                                 )
                             }
                         )
-                        // --- DEBUG SEED DATA - REMOVE AFTER TESTING ISSUE 32 ---
-                        DropdownMenuItem(
-                            text = { Text("DEBUG: Seed 1.5y Data") },
-                            onClick = {
-                                showMenu = false
-                                viewModel.seedData()
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                        // -------------------------------------------------------
                     }
                 }
             )
