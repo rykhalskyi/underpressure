@@ -15,6 +15,9 @@ import com.example.underpressure.data.local.entities.MeasurementEntity
 import com.example.underpressure.data.local.entities.MeasurementEntryEntity
 import com.example.underpressure.data.local.entities.MeasurementListEntity
 
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+
 /**
  * Main database class for the application.
  */
@@ -39,6 +42,32 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Create measurement_lists table
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `measurement_lists` (" +
+                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                            "`name` TEXT NOT NULL, " +
+                            "`type` TEXT NOT NULL, " +
+                            "`active` INTEGER NOT NULL DEFAULT 1)"
+                )
+                // Create measurement_entries table
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `measurement_entries` (" +
+                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                            "`date` TEXT NOT NULL, " +
+                            "`slotIndex` INTEGER NOT NULL, " +
+                            "`listId` INTEGER NOT NULL, " +
+                            "`value` TEXT NOT NULL, " +
+                            "`updatedAt` INTEGER NOT NULL, " +
+                            "FOREIGN KEY(`listId`) REFERENCES `measurement_lists`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )"
+                )
+                // Add index for performance/foreign key
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_measurement_entries_listId` ON `measurement_entries` (`listId`)")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -46,11 +75,13 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "under_pressure_database"
                 )
-                .fallbackToDestructiveMigration()
-                .build()
+                    .addMigrations(MIGRATION_2_3)
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
 }
+
