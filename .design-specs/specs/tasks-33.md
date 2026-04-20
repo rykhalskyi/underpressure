@@ -1,6 +1,6 @@
 # Tasks Document - 33: Generic Measurement Lists Feature
 
-- [ ] 1. Create MeasurementListEntity and MeasurementListType
+- [x] 1. Create MeasurementListEntity and MeasurementListType
   - File: `app/src/main/java/com/example/underpressure/data/local/entities/MeasurementListEntity.kt`
   - Define `MeasurementListType` enum: `DOUBLE`, `BOOLEAN`, `TEXT`.
   - Define `MeasurementListEntity` with fields: `id`, `name`, `type`, `active`.

@@ -8,8 +8,12 @@ import androidx.room.TypeConverters
 import com.example.underpressure.data.local.converters.Converters
 import com.example.underpressure.data.local.dao.AppSettingsDao
 import com.example.underpressure.data.local.dao.MeasurementDao
+import com.example.underpressure.data.local.dao.MeasurementEntryDao
+import com.example.underpressure.data.local.dao.MeasurementListDao
 import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
+import com.example.underpressure.data.local.entities.MeasurementEntryEntity
+import com.example.underpressure.data.local.entities.MeasurementListEntity
 
 /**
  * Main database class for the application.
@@ -17,15 +21,19 @@ import com.example.underpressure.data.local.entities.MeasurementEntity
 @Database(
     entities = [
         MeasurementEntity::class,
-        AppSettingsEntity::class
+        AppSettingsEntity::class,
+        MeasurementListEntity::class,
+        MeasurementEntryEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
     abstract fun appSettingsDao(): AppSettingsDao
+    abstract fun measurementListDao(): MeasurementListDao
+    abstract fun measurementEntryDao(): MeasurementEntryDao
 
     companion object {
         @Volatile

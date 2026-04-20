@@ -15,10 +15,13 @@ import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.export.ChartExportManager
 import com.example.underpressure.data.export.TableExportManager
 import com.example.underpressure.data.local.database.AppDatabase
+import com.example.underpressure.data.repository.GenericMeasurementRepositoryImpl
 import com.example.underpressure.data.repository.MeasurementRepositoryImpl
 import com.example.underpressure.data.repository.SettingsRepositoryImpl
 import com.example.underpressure.ui.chart.ChartScreen
 import com.example.underpressure.ui.chart.ChartViewModel
+import com.example.underpressure.ui.measurements.MeasurementListScreen
+import com.example.underpressure.ui.measurements.MeasurementListViewModel
 import com.example.underpressure.ui.settings.SettingsScreen
 import com.example.underpressure.ui.settings.SettingsViewModel
 import com.example.underpressure.ui.table.MeasurementTableScreen
@@ -30,7 +33,8 @@ import com.example.underpressure.ui.theme.UnderPressureTheme
 enum class Screen {
     Table,
     Settings,
-    Chart
+    Chart,
+    MeasurementLists
 }
 
 class MainActivity : ComponentActivity() {
@@ -42,11 +46,20 @@ class MainActivity : ComponentActivity() {
                 val database = AppDatabase.getDatabase(applicationContext)
                 val settingsRepository = SettingsRepositoryImpl(database.appSettingsDao())
                 val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
+                val genericRepository = GenericMeasurementRepositoryImpl(
+                    database.measurementListDao(),
+                    database.measurementEntryDao()
+                )
                 val alarmScheduler = AlarmScheduler(applicationContext)
                 
                 return when {
                     modelClass.isAssignableFrom(MeasurementTableViewModel::class.java) -> {
-                        MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
+                        MeasurementTableViewModel(
+                            measurementRepository,
+                            settingsRepository,
+                            genericRepository,
+                            alarmScheduler = alarmScheduler
+                        ) as T
                     }
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
                         SettingsViewModel(settingsRepository, alarmScheduler) as T
@@ -60,7 +73,10 @@ class MainActivity : ComponentActivity() {
                     }
                     modelClass.isAssignableFrom(ChartViewModel::class.java) -> {
                         val chartExportManager = ChartExportManager(applicationContext)
-                        ChartViewModel(measurementRepository, settingsRepository, chartExportManager) as T
+                        ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager) as T
+                    }
+                    modelClass.isAssignableFrom(MeasurementListViewModel::class.java) -> {
+                        MeasurementListViewModel(genericRepository) as T
                     }
                     else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
                 }
@@ -73,6 +89,7 @@ class MainActivity : ComponentActivity() {
     private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
     private val shareViewModel: ShareViewModel by viewModels { viewModelFactory }
     private val chartViewModel: ChartViewModel by viewModels { viewModelFactory }
+    private val measurementListViewModel: MeasurementListViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +105,8 @@ class MainActivity : ComponentActivity() {
                             searchViewModel = searchViewModel,
                             shareViewModel = shareViewModel,
                             onSettingsClick = { currentScreen = Screen.Settings },
-                            onChartClick = { currentScreen = Screen.Chart }
+                            onChartClick = { currentScreen = Screen.Chart },
+                            onMeasurementListsClick = { currentScreen = Screen.MeasurementLists }
                         )
                     }
                     Screen.Settings -> {
@@ -100,6 +118,12 @@ class MainActivity : ComponentActivity() {
                     Screen.Chart -> {
                         ChartScreen(
                             viewModel = chartViewModel,
+                            onBack = { currentScreen = Screen.Table }
+                        )
+                    }
+                    Screen.MeasurementLists -> {
+                        MeasurementListScreen(
+                            viewModel = measurementListViewModel,
                             onBack = { currentScreen = Screen.Table }
                         )
                     }

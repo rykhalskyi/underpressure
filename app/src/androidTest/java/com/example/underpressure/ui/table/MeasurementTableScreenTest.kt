@@ -45,6 +45,36 @@ class MeasurementTableScreenTest {
     }
 
     @Test
+    fun menu_hasMeasurementLists_andTriggersClick() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val moreOptions = "More options"
+        val listsTitle = context.getString(R.string.title_measurement_lists)
+        
+        uiStateFlow.value = TableUiState(isLoading = false)
+
+        var listsClicked = false
+
+        composeTestRule.setContent {
+            MeasurementTableScreen(
+                viewModel = viewModel,
+                searchViewModel = searchViewModel,
+                shareViewModel = shareViewModel,
+                onSettingsClick = {},
+                onChartClick = {},
+                onMeasurementListsClick = { listsClicked = true }
+            )
+        }
+
+        // Open menu
+        composeTestRule.onNodeWithContentDescription(moreOptions).performClick()
+
+        // Click Lists
+        composeTestRule.onNodeWithText(listsTitle).performClick()
+
+        assert(listsClicked)
+    }
+
+    @Test
     fun fab_isDisplayed_andTriggersClick() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val cd = context.getString(R.string.cd_add_measurement)
@@ -60,7 +90,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 
@@ -86,7 +117,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 
@@ -115,7 +147,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 
@@ -144,7 +177,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 
@@ -176,7 +210,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 
@@ -205,7 +240,8 @@ class MeasurementTableScreenTest {
                 searchViewModel = searchViewModel,
                 shareViewModel = shareViewModel,
                 onSettingsClick = {},
-                onChartClick = {}
+                onChartClick = {},
+                onMeasurementListsClick = {}
             )
         }
 

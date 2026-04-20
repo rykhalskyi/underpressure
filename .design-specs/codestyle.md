@@ -220,3 +220,110 @@ class SettingsViewModel(
 
 **Rationale:**
 Constructor injection makes dependencies explicit, facilitates easy unit testing with mocks, and allows for better decoupling of components.
+
+---
+
+## State Management: One-time Events with SharedFlow
+
+**Problem:**
+Handling one-time events (like showing a Snackbar, navigating, or sharing a file) using `StateFlow` is problematic because `StateFlow` is "sticky"—the event will be re-triggered if the collector (UI) re-subscribes (e.g., during configuration change).
+
+```kotlin
+// Problematic: Event might re-fire on rotation
+data class UiState(val exportFile: File? = null)
+```
+
+**Recommendation:**
+Use `MutableSharedFlow` for events that should only be processed once.
+
+1.  **Define Event Sealed Class:**
+    ```kotlin
+    sealed class ChartEvent {
+        data class ShareFile(val file: File) : ChartEvent()
+    }
+    ```
+2.  **Expose as SharedFlow:**
+    ```kotlin
+    private val _events = MutableSharedFlow<ChartEvent>()
+    val events = _events.asSharedFlow()
+    ```
+3.  **Collect in UI:**
+    ```kotlin
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when(event) {
+                is ChartEvent.ShareFile -> { /* trigger share */ }
+            }
+        }
+    }
+    ```
+
+**Rationale:**
+`SharedFlow` does not hold a value, so new subscribers won't receive old events. This is ideal for transient actions.
+
+---
+
+## State Management: Combining StateFlows for UI State
+
+**Problem:**
+When UI state depends on multiple data sources (e.g., a Repository flow and local filter flows), managing updates manually in `viewModelScope.launch` blocks leads to complex and error-prone code.
+
+```kotlin
+// Problematic: Manual synchronization of multiple flows
+init {
+    viewModelScope.launch {
+        repository.data.collect { data -> 
+           _uiState.update { it.copy(data = data) }
+        }
+    }
+}
+```
+
+**Recommendation:**
+Use the `combine` operator to merge multiple flows into a single `uiState` flow.
+
+```kotlin
+val uiState: StateFlow<ChartUiState> = combine(
+    measurementRepository.getAllMeasurements(),
+    _selectedSlots,
+    _fromDate
+) { measurements, slots, fromDate ->
+    // Transformation logic
+    ChartUiState(measurements, slots, fromDate)
+}.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5000),
+    initialValue = ChartUiState()
+)
+```
+
+**Rationale:**
+`combine` ensures that the UI state is always a pure function of its inputs and automatically updates whenever any source flow changes.
+
+---
+
+## Architecture: Simple State-Based Navigation
+
+**Problem:**
+Using a heavy navigation library for a small application with only a few screens can add unnecessary complexity and boilerplate.
+
+**Recommendation:**
+For simple apps, use a state-based approach with an `enum` and `when` block in the root Composable.
+
+1.  **Define Screens:**
+    ```kotlin
+    enum class Screen { Table, Settings, Chart }
+    ```
+2.  **Manage State in MainActivity:**
+    ```kotlin
+    var currentScreen by remember { mutableStateOf(Screen.Table) }
+    
+    when (currentScreen) {
+        Screen.Table -> MeasurementTableScreen(onSettingsClick = { currentScreen = Screen.Settings })
+        Screen.Settings -> SettingsScreen(onBack = { currentScreen = Screen.Table })
+        // ...
+    }
+    ```
+
+**Rationale:**
+This keeps the navigation logic transparent, easy to follow, and avoids the overhead of deep-linking or complex backstack management when not needed.

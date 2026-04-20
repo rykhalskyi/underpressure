@@ -56,6 +56,7 @@ import com.example.underpressure.ui.table.components.SearchDialog
 import com.example.underpressure.ui.table.components.TableHeader
 import com.example.underpressure.ui.table.components.YearHeader
 import com.example.underpressure.ui.table.components.MonthHeader
+import androidx.compose.material.icons.filled.List
 
 import androidx.compose.ui.res.stringResource
 import com.example.underpressure.R
@@ -68,6 +69,7 @@ fun MeasurementTableScreen(
     shareViewModel: ShareViewModel,
     onSettingsClick: () -> Unit,
     onChartClick: () -> Unit,
+    onMeasurementListsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -206,6 +208,19 @@ fun MeasurementTableScreen(
                             }
                         )
                         DropdownMenuItem(
+                            text = { Text(stringResource(R.string.title_measurement_lists)) },
+                            onClick = {
+                                showMenu = false
+                                onMeasurementListsClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.List,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.title_settings)) },
                             onClick = {
                                 showMenu = false
@@ -312,6 +327,7 @@ fun MeasurementTableScreen(
             MeasurementEditDialog(
                 state = uiState.dialogState,
                 onSave = { viewModel.onSaveMeasurement(it) },
+                onGenericInputChanged = { id, value -> viewModel.onGenericInputChanged(id, value) },
                 onDismiss = { viewModel.onDialogDismiss() }
             )
         }

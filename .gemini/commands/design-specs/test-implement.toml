@@ -1,18 +1,20 @@
-description = "Automate Playwright test creation from a scenario file"
+description = "Automate Android Compose test creation from a scenario file"
 
 prompt = """
-Analyze the test scenario from `{{args}}` and implement a corresponding Playwright E2E test.
+Analyze the test scenario from `{{args}}` and implement a corresponding Android Compose UI test.
 
 ### 1. Research & Instrumentation
-- Open `http://localhost:4200` with playwright mcp to locate the UI elements for each step.
-- In `src/app/testing/test-ids.ts`, add any missing `data-testid` constants.
-- In the relevant Angular components, import `TestIds` from `@testing/test-ids`, expose it to the template, and add the `[attr.data-testid]` attribute.
+- Locate relevant Composable functions for the feature in `app/src/main/java/com/example/underpressure/ui/`.
+- If needed, add `Modifier.testTag("tag_name")` to UI elements to make them easily selectable.
+- Prefer selecting elements by `stringResource` (text or content description) when possible to ensure localization is also tested.
 
 ### 2. Test Implementation
-- Create a new Playwright test in the `e2e/` directory.
-- Use `page.getByTestId()` for all instrumented elements.
-- For file uploads, use `page.locator('input[type="file"]').setInputFiles(filePath)`.
+- Create a new Compose UI test in `app/src/androidTest/java/com/example/underpressure/ui/`.
+- Use `createComposeRule()` or `createAndroidComposeRule<MainActivity>()`.
+- Use `onNodeWithTag()`, `onNodeWithText()`, or `onNodeWithContentDescription()` for interactions.
 - Ensure all visibility and text assertions from the scenario are covered.
+- Mock ViewModels and Repositories as needed using MockK.
 
-### Use .design-specs\testing.md file for more context
+### Use .design-specs/testing.md for technical context on tests.
 """
+

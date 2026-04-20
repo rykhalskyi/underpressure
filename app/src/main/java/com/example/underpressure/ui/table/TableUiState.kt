@@ -1,6 +1,16 @@
 package com.example.underpressure.ui.table
 
 /**
+ * State for a single generic measurement input in the dialog.
+ */
+data class GenericInputState(
+    val listId: Long,
+    val name: String,
+    val type: String,
+    val value: String = ""
+)
+
+/**
  * UI state for the Measurement Edit Dialog.
  */
 data class MeasurementDialogState(
@@ -8,6 +18,7 @@ data class MeasurementDialogState(
     val date: String = "",
     val slotIndex: Int = 0,
     val initialValue: String = "",
+    val genericInputs: List<GenericInputState> = emptyList(),
     val existingMeasurementId: Long? = null
 )
 

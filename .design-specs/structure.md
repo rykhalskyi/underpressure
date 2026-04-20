@@ -10,7 +10,8 @@ UnderPressure/
 │   │   │   ├── java/           # Kotlin source files
 │   │   │   │   └── com/example/underpressure/
 │   │   │   │       ├── alarm/     # Alarm scheduling and management
-│   │   │   │       ├── data/      # Data layer (Local DB, Repositories)
+│   │   │   │       ├── data/      # Data layer (Local DB, Repositories, Exports)
+│   │   │   │       │   ├── export/ # Data export logic (CSV, Charts)
 │   │   │   │       │   ├── local/ # Room database implementation
 │   │   │   │       │   │   ├── converters/ # Room TypeConverters
 │   │   │   │       │   │   ├── dao/        # Data Access Objects
@@ -22,9 +23,11 @@ UnderPressure/
 │   │   │   │       │   └── validation/ # Business logic validators
 │   │   │   │       ├── receiver/  # Broadcast receivers (Alarm, Boot)
 │   │   │   │       ├── ui/        # UI layer (Screens, ViewModels, Theme)
+│   │   │   │       │   ├── chart/    # Blood pressure charts
 │   │   │   │       │   ├── settings/ # Settings screen
 │   │   │   │       │   │   └── components/ # UI components specific to settings
 │   │   │   │       │   ├── table/    # Measurement table screen
+│   │   │   │       │   │   └── components/ # UI components specific to table
 │   │   │   │       │   └── theme/    # Material 3 theme definitions
 │   │   │   │       └── MainActivity.kt # Entry point activity
 │   │   │   ├── res/            # Android resources (strings, drawables, etc.)

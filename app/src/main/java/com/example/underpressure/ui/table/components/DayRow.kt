@@ -77,20 +77,31 @@ fun DayRow(
             
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
-                val text = data?.let { 
-                    // Highlighting BP and showing Pulse on next line if space allows
+                val genericData = summary.genericEntries[i] ?: emptyList()
+                
+                val bpText = data?.let { 
                     if (slotCount < 3) {
                         "${it.systolic}/${it.diastolic}@${it.pulse}"
                     } else {
                         "${it.systolic}/${it.diastolic}\n@${it.pulse}"
                     }
                 } ?: stringResource(R.string.empty_value)
+
+                val genericText = genericData.joinToString("\n") { 
+                    if (it.type == "BOOLEAN") {
+                        if (it.value == "true") "✓ ${it.listName}" else "✗ ${it.listName}"
+                    } else {
+                        "${it.listName}: ${it.value}"
+                    }
+                }
+
+                val combinedText = if (genericText.isEmpty()) bpText else "$bpText\n$genericText"
                 
                 TableCell(
-                    text = text, 
+                    text = combinedText, 
                     weight = 1f,
                     fontSize = measurementFontSize,
-                    isBold = false,//data != null,
+                    isBold = false,
                     onClick = if (summary.isToday) { { onCellClick(i) } } else null
                 )
             }
@@ -119,7 +130,7 @@ private fun RowScope.TableCell(
             lineHeight = fontSize * 1.2f
         ),
         textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
-        maxLines = 2,
+        maxLines = 5,
         overflow = TextOverflow.Ellipsis
     )
 }

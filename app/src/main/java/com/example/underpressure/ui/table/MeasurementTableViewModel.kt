@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.underpressure.alarm.AlarmScheduler
 import com.example.underpressure.data.local.entities.AppSettingsEntity
 import com.example.underpressure.data.local.entities.MeasurementEntity
+import com.example.underpressure.data.local.entities.MeasurementEntryEntity
+import com.example.underpressure.domain.repository.GenericMeasurementRepository
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
 import com.example.underpressure.domain.validation.BloodPressureValidator
@@ -20,6 +22,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -36,6 +39,7 @@ import kotlin.math.abs
 class MeasurementTableViewModel(
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
+    private val genericRepository: GenericMeasurementRepository,
     private val clock: Clock = Clock.systemDefaultZone(),
     private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
@@ -68,6 +72,8 @@ class MeasurementTableViewModel(
     val uiState: StateFlow<TableUiState> = combine(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
+        genericRepository.getAllLists(),
+        genericRepository.getAllEntries(),
         _dialogState,
         _expandedYears,
         _expandedMonths,
@@ -76,35 +82,52 @@ class MeasurementTableViewModel(
     ) { args: Array<Any?> ->
         val measurements = args[0] as List<MeasurementEntity>
         val settings = args[1] as AppSettingsEntity?
-        val dialogState = args[2] as MeasurementDialogState
-        val expandedYears = args[3] as Set<Int>
-        val expandedMonths = args[4] as Set<String>
-        // args[5] and args[6] are unused ticks
+        val genericLists = args[2] as List<com.example.underpressure.data.local.entities.MeasurementListEntity>
+        val genericEntries = args[3] as List<MeasurementEntryEntity>
+        val dialogState = args[4] as MeasurementDialogState
+        val expandedYears = args[5] as Set<Int>
+        val expandedMonths = args[6] as Set<String>
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
         
-        // Use default if settings are null
         val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
         val allTimesStr = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
-        
-        // Filter headers by active status
         val headers = allTimesStr.filterIndexed { index, _ -> activeFlags.getOrElse(index) { false } }
         val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
         
+        // Group generic entries by date and slot
+        val genericByDate = genericEntries.groupBy { it.date }
+
         val summarizedItems = measurements
             .groupBy { it.date }
             .map { (date, dailyMeasurements) ->
-                // Map only active slots to a 0-indexed map for DayRow
                 val activeSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
                     dailyMeasurements.find { it.slotIndex == originalIndex }?.let { 
                         uiIndex to SlotData(it.systolic, it.diastolic, it.pulse)
                     }
                 }.toMap()
 
+                val dailyGenericEntries = genericByDate[date]?.groupBy { it.slotIndex } ?: emptyMap()
+                val activeGenericSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
+                    val entriesForSlot = dailyGenericEntries[originalIndex] ?: emptyList()
+                    if (entriesForSlot.isNotEmpty()) {
+                        uiIndex to entriesForSlot.mapNotNull { entry ->
+                            val list = genericLists.find { it.id == entry.listId } ?: return@mapNotNull null
+                            GenericSlotData(
+                                listId = entry.listId,
+                                listName = list.name,
+                                value = entry.value,
+                                type = list.type.name
+                            )
+                        }
+                    } else null
+                }.toMap()
+
                 DayMeasurementSummary(
                     date = date,
                     slots = activeSlots,
+                    genericEntries = activeGenericSlots,
                     isToday = date == todayStr
                 )
             }
@@ -292,12 +315,27 @@ class MeasurementTableViewModel(
 
         val initialValue = existing?.let { "${it.systolic}/${it.diastolic} @${it.pulse}" } ?: ""
 
+        // Fetch active generic lists and their entries
+        val activeLists = genericRepository.getActiveLists().first()
+        val existingEntries = genericRepository.getEntriesForSlot(date, originalSlotIndex).first()
+
+        val genericInputs = activeLists.map { list ->
+            val existingEntry = existingEntries.find { it.listId == list.id }
+            GenericInputState(
+                listId = list.id,
+                name = list.name,
+                type = list.type.name,
+                value = existingEntry?.value ?: ""
+            )
+        }
+
         _dialogState.update {
             it.copy(
                 isOpen = true,
                 date = date,
                 slotIndex = originalSlotIndex,
                 initialValue = initialValue,
+                genericInputs = genericInputs,
                 existingMeasurementId = existing?.id
             )
         }
@@ -308,6 +346,19 @@ class MeasurementTableViewModel(
      */
     fun onDialogDismiss() {
         _dialogState.update { MeasurementDialogState() }
+    }
+
+    /**
+     * Called when a generic input value is changed in the dialog.
+     */
+    fun onGenericInputChanged(listId: Long, newValue: String) {
+        _dialogState.update { state ->
+            state.copy(
+                genericInputs = state.genericInputs.map {
+                    if (it.listId == listId) it.copy(value = newValue) else it
+                }
+            )
+        }
     }
 
     /**
@@ -336,6 +387,21 @@ class MeasurementTableViewModel(
                 } else {
                     measurementRepository.updateMeasurement(entity)
                 }
+
+                // Save generic entries
+                currentState.genericInputs.forEach { inputState ->
+                    if (inputState.value.isNotBlank()) {
+                        genericRepository.saveEntry(
+                            MeasurementEntryEntity(
+                                date = currentState.date,
+                                slotIndex = currentState.slotIndex,
+                                listId = inputState.listId,
+                                value = inputState.value
+                            )
+                        )
+                    }
+                }
+
                 onDialogDismiss()
             }
         }

@@ -3,6 +3,7 @@ package com.example.underpressure.ui.chart
 import com.example.underpressure.R
 import com.example.underpressure.data.export.ChartExportManager
 import com.example.underpressure.data.local.entities.MeasurementEntity
+import com.example.underpressure.domain.repository.GenericMeasurementRepository
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
 import io.mockk.coEvery
@@ -31,6 +32,7 @@ class ChartViewModelTest {
 
     private val measurementRepository: MeasurementRepository = mockk()
     private val settingsRepository: SettingsRepository = mockk()
+    private val genericRepository: GenericMeasurementRepository = mockk()
     private val chartExportManager: ChartExportManager = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -41,6 +43,8 @@ class ChartViewModelTest {
         Dispatchers.setMain(testDispatcher)
         coEvery { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         coEvery { settingsRepository.getSettings() } returns flowOf(null)
+        coEvery { genericRepository.getAllLists() } returns flowOf(emptyList())
+        coEvery { genericRepository.getAllEntries() } returns flowOf(emptyList())
     }
 
     @After
@@ -50,7 +54,7 @@ class ChartViewModelTest {
 
     @Test
     fun `initial state shows no data when repository is empty`() = runTest(testDispatcher) {
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager)
         
         val state = viewModel.uiState.first { !it.isLoading }
         assertEquals(R.string.error_no_data, state.errorMessageResId)
@@ -64,7 +68,7 @@ class ChartViewModelTest {
         )
         coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager)
         
         // Wait for initial data
         viewModel.uiState.first { !it.isLoading }
@@ -86,7 +90,7 @@ class ChartViewModelTest {
         )
         coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager)
         
         // Wait for initial data
         viewModel.uiState.first { !it.isLoading }
@@ -107,7 +111,7 @@ class ChartViewModelTest {
         )
         coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager)
         
         // Filter SYS and PULSE
         val targetTypes = setOf(MeasurementType.SYS, MeasurementType.PULSE)
@@ -121,7 +125,7 @@ class ChartViewModelTest {
 
     @Test
     fun `onShareChart triggers ShareFile event`() = runTest(testDispatcher) {
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, genericRepository, chartExportManager)
         val bitmap: android.graphics.Bitmap = mockk()
         val file = File("test.png")
         coEvery { chartExportManager.saveChartToCache(any()) } returns file

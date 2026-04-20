@@ -1,20 +1,10 @@
 package com.example.underpressure.ui.table.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -33,6 +23,7 @@ import com.example.underpressure.ui.table.MeasurementDialogState
 fun MeasurementEditDialog(
     state: MeasurementDialogState,
     onSave: (String) -> Unit,
+    onGenericInputChanged: (Long, String) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -88,6 +79,42 @@ fun MeasurementEditDialog(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
+
+                if (state.genericInputs.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Generic Measurements",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    state.genericInputs.forEach { input ->
+                        when (input.type) {
+                            "BOOLEAN" -> {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Checkbox(
+                                        checked = input.value == "true",
+                                        onCheckedChange = { onGenericInputChanged(input.listId, it.toString()) }
+                                    )
+                                    Text(input.name)
+                                }
+                            }
+                            else -> {
+                                OutlinedTextField(
+                                    value = input.value,
+                                    onValueChange = { onGenericInputChanged(input.listId, it) },
+                                    label = { Text(input.name) },
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = if (input.type == "DOUBLE") KeyboardType.Number else KeyboardType.Text
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
             }
         },
         confirmButton = {

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.underpressure.R
 import com.example.underpressure.data.export.ChartExportManager
 import com.example.underpressure.data.local.entities.MeasurementEntity
+import com.example.underpressure.domain.repository.GenericMeasurementRepository
 import com.example.underpressure.domain.repository.MeasurementRepository
 import com.example.underpressure.domain.repository.SettingsRepository
 import com.github.mikephil.charting.data.Entry
@@ -31,6 +32,7 @@ import java.time.temporal.ChronoUnit
 class ChartViewModel(
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
+    private val genericRepository: GenericMeasurementRepository,
     private val chartExportManager: ChartExportManager
 ) : ViewModel() {
 
