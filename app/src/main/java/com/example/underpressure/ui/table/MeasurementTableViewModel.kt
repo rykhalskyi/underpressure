@@ -47,6 +47,13 @@ class MeasurementTableViewModel(
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
+    private val _expandedYears = MutableStateFlow<Set<Int>>(
+        setOf(LocalDate.now(clock).year)
+    )
+    private val _expandedMonths = MutableStateFlow<Set<String>>(
+        setOf(LocalDate.now(clock).format(DateTimeFormatter.ofPattern("yyyy-MM")))
+    )
+
     private val _scrollToDateEvent = MutableSharedFlow<String>()
     val scrollToDateEvent: SharedFlow<String> = _scrollToDateEvent.asSharedFlow()
 
@@ -62,10 +69,20 @@ class MeasurementTableViewModel(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
         _dialogState,
+        _expandedYears,
+        _expandedMonths,
         tickFlow,
         manualRefreshTrigger
-    ) { measurements, settings, dialogState, _, _ ->
-        val todayStr = LocalDate.now(clock).format(dateFormatter)
+    ) { args: Array<Any?> ->
+        val measurements = args[0] as List<MeasurementEntity>
+        val settings = args[1] as AppSettingsEntity?
+        val dialogState = args[2] as MeasurementDialogState
+        val expandedYears = args[3] as Set<Int>
+        val expandedMonths = args[4] as Set<String>
+        // args[5] and args[6] are unused ticks
+        
+        val today = LocalDate.now(clock)
+        val todayStr = today.format(dateFormatter)
         
         // Use default if settings are null
         val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
@@ -92,6 +109,44 @@ class MeasurementTableViewModel(
                 )
             }
             .sortedByDescending { it.date }
+
+        val displayItems = mutableListOf<TableItem>()
+        val groupedByYear = summarizedItems.groupBy { LocalDate.parse(it.date, dateFormatter).year }
+        
+        groupedByYear.keys.sortedDescending().forEach { year ->
+            val isYearExpanded = expandedYears.contains(year)
+            displayItems.add(TableItem.YearHeader(year, isYearExpanded))
+            
+            if (isYearExpanded) {
+                val yearItems = groupedByYear[year] ?: emptyList()
+                val groupedByMonth = yearItems.groupBy { 
+                    val date = LocalDate.parse(it.date, dateFormatter)
+                    date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
+                }
+                
+                groupedByMonth.keys.sortedDescending().forEach { yearMonth ->
+                    val isMonthExpanded = expandedMonths.contains(yearMonth)
+                    val monthDate = LocalDate.parse("$yearMonth-01", dateFormatter)
+                    val monthName = monthDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
+                    
+                    // Optional: calculate summary for month
+                    val monthMeasurements = groupedByMonth[yearMonth] ?: emptyList()
+                    val avgSystolic = monthMeasurements.flatMap { it.slots.values }.map { it.systolic }.average()
+                    val avgDiastolic = monthMeasurements.flatMap { it.slots.values }.map { it.diastolic }.average()
+                    val summary = if (!avgSystolic.isNaN() && !avgDiastolic.isNaN()) {
+                        "${avgSystolic.toInt()}/${avgDiastolic.toInt()}"
+                    } else null
+
+                    displayItems.add(TableItem.MonthHeader(yearMonth, monthName, isMonthExpanded, summary))
+                    
+                    if (isMonthExpanded) {
+                        monthMeasurements.forEach { summaryItem ->
+                            displayItems.add(TableItem.DayRow(summaryItem))
+                        }
+                    }
+                }
+            }
+        }
 
         // FAB Logic
         val now = LocalTime.now(clock)
@@ -141,6 +196,9 @@ class MeasurementTableViewModel(
             isLoading = false,
             slotHeaders = headers,
             items = summarizedItems,
+            displayItems = displayItems,
+            expandedYears = expandedYears,
+            expandedMonths = expandedMonths,
             dialogState = dialogState,
             isFabEnabled = fabTargetSlotIndex != null,
             fabTargetSlotIndex = fabTargetSlotIndex,
@@ -151,6 +209,24 @@ class MeasurementTableViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TableUiState(isLoading = true)
     )
+
+    /**
+     * Toggles expansion state for a year.
+     */
+    fun toggleYearExpansion(year: Int) {
+        _expandedYears.update { current ->
+            if (current.contains(year)) current - year else current + year
+        }
+    }
+
+    /**
+     * Toggles expansion state for a month.
+     */
+    fun toggleMonthExpansion(yearMonth: String) {
+        _expandedMonths.update { current ->
+            if (current.contains(yearMonth)) current - yearMonth else current + yearMonth
+        }
+    }
 
     /**
      * Toggles the master alarm setting and updates the system alarms.
