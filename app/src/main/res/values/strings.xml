@@ -23,6 +23,7 @@
     <string name="cd_share">Share</string>
     <string name="cd_settings">Open Settings</string>
     <string name="cd_add_measurement">Add Measurement</string>
+    <string name="hint_fab_disabled">Measurements can be recorded within ±15 minutes of a scheduled slot.</string>
     <string name="cd_go_back">Go back</string>
 
     <!-- Measurement Edit Dialog -->

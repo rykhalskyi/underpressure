@@ -29,6 +29,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +63,7 @@ import com.otakeessen.underpressure.ui.table.components.MonthHeader
 
 import androidx.compose.ui.res.stringResource
 import com.otakeessen.underpressure.R
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -77,6 +82,7 @@ fun MeasurementTableScreen(
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -223,21 +229,40 @@ fun MeasurementTableScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { if (uiState.isFabEnabled) viewModel.onFabClicked() },
-                containerColor = if (uiState.isFabEnabled) 
-                    MaterialTheme.colorScheme.primaryContainer 
-                else 
-                    MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = if (uiState.isFabEnabled)
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+            val hintMessage = stringResource(R.string.hint_fab_disabled)
+            TooltipBox(
+                positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                tooltip = {
+                    PlainTooltip {
+                        Text(hintMessage)
+                    }
+                },
+                state = rememberTooltipState()
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.cd_add_measurement)
-                )
+                FloatingActionButton(
+                    onClick = { 
+                        if (uiState.isFabEnabled) {
+                            viewModel.onFabClicked()
+                        } else {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(hintMessage)
+                            }
+                        }
+                    },
+                    containerColor = if (uiState.isFabEnabled) 
+                        MaterialTheme.colorScheme.primaryContainer 
+                    else 
+                        MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = if (uiState.isFabEnabled)
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.cd_add_measurement)
+                    )
+                }
             }
         }
     ) { innerPadding ->

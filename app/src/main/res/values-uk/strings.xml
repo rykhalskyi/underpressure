@@ -23,6 +23,7 @@
     <string name="cd_share">Поділитися</string>
     <string name="cd_settings">Відкрити налаштування</string>
     <string name="cd_add_measurement">Додати вимірювання</string>
+    <string name="hint_fab_disabled">Вимірювання можна записати в межах ±15 хвилин від запланованого часу.</string>
     <string name="cd_go_back">Назад</string>
 
     <!-- Measurement Edit Dialog -->
@@ -80,6 +81,13 @@
     <string name="label_select_types">Виберіть типи вимірювань</string>
     <string name="button_apply">Застосувати</string>
     <string name="error_no_slots_selected">Будь ласка, виберіть принаймні один слот і один тип.</string>
+    <string name="error_no_data">Дані відсутні</string>
+    <string name="error_no_data_in_range">Дані у вибраному діапазоні дат відсутні</string>
+    <string name="error_failed_to_export">Не вдалося експортувати графік: %1$s</string>
+    <string name="label_chart_combined_format">%1$s - %2$s</string>
+    <string name="error_invalid_date_format">Невірний формат дати</string>
+    <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
+    <string name="placeholder_date">РРРР-ММ-ДД</string>
     <!-- About Section -->
     <string name="header_about">Про програму</string>
     <string name="label_version">Версія %1$s</string>
