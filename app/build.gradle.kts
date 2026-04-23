@@ -6,17 +6,17 @@ plugins {
 }
 
 android {
-    namespace = "com.example.underpressure"
+    namespace = "com.otakeessen.underpressure"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.underpressure"
+        applicationId = "com.otakeessen.underpressure"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "1.3"
+        versionName = "1.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
