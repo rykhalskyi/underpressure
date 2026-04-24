@@ -290,7 +290,10 @@ class MeasurementTableViewModel(
         val existing = measurementRepository.getMeasurementsByDateSync(date)
             .find { it.slotIndex == originalSlotIndex }
 
-        val initialValue = existing?.let { "${it.systolic}/${it.diastolic} @${it.pulse}" } ?: ""
+        val initialValue = existing?.let { 
+            if (it.pulse > 0) "${it.systolic}/${it.diastolic} @${it.pulse}" 
+            else "${it.systolic}/${it.diastolic}"
+        } ?: ""
 
         _dialogState.update {
             it.copy(

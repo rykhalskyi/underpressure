@@ -39,13 +39,22 @@ fun SearchResultItem(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = stringResource(
+            val details = if (measurement.pulse > 0) {
+                stringResource(
                     R.string.label_measurement_details, 
                     measurement.systolic, 
                     measurement.diastolic, 
                     measurement.pulse
-                ),
+                )
+            } else {
+                // Manually construct or use a new string. For now, let's just use first two parts of current string or similar.
+                // To keep it simple and localized-friendly without adding new strings if possible:
+                val sysLabel = stringResource(R.string.header_systolic)
+                val diaLabel = stringResource(R.string.header_diastolic)
+                "$sysLabel: ${measurement.systolic}, $diaLabel: ${measurement.diastolic}"
+            }
+            Text(
+                text = details,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
