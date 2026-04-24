@@ -18,7 +18,7 @@ class BloodPressureValidatorTest {
     }
 
     @Test
-    fun `validate with valid input returns Success`() {
+    fun `validate with original format returns Success`() {
         val input = "120/80 @72"
         val result = validator.validate(input)
         
@@ -30,48 +30,95 @@ class BloodPressureValidatorTest {
     }
 
     @Test
-    fun `validate with valid input and different spaces returns Success`() {
-        val input = "110/70@60"
+    fun `validate with space delimiter returns Success`() {
+        val input = "120 80 72"
         val result = validator.validate(input)
-        
         assertTrue(result is ValidationResult.Success)
         val success = result as ValidationResult.Success
-        assertEquals(110, success.systolic)
-        assertEquals(70, success.diastolic)
-        assertEquals(60, success.pulse)
+        assertEquals(120, success.systolic)
+        assertEquals(80, success.diastolic)
+        assertEquals(72, success.pulse)
     }
 
     @Test
-    fun `validate with empty input returns Error`() {
+    fun `validate with comma delimiter returns Success`() {
+        val input = "120,80,72"
+        val result = validator.validate(input)
+        assertTrue(result is ValidationResult.Success)
+        val success = result as ValidationResult.Success
+        assertEquals(120, success.systolic)
+        assertEquals(80, success.diastolic)
+        assertEquals(72, success.pulse)
+    }
+
+    @Test
+    fun `validate with multiple slashes returns Success`() {
+        val input = "120/80/72"
+        val result = validator.validate(input)
+        assertTrue(result is ValidationResult.Success)
+    }
+
+    @Test
+    fun `validate with missing pulse returns Success with pulse 0`() {
+        val input = "120/80"
+        val result = validator.validate(input)
+        assertTrue(result is ValidationResult.Success)
+        val success = result as ValidationResult.Success
+        assertEquals(120, success.systolic)
+        assertEquals(80, success.diastolic)
+        assertEquals(0, success.pulse)
+    }
+
+    @Test
+    fun `validate with spaces and missing pulse returns Success`() {
+        val input = "120 80"
+        val result = validator.validate(input)
+        assertTrue(result is ValidationResult.Success)
+        val success = result as ValidationResult.Success
+        assertEquals(120, success.systolic)
+        assertEquals(80, success.diastolic)
+        assertEquals(0, success.pulse)
+    }
+
+    @Test
+    fun `validate with empty input returns EmptyInput Error`() {
         val result = validator.validate("")
-        assertTrue(result is ValidationResult.Error)
-        assertEquals("Input cannot be empty", (result as ValidationResult.Error).message)
+        assertTrue(result is ValidationResult.Error.EmptyInput)
     }
 
     @Test
-    fun `validate with missing pulse returns Error`() {
-        val result = validator.validate("120/80")
-        assertTrue(result is ValidationResult.Error)
-        assertEquals("Invalid format. Use: SYS/DIA @PULSE", (result as ValidationResult.Error).message)
+    fun `validate with invalid format returns InvalidFormat Error`() {
+        val result = validator.validate("120")
+        assertTrue(result is ValidationResult.Error.InvalidFormat)
     }
 
     @Test
-    fun `validate with non-numeric values returns Error`() {
+    fun `validate with non-numeric values returns InvalidFormat Error`() {
         val result = validator.validate("abc/80 @72")
-        assertTrue(result is ValidationResult.Error)
+        assertTrue(result is ValidationResult.Error.InvalidFormat)
     }
 
     @Test
-    fun `validate with one digit values returns Error`() {
-        // Our regex \d{2,3} expects 2 to 3 digits
-        val result = validator.validate("1/2 @3")
-        assertTrue(result is ValidationResult.Error)
+    fun `validate with sys less than dia returns IncorrectMeasurements Error`() {
+        val result = validator.validate("80/120")
+        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
     }
-    
+
     @Test
-    fun `validate with too many digits returns Error`() {
-        val result = validator.validate("1200/800 @720")
-        assertTrue(result is ValidationResult.Error)
+    fun `validate with sys out of range returns IncorrectMeasurements Error`() {
+        val result = validator.validate("30/20")
+        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+    }
+
+    @Test
+    fun `validate with dia out of range returns IncorrectMeasurements Error`() {
+        val result = validator.validate("120/10")
+        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+    }
+
+    @Test
+    fun `validate with pulse out of range returns IncorrectMeasurements Error`() {
+        val result = validator.validate("120/80 20")
+        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
     }
 }
-

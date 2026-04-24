@@ -1,0 +1,96 @@
+<resources>
+    <!-- App General -->
+    <string name="app_name">UnderPressure</string>
+    <string name="empty_value">-</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="button_save">Сохранить</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_ok">OK</string>
+    <string name="button_confirm">Подтвердить</string>
+    <string name="button_clear">Очистить</string>
+    <string name="button_close">Закрыть</string>
+    <string name="button_grant">ПРЕДОСТАВИТЬ</string>
+
+    <!-- Table Screen Headers -->
+    <string name="header_date">Дата</string>
+    <string name="header_systolic">Сис</string>
+    <string name="header_diastolic">Диа</string>
+    <string name="header_pulse">Пульс</string>
+    
+    <!-- Table Screen Actions (Accessibility) -->
+    <string name="cd_toggle_alarms">Переключить будильники</string>
+    <string name="cd_search">Поиск</string>
+    <string name="cd_share">Поделиться</string>
+    <string name="cd_settings">Открыть настройки</string>
+    <string name="cd_add_measurement">Добавить измерение</string>
+    <string name="hint_fab_disabled">Измерения можно записать в пределах ±15 минут от запланированного времени.</string>
+    <string name="cd_go_back">Назад</string>
+
+    <!-- Measurement Edit Dialog -->
+    <string name="dialog_title_edit">Редактировать измерение</string>
+    <string name="dialog_title_add">Добавить измерение</string>
+    <string name="label_measurement_format">СИС/ДИА @ПУЛЬС</string>
+    <string name="placeholder_measurement">120/80 @72</string>
+    <string name="error_invalid_format">Неверный формат. Используйте: СИС/ДИА @ПУЛЬС</string>
+    <string name="error_incorrect_measurements">Некорректные измерения</string>
+    <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
+    <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
+
+    <!-- Search Dialog -->
+    <string name="dialog_title_search">Поиск измерений</string>
+    <string name="label_search_hint">Введите дату (ГГГГ-ММ-ДД) или значение</string>
+    <string name="message_no_results">Результатов не найдено</string>
+    <string name="button_jump_to_date">Перейти к дате: %1$s</string>
+    <string name="label_measurement_details">Систолическое: %1$d, Диастолическое: %2$d, Пульс: %3$d</string>
+    <string name="error_invalid_date">Неверный формат даты (ГГГГ-ММ-ДД)</string>
+
+    <!-- Share Dialog -->
+    <string name="dialog_title_share">Поделиться измерениями</string>
+    <string name="label_select_date_range">Выберите диапазон дат (опционально)</string>
+    <string name="label_date_from">С</string>
+    <string name="label_date_to">По</string>
+    <string name="button_share_message">Поделиться как сообщение</string>
+    <string name="button_export_csv">Экспортировать в CSV</string>
+    <string name="share_chooser_title">Поделиться журналом давления</string>
+    <string name="export_chooser_title">Экспорт CSV</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Настройки</string>
+    <string name="header_measurement_slots">Слоты измерений</string>
+    <string name="label_slot_number">Слот %1$d</string>
+    <string name="label_global_alarm">Глобальные напоминания</string>
+    <string name="label_active">Активно</string>
+    <string name="label_alarm">Напомнить</string>
+    <string name="dialog_title_select_time">Выберите время</string>
+    <string name="error_loading_settings">Ошибка загрузки настроек</string>
+
+    <!-- Exact Alarm Warning -->
+    <string name="warning_exact_alarms_title">Точные будильники отключены</string>
+    <string name="warning_exact_alarms_body">Будильники могут задерживаться до часа. Пожалуйста, предоставьте разрешение для точного времени.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Напоминания об измерениях</string>
+    <string name="notification_title">Время измерения</string>
+    <string name="notification_message">Пора записать ваше артериальное давление для слота %1$d.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">График артериального давления</string>
+    <string name="cd_chart">График артериального давления</string>
+    <string name="button_configure">Настроить</string>
+    <string name="dialog_title_chart_config">Конфигурация графика</string>
+    <string name="label_select_slots">Выберите слоты</string>
+    <string name="label_select_types">Выберите типы измерений</string>
+    <string name="button_apply">Применить</string>
+    <string name="error_no_slots_selected">Пожалуйста, выберите хотя бы один слот и один тип.</string>
+    <string name="error_no_data">Данные отсутствуют</string>
+    <string name="error_no_data_in_range">Данные в выбранном диапазоне дат отсутствуют</string>
+    <string name="error_failed_to_export">Не удалось экспортировать график: %1$s</string>
+    <string name="label_chart_combined_format">%1$s - %2$s</string>
+    <string name="error_invalid_date_format">Неверный формат даты</string>
+    <string name="error_from_after_to">Дата «С» не может быть позже даты «По»</string>
+    <string name="placeholder_date">ГГГГ-ММ-ДД</string>
+    <!-- About Section -->
+    <string name="header_about">О приложении</string>
+    <string name="label_version">Версия %1$s</string>
+    <string name="label_repo">Исходный код (GitHub)</string>
+</resources>

@@ -32,6 +32,7 @@
     <string name="label_measurement_format">СИС/ДІА @ПУЛЬС</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
+    <string name="error_incorrect_measurements">Некоректні вимірювання</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
 
