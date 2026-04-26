@@ -93,4 +93,16 @@
     <string name="header_about">О приложении</string>
     <string name="label_version">Версия %1$s</string>
     <string name="label_repo">Исходный код (GitHub)</string>
+    <string name="button_show_onboarding">Показать знакомство</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
+    <string name="onboarding_slide1_description">UnderPressure — это простой и приватный трекер артериального давления и пульса, который хранит все ваши данные только на вашем телефоне. Никаких серверов, сбора данных, рекламы или платежей.</string>
+    <string name="onboarding_slide2_caption">До 4 слотов ежедневно</string>
+    <string name="onboarding_slide2_description">Вы можете добавить до 4 временных слотов для измерения. Ввод данных возможен в пределах +/- 15 минут от каждого. Настроить слоты можно в Настройках.</string>
+    <string name="onboarding_slide3_caption">График измерений</string>
+    <string name="onboarding_slide3_description">Вы можете просматривать и делиться графиками измерений. Настройте графики для нужных слотов и данных.</string>
+    <string name="onboarding_slide4_caption">Поделиться данными</string>
+    <string name="onboarding_slide4_description">Вы можете поделиться данными, если хотите. В остальных случаях ваши данные не покинут ваш телефон. Мы также не собираем никакой телеметрии или логов.</string>
+    <string name="button_onboarding_close">Начать</string>
 </resources>

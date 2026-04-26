@@ -93,4 +93,16 @@
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>
+    <string name="button_show_onboarding">Show Onboarding</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_slide1_caption">UnderPressure tracker</string>
+    <string name="onboarding_slide1_description">Underpressure is a simple and private blood pressure and pulse tracker that keeps all your data only on your phone. No servers, no data collection, no ads, no payments.</string>
+    <string name="onboarding_slide2_caption">Up to 4 slots each day</string>
+    <string name="onboarding_slide2_description">You can add up to 4 time slots for measurement. Data input is possible within +/- 15 minutes from each. You can setup slots in the Settings.</string>
+    <string name="onboarding_slide3_caption">Measurements Chart</string>
+    <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
+    <string name="onboarding_slide4_caption">Share Data</string>
+    <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
+    <string name="button_onboarding_close">Get Started</string>
 </resources>

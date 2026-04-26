@@ -7,6 +7,7 @@ data class SettingsUiState(
     val slots: List<SlotConfig> = emptyList(),
     val isMasterAlarmEnabled: Boolean = false,
     val canScheduleExactAlarms: Boolean = true,
+    val lastOnboardedVersion: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
