@@ -1,33 +1,20 @@
 # Implementation Plan - {Issue Number}: {Issue Title}
 
-## Overview
-[Briefly describe the feature or bug fix and its value to the system]
+## 1. Overview
+{Goal and value proposition}
 
-## Steering Document Alignment
+## 2. Steering Alignment
+- **Tech**: {Alignment with tech.md}
+- **Style**: {Alignment with codestyle.md}
+- **Structure**: {Alignment with structure.md}
 
-### Technical Standards (tech.md)
-- [How this plan follows tech.md standards]
+## 3. Technical Analysis
+- **Impacted Files**: {List created/modified files}
+- **Data/API Changes**: {Schema or interface updates}
 
-### Coding Conventions (codestyle.md)
-- [Key conventions to follow for this implementation]
+## 4. Implementation Strategy
+{Step-by-step logic and identified patterns}
 
-### Project Structure (structure.md)
-- [Where new files will be placed and how they fit into the hierarchy]
-
-## Technical Analysis
-
-### Impacted Files
-- [List files to be created]
-- [List files to be modified]
-
-### Data Model Changes
-- [Describe changes to databases or schemas, if any]
-
-### API Changes
-- [Describe changes to endpoints or internal interfaces, if any]
-
-## Implementation Strategy
-[Detail the sequence of changes, logic, and patterns to be used]
-
-## Verification & Testing
-[How to verify the implementation: new tests, manual checks, etc.]
+## 5. Verification
+- **Unit Tests**: {Test files and cases}
+- **Manual/E2E**: {Verification steps}

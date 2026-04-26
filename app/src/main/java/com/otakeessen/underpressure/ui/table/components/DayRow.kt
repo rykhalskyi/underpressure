@@ -78,11 +78,11 @@ fun DayRow(
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
                 val text = data?.let { 
-                    // Highlighting BP and showing Pulse on next line if space allows
-                    if (slotCount < 3) {
-                        "${it.systolic}/${it.diastolic}@${it.pulse}"
+                    val bp = "${it.systolic}/${it.diastolic}"
+                    if (it.pulse > 0) {
+                        if (slotCount < 3) "$bp@${it.pulse}" else "$bp\n@${it.pulse}"
                     } else {
-                        "${it.systolic}/${it.diastolic}\n@${it.pulse}"
+                        bp
                     }
                 } ?: stringResource(R.string.empty_value)
                 

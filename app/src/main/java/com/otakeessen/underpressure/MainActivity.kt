@@ -1,16 +1,19 @@
 package com.otakeessen.underpressure
 
 import android.os.Bundle
+import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.export.ChartExportManager
 import com.otakeessen.underpressure.data.export.TableExportManager
@@ -19,6 +22,7 @@ import com.otakeessen.underpressure.data.repository.MeasurementRepositoryImpl
 import com.otakeessen.underpressure.data.repository.SettingsRepositoryImpl
 import com.otakeessen.underpressure.ui.chart.ChartScreen
 import com.otakeessen.underpressure.ui.chart.ChartViewModel
+import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
 import com.otakeessen.underpressure.ui.settings.SettingsScreen
 import com.otakeessen.underpressure.ui.settings.SettingsViewModel
 import com.otakeessen.underpressure.ui.table.MeasurementTableScreen
@@ -80,6 +84,32 @@ class MainActivity : ComponentActivity() {
         setContent {
             UnderPressureTheme {
                 var currentScreen by remember { mutableStateOf(Screen.Table) }
+                val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+                
+                val versionName = remember {
+                    try {
+                        packageManager.getPackageInfo(packageName, 0).versionName ?: "Unknown"
+                    } catch (e: Exception) {
+                        "Unknown"
+                    }
+                }
+
+                var showAutoOnboarding by remember { mutableStateOf(false) }
+
+                LaunchedEffect(settingsUiState.isLoading, settingsUiState.lastOnboardedVersion) {
+                    if (!settingsUiState.isLoading && settingsUiState.lastOnboardedVersion != versionName) {
+                        showAutoOnboarding = true
+                    }
+                }
+
+                if (showAutoOnboarding) {
+                    OnboardingDialog(
+                        onDismiss = {
+                            settingsViewModel.setOnboardingSeen(versionName)
+                            showAutoOnboarding = false
+                        }
+                    )
+                }
 
                 when (currentScreen) {
                     Screen.Table -> {
@@ -108,4 +138,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

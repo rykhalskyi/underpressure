@@ -117,37 +117,45 @@ class ChartViewModel(
             if (slotMeasurements.isNotEmpty()) {
                 val slotTimeLabel = slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
                 config.types.forEach { type ->
-                    val entries = slotMeasurements.map { m ->
-                        val date = LocalDate.parse(m.date, DATE_FORMATTER)
-                        val days = ChronoUnit.DAYS.between(minDate, date).toFloat()
-                        val value = when (type) {
-                            MeasurementType.SYS -> m.systolic.toFloat()
-                            MeasurementType.DIA -> m.diastolic.toFloat()
-                            MeasurementType.PULSE -> m.pulse.toFloat()
-                        }
-                        Entry(days, value)
-                    }.sortedBy { it.x }
+                    val filteredSlotMeasurements = if (type == MeasurementType.PULSE) {
+                        slotMeasurements.filter { it.pulse > 0 }
+                    } else {
+                        slotMeasurements
+                    }
 
-                    val label = "$slotTimeLabel - ${type.name}"
-                    val dataSet = LineDataSet(entries, label).apply {
-                        val colorVal = SLOT_COLORS.getOrElse(slotIndex) { Color.BLACK }
-                        color = colorVal
-                        setCircleColor(colorVal)
-                        lineWidth = when (type) {
-                            MeasurementType.SYS -> 3f
-                            MeasurementType.DIA -> 1.5f
-                            MeasurementType.PULSE -> 1.5f
+                    if (filteredSlotMeasurements.isNotEmpty()) {
+                        val entries = filteredSlotMeasurements.map { m ->
+                            val date = LocalDate.parse(m.date, DATE_FORMATTER)
+                            val days = ChronoUnit.DAYS.between(minDate, date).toFloat()
+                            val value = when (type) {
+                                MeasurementType.SYS -> m.systolic.toFloat()
+                                MeasurementType.DIA -> m.diastolic.toFloat()
+                                MeasurementType.PULSE -> m.pulse.toFloat()
+                            }
+                            Entry(days, value)
+                        }.sortedBy { it.x }
+
+                        val label = "$slotTimeLabel - ${type.name}"
+                        val dataSet = LineDataSet(entries, label).apply {
+                            val colorVal = SLOT_COLORS.getOrElse(slotIndex) { Color.BLACK }
+                            color = colorVal
+                            setCircleColor(colorVal)
+                            lineWidth = when (type) {
+                                MeasurementType.SYS -> 3f
+                                MeasurementType.DIA -> 1.5f
+                                MeasurementType.PULSE -> 1.5f
+                            }
+                            if (type == MeasurementType.PULSE) {
+                                enableDashedLine(10f, 10f, 0f)
+                            }
+                            mode = LineDataSet.Mode.LINEAR
+                            setDrawValues(false)
                         }
                         if (type == MeasurementType.PULSE) {
-                            enableDashedLine(10f, 10f, 0f)
+                            pulseDataSets.add(dataSet)
+                        } else {
+                            bpDataSets.add(dataSet)
                         }
-                        mode = LineDataSet.Mode.LINEAR
-                        setDrawValues(false)
-                    }
-                    if (type == MeasurementType.PULSE) {
-                        pulseDataSets.add(dataSet)
-                    } else {
-                        bpDataSets.add(dataSet)
                     }
                 }
             }

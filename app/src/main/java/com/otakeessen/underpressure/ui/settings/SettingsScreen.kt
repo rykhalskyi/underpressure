@@ -57,6 +57,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ListItem
+import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
 
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
@@ -70,6 +71,7 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showTimePickerForIndex by remember { mutableStateOf<Int?>(null) }
+    var showOnboarding by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -204,6 +206,9 @@ fun SettingsScreen(
                                     imageVector = Icons.Default.Info,
                                     contentDescription = null
                                 )
+                            },
+                            modifier = Modifier.clickable {
+                                showOnboarding = true
                             }
                         )
                         HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
@@ -221,6 +226,12 @@ fun SettingsScreen(
                     }
                 }
             }
+        }
+
+        if (showOnboarding) {
+            OnboardingDialog(
+                onDismiss = { showOnboarding = false }
+            )
         }
 
         // Time Picker Dialog Logic

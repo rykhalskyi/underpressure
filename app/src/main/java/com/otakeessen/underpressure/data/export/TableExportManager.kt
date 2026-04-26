@@ -122,7 +122,8 @@ class TableExportManager(
             activeSlotsMap.forEach { (originalIndex, _) ->
                 val measurement = dailyMeasurements.find { it.slotIndex == originalIndex }
                 val cellValue = measurement?.let {
-                    "${it.systolic}/${it.diastolic}@${it.pulse}"
+                    if (it.pulse > 0) "${it.systolic}/${it.diastolic}@${it.pulse}"
+                    else "${it.systolic}/${it.diastolic}"
                 } ?: ""
                 rowValues.add(cellValue)
             }

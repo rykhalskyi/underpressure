@@ -43,6 +43,12 @@ fun MeasurementEditDialog(
     val validationResult = validator.validate(textValue)
     val isError = textValue.isNotEmpty() && validationResult is ValidationResult.Error
     
+    val errorMessage = when (validationResult) {
+        is ValidationResult.Error.IncorrectMeasurements, 
+        is ValidationResult.Error.InvalidNumbers -> stringResource(R.string.error_incorrect_measurements)
+        else -> stringResource(R.string.error_invalid_format)
+    }
+    
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(state.isOpen) {
@@ -77,7 +83,7 @@ fun MeasurementEditDialog(
                     isError = isError,
                     supportingText = {
                         if (isError) {
-                            Text(text = stringResource(R.string.error_invalid_format))
+                            Text(text = errorMessage)
                         }
                     },
                     keyboardOptions = KeyboardOptions(

@@ -45,6 +45,7 @@ class SettingsViewModel(
                             isLoading = false,
                             slots = entity.toSlotConfigs(),
                             isMasterAlarmEnabled = entity.masterAlarmEnabled,
+                            lastOnboardedVersion = entity.lastOnboardedVersion,
                             error = null
                         )
                     }
@@ -81,6 +82,11 @@ class SettingsViewModel(
             this[index] = isActive
         }
         saveSettings(settings.copy(slotActiveFlags = newActiveFlags, slotAlarmsEnabled = newAlarmsEnabled))
+    }
+
+    fun setOnboardingSeen(version: String) {
+        val settings = currentSettings ?: AppSettingsEntity()
+        saveSettings(settings.copy(lastOnboardedVersion = version))
     }
 
     private fun saveSettings(settings: AppSettingsEntity) {
