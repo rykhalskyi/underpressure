@@ -95,6 +95,17 @@
     <string name="label_repo">Исходный код (GitHub)</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
+    <!-- Data Management Section -->
+    <string name="header_data_management">Управление данными</string>
+    <string name="button_import_csv">Импортировать CSV</string>
+    <string name="dialog_title_import">Импорт данных</string>
+    <string name="label_import_strategy">Обработка коллизий (одинаковая дата/слот):</string>
+    <string name="option_overwrite">Перезаписать существующие</string>
+    <string name="option_skip">Пропустить (оставить существующие)</string>
+    <string name="message_import_success">Успешно импортировано %1$d измерений.</string>
+    <string name="message_import_error">Ошибка импорта: %1$s</string>
+    <string name="import_chooser_title">Выберите CSV файл</string>
+
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — это простой и приватный трекер артериального давления и пульса, который хранит все ваши данные только на вашем телефоне. Никаких серверов, сбора данных, рекламы или платежей.</string>

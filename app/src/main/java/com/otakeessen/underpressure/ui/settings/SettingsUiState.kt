@@ -9,6 +9,8 @@ data class SettingsUiState(
     val canScheduleExactAlarms: Boolean = true,
     val lastOnboardedVersion: String? = null,
     val isLoading: Boolean = false,
+    val isImporting: Boolean = false,
+    val importResult: String? = null,
     val error: String? = null
 )
 
