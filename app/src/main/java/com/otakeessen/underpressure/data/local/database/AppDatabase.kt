@@ -19,7 +19,7 @@ import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
         MeasurementEntity::class,
         AppSettingsEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
