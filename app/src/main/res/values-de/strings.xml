@@ -95,6 +95,17 @@
     <string name="label_repo">Quellcode (GitHub)</string>
     <string name="button_show_onboarding">Einführung anzeigen</string>
 
+    <!-- Data Management Section -->
+    <string name="header_data_management">Datenverwaltung</string>
+    <string name="button_import_csv">CSV importieren</string>
+    <string name="dialog_title_import">Daten importieren</string>
+    <string name="label_import_strategy">Umgang mit Kollisionen (gleiches Datum/Slot):</string>
+    <string name="option_overwrite">Vorhandene überschreiben</string>
+    <string name="option_skip">Überspringen (vorhandene behalten)</string>
+    <string name="message_import_success">%1$d Messungen erfolgreich importiert.</string>
+    <string name="message_import_error">Import fehlgeschlagen: %1$s</string>
+    <string name="import_chooser_title">CSV-Datei auswählen</string>
+
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">UnderPressure Tracker</string>
     <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Blutdruck- und Pulstracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>

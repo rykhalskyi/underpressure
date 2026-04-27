@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -58,6 +59,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ListItem
 import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
+import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.ui.semantics.Role
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.LinearProgressIndicator
 
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
@@ -72,8 +79,20 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showTimePickerForIndex by remember { mutableStateOf<Int?>(null) }
     var showOnboarding by remember { mutableStateOf(false) }
+    var showImportDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    val csvPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let {
+                showImportDialog = true
+                // We'll store the URI temporarily or pass it to the dialog
+                viewModel.onImportCsvUriSelected(it)
+            }
+        }
+    )
 
     val versionName = remember {
         try {
@@ -192,6 +211,33 @@ fun SettingsScreen(
 
                     item {
                         Text(
+                            text = stringResource(R.string.header_data_management),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.button_import_csv)) },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.Info, // Use appropriate icon if available
+                                    contentDescription = null
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                csvPickerLauncher.launch("text/csv")
+                            }
+                        )
+                        if (uiState.isImporting) {
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
+                        Text(
                             text = stringResource(R.string.header_about),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
@@ -246,6 +292,109 @@ fun SettingsScreen(
                 }
             )
         }
+
+        if (showImportDialog) {
+            ImportDialog(
+                onDismiss = { showImportDialog = false },
+                onConfirm = { overwrite ->
+                    viewModel.onImportCsv(overwrite)
+                    showImportDialog = false
+                }
+            )
+        }
+
+        uiState.importResult?.let { result ->
+            AlertDialog(
+                onDismissRequest = { viewModel.clearImportResult() },
+                title = { Text(stringResource(R.string.dialog_title_import)) },
+                text = {
+                    Text(
+                        if (result.contains("/")) 
+                            stringResource(R.string.message_import_success, result.split("/")[0].toInt())
+                        else 
+                            stringResource(R.string.message_import_error, result)
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.clearImportResult() }) {
+                        Text(stringResource(R.string.button_ok))
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ImportDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (Boolean) -> Unit
+) {
+    var overwrite by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.dialog_title_import)) },
+        text = {
+            Column(modifier = Modifier.selectableGroup()) {
+                Text(
+                    text = stringResource(R.string.label_import_strategy),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                StrategyOption(
+                    text = stringResource(R.string.option_skip),
+                    selected = !overwrite,
+                    onClick = { overwrite = false }
+                )
+                StrategyOption(
+                    text = stringResource(R.string.option_overwrite),
+                    selected = overwrite,
+                    onClick = { overwrite = true }
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onConfirm(overwrite) }) {
+                Text(stringResource(R.string.button_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.button_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun StrategyOption(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .selectable(
+                selected = selected,
+                onClick = onClick,
+                role = Role.RadioButton
+            )
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = null // null depends on the selectable modifier
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(start = 16.dp)
+        )
     }
 }
 

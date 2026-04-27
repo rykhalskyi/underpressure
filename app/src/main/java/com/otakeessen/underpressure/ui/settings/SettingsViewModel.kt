@@ -2,8 +2,10 @@ package com.otakeessen.underpressure.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
 import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
+import com.otakeessen.underpressure.data.export.TableImportManager
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +20,15 @@ import kotlinx.coroutines.launch
  */
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
-    private val alarmScheduler: AlarmScheduler
+    private val alarmScheduler: AlarmScheduler,
+    private val importManager: TableImportManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     private var currentSettings: AppSettingsEntity? = null
+    private var selectedImportUri: Uri? = null
 
     init {
         loadSettings()
@@ -87,6 +91,42 @@ class SettingsViewModel(
     fun setOnboardingSeen(version: String) {
         val settings = currentSettings ?: AppSettingsEntity()
         saveSettings(settings.copy(lastOnboardedVersion = version))
+    }
+
+    /**
+     * Called when a CSV file is selected for import.
+     */
+    fun onImportCsvUriSelected(uri: Uri) {
+        selectedImportUri = uri
+    }
+
+    /**
+     * Imports data from a CSV file.
+     */
+    fun onImportCsv(overwrite: Boolean) {
+        val uri = selectedImportUri ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isImporting = true, importResult = null) }
+            val strategy = if (overwrite) TableImportManager.ImportStrategy.Overwrite 
+                           else TableImportManager.ImportStrategy.Skip
+            
+            val result = importManager.importCsv(uri, strategy)
+            _uiState.update { 
+                it.copy(
+                    isImporting = false, 
+                    importResult = if (result.error != null) result.error 
+                                   else "${result.successCount}/${result.totalCount}"
+                ) 
+            }
+            selectedImportUri = null
+        }
+    }
+
+    /**
+     * Clears the import result message.
+     */
+    fun clearImportResult() {
+        _uiState.update { it.copy(importResult = null) }
     }
 
     private fun saveSettings(settings: AppSettingsEntity) {

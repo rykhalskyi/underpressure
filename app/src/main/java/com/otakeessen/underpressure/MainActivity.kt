@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.export.ChartExportManager
 import com.otakeessen.underpressure.data.export.TableExportManager
+import com.otakeessen.underpressure.data.export.TableImportManager
 import com.otakeessen.underpressure.data.local.database.AppDatabase
 import com.otakeessen.underpressure.data.repository.MeasurementRepositoryImpl
 import com.otakeessen.underpressure.data.repository.SettingsRepositoryImpl
@@ -53,7 +54,8 @@ class MainActivity : ComponentActivity() {
                         MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
                     }
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
-                        SettingsViewModel(settingsRepository, alarmScheduler) as T
+                        val importManager = TableImportManager(applicationContext, measurementRepository, settingsRepository)
+                        SettingsViewModel(settingsRepository, alarmScheduler, importManager) as T
                     }
                     modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                         SearchViewModel(measurementRepository) as T
