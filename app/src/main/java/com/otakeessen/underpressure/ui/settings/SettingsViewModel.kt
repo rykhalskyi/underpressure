@@ -14,12 +14,20 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.otakeessen.underpressure.domain.repository.MeasurementRepository
+import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
+import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Locale
+import kotlin.random.Random
+
 /**
  * ViewModel for the Settings screen.
  * Handles loading and updating measurement slot configurations.
  */
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
+    private val measurementRepository: MeasurementRepository,
     private val alarmScheduler: AlarmScheduler,
     private val importManager: TableImportManager
 ) : ViewModel() {
@@ -42,7 +50,17 @@ class SettingsViewModel(
                     _uiState.update { it.copy(isLoading = false, error = e.message) }
                 }
                 .collect { settings ->
-                    val entity = settings ?: AppSettingsEntity()
+                    var entity = settings ?: AppSettingsEntity()
+                    
+                    // Bug fix: Ensure slot 1 alarm is enabled if it's active but alarm is disabled.
+                    // This can happen for existing users because slot 1 cannot be toggled in the UI.
+                    if (entity.slotActiveFlags.getOrNull(0) == true && entity.slotAlarmsEnabled.getOrNull(0) == false) {
+                        val fixedAlarms = entity.slotAlarmsEnabled.toMutableList().apply { this[0] = true }
+                        val fixedSettings = entity.copy(slotAlarmsEnabled = fixedAlarms)
+                        saveSettings(fixedSettings)
+                        return@collect
+                    }
+
                     currentSettings = entity
                     _uiState.update {
                         it.copy(
@@ -127,6 +145,40 @@ class SettingsViewModel(
      */
     fun clearImportResult() {
         _uiState.update { it.copy(importResult = null) }
+    }
+
+    /**
+     * Populates the database with debug measurement data for the last 30 days.
+     */
+    fun populateDebugData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isImporting = true) }
+            try {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                val calendar = Calendar.getInstance()
+                
+                for (i in 0 until 30) {
+                    val date = dateFormat.format(calendar.time)
+                    
+                    // Add 2-4 measurements per day
+                    val measurementsCount = Random.nextInt(2, 5)
+                    for (slot in 0 until measurementsCount) {
+                        val measurement = MeasurementEntity(
+                            date = date,
+                            slotIndex = slot,
+                            systolic = Random.nextInt(110, 150),
+                            diastolic = Random.nextInt(70, 100),
+                            pulse = Random.nextInt(60, 90)
+                        )
+                        measurementRepository.saveMeasurement(measurement)
+                    }
+                    calendar.add(Calendar.DAY_OF_YEAR, -1)
+                }
+                _uiState.update { it.copy(isImporting = false, importResult = "30 days of data generated") }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isImporting = false, error = "Debug population failed: ${e.message}") }
+            }
+        }
     }
 
     private fun saveSettings(settings: AppSettingsEntity) {

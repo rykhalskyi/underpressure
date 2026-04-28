@@ -93,11 +93,13 @@
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>
+    <string name="label_privacy_policy">Privacy Policy</string>
     <string name="button_show_onboarding">Show Onboarding</string>
 
     <!-- Data Management Section -->
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
+    <string name="button_populate_debug_data">Populate Debug Data (30 days)</string>
     <string name="dialog_title_import">Import Data</string>
     <string name="label_import_strategy">Handling collisions (same date/slot):</string>
     <string name="option_overwrite">Overwrite existing</string>

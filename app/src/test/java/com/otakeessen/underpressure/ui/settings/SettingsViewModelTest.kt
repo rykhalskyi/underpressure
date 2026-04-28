@@ -20,11 +20,16 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
+import com.otakeessen.underpressure.domain.repository.MeasurementRepository
+import com.otakeessen.underpressure.data.export.TableImportManager
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsViewModelTest {
 
     private lateinit var settingsRepository: SettingsRepository
+    private lateinit var measurementRepository: MeasurementRepository
     private lateinit var alarmScheduler: AlarmScheduler
+    private lateinit var importManager: TableImportManager
     private lateinit var viewModel: SettingsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -32,7 +37,9 @@ class SettingsViewModelTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         settingsRepository = mockk()
+        measurementRepository = mockk()
         alarmScheduler = mockk(relaxed = true)
+        importManager = mockk()
     }
 
     @Test
@@ -43,7 +50,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager)
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -63,7 +70,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager)
         viewModel.updateSlotTime(1, "14:30")
 
         coVerify {
@@ -82,7 +89,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager)
         viewModel.updateSlotActive(1, true)
 
         coVerify {
@@ -100,7 +107,7 @@ class SettingsViewModelTest {
         val settings = AppSettingsEntity(slotActiveFlags = listOf(true, false, false, false))
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager)
         viewModel.updateSlotActive(0, false)
 
         coVerify(exactly = 0) {
@@ -109,6 +116,40 @@ class SettingsViewModelTest {
         verify(exactly = 0) {
             alarmScheduler.updateAlarms(any())
         }
+    }
+
+    @Test
+    fun `loadSettings auto-fixes slot 1 alarm if disabled`() = runTest {
+        val settings = AppSettingsEntity(
+            slotActiveFlags = listOf(true, false, false, false),
+            slotAlarmsEnabled = listOf(false, false, false, false)
+        )
+        // First emission has bug, second emission (after save) is fixed
+        val fixedSettings = settings.copy(slotAlarmsEnabled = listOf(true, false, false, false))
+        
+        // Use a MutableSharedFlow or similar to simulate repository updates
+        val settingsFlow = kotlinx.coroutines.flow.MutableSharedFlow<AppSettingsEntity?>(replay = 1)
+        settingsFlow.emit(settings)
+        
+        every { settingsRepository.getSettings() } returns settingsFlow
+        coEvery { settingsRepository.saveSettings(any()) } coAnswers {
+            settingsFlow.emit(it.invocation.args[0] as AppSettingsEntity)
+        }
+
+        viewModel = SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager)
+
+        coVerify {
+            settingsRepository.saveSettings(match {
+                it.slotAlarmsEnabled[0] == true
+            })
+        }
+        verify {
+            alarmScheduler.updateAlarms(match {
+                it.slotAlarmsEnabled[0] == true
+            })
+        }
+        
+        assertTrue(viewModel.uiState.value.slots[0].isAlarmEnabled)
     }
 }
 

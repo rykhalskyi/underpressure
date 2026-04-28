@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     }
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
                         val importManager = TableImportManager(applicationContext, measurementRepository, settingsRepository)
-                        SettingsViewModel(settingsRepository, alarmScheduler, importManager) as T
+                        SettingsViewModel(settingsRepository, measurementRepository, alarmScheduler, importManager) as T
                     }
                     modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                         SearchViewModel(measurementRepository) as T

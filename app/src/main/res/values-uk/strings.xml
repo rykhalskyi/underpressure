@@ -93,11 +93,13 @@
     <string name="header_about">Про програму</string>
     <string name="label_version">Версія %1$s</string>
     <string name="label_repo">Вихідний код (GitHub)</string>
+    <string name="label_privacy_policy">Політика конфіденційності</string>
     <string name="button_show_onboarding">Показати знайомство</string>
 
     <!-- Data Management Section -->
     <string name="header_data_management">Керування даними</string>
     <string name="button_import_csv">Імпортувати CSV</string>
+    <string name="button_populate_debug_data">Згенерувати тестові дані (30 днів)</string>
     <string name="dialog_title_import">Імпорт даних</string>
     <string name="label_import_strategy">Обробка колізій (однакова дата/слот):</string>
     <string name="option_overwrite">Перезаписати існуючі</string>

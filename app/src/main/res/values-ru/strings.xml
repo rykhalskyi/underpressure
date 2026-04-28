@@ -93,11 +93,13 @@
     <string name="header_about">О приложении</string>
     <string name="label_version">Версия %1$s</string>
     <string name="label_repo">Исходный код (GitHub)</string>
+    <string name="label_privacy_policy">Политика конфиденциальности</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
     <!-- Data Management Section -->
     <string name="header_data_management">Управление данными</string>
     <string name="button_import_csv">Импортировать CSV</string>
+    <string name="button_populate_debug_data">Сгенерировать тестовые данные (30 дней)</string>
     <string name="dialog_title_import">Импорт данных</string>
     <string name="label_import_strategy">Обработка коллизий (одинаковая дата/слот):</string>
     <string name="option_overwrite">Перезаписать существующие</string>

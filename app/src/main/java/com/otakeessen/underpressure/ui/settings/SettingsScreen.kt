@@ -66,6 +66,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.LinearProgressIndicator
 
+import com.otakeessen.underpressure.BuildConfig
+import androidx.compose.material.icons.filled.Build
+
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
  */
@@ -177,9 +180,14 @@ fun SettingsScreen(
                             ExactAlarmWarning(
                                 onGrantClick = {
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                                            data = Uri.fromParts("package", context.packageName, null)
-                                        }
+                                        val intent =
+                                            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                                                data = Uri.fromParts(
+                                                    "package",
+                                                    context.packageName,
+                                                    null
+                                                )
+                                            }
                                         context.startActivity(intent)
                                     }
                                 }
@@ -200,7 +208,10 @@ fun SettingsScreen(
                             onTimeClick = { showTimePickerForIndex = index },
                             onActiveChange = { viewModel.updateSlotActive(index, it) }
                         )
-                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                        HorizontalDivider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant
+                        )
                     }
                     item {
                         GlobalAlarmRow(
@@ -233,9 +244,30 @@ fun SettingsScreen(
                         if (uiState.isImporting) {
                             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                         }
-                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                        HorizontalDivider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant
+                        )
                     }
-
+                    /*
+                    if (BuildConfig.DEBUG) {
+                        item {
+                            ListItem(
+                                headlineContent = { Text(stringResource(R.string.button_populate_debug_data)) },
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Build,
+                                        contentDescription = null
+                                    )
+                                },
+                                modifier = Modifier.clickable {
+                                    viewModel.populateDebugData()
+                                }
+                            )
+                            HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                        }
+                    }
+*/
                     item {
                         Text(
                             text = stringResource(R.string.header_about),
@@ -246,7 +278,14 @@ fun SettingsScreen(
 
                     item {
                         ListItem(
-                            headlineContent = { Text(stringResource(R.string.label_version, versionName ?: "Unknown")) },
+                            headlineContent = {
+                                Text(
+                                    stringResource(
+                                        R.string.label_version,
+                                        versionName ?: "Unknown"
+                                    )
+                                )
+                            },
                             leadingContent = {
                                 Icon(
                                     imageVector = Icons.Default.Info,
@@ -257,7 +296,24 @@ fun SettingsScreen(
                                 showOnboarding = true
                             }
                         )
-                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                        HorizontalDivider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant
+                        )
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.label_privacy_policy)) },
+                            supportingContent = { Text("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md") },
+                            modifier = Modifier.clickable {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md")
+                                )
+                                context.startActivity(intent)
+                            }
+                        )
                     }
 
                     item {
@@ -265,9 +321,16 @@ fun SettingsScreen(
                             headlineContent = { Text(stringResource(R.string.label_repo)) },
                             supportingContent = { Text("https://github.com/rykhalskyi/underpressure") },
                             modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rykhalskyi/underpressure"))
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/rykhalskyi/underpressure")
+                                )
                                 context.startActivity(intent)
                             }
+                        )
+                        HorizontalDivider(
+                            thickness = 0.5.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant
                         )
                     }
                 }
