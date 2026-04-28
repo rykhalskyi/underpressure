@@ -93,6 +93,7 @@
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>
+    <string name="label_privacy_policy">Privacy Policy</string>
     <string name="button_show_onboarding">Show Onboarding</string>
 
     <!-- Data Management Section -->

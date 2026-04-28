@@ -93,6 +93,7 @@
     <string name="header_about">О приложении</string>
     <string name="label_version">Версия %1$s</string>
     <string name="label_repo">Исходный код (GitHub)</string>
+    <string name="label_privacy_policy">Политика конфиденциальности</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
     <!-- Data Management Section -->
