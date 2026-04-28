@@ -1,0 +1,120 @@
+<resources>
+    <!-- App General -->
+    <string name="app_name">UnderPressure</string>
+    <string name="empty_value">-</string>
+    <string name="unknown_error">Nieznany błąd</string>
+    <string name="button_save">Zapisz</string>
+    <string name="button_cancel">Anuluj</string>
+    <string name="button_ok">OK</string>
+    <string name="button_confirm">Potwierdź</string>
+    <string name="button_clear">Wyczyść</string>
+    <string name="button_close">Zamknij</string>
+    <string name="button_grant">ZEZWÓL</string>
+
+    <!-- Table Screen Headers -->
+    <string name="header_date">Data</string>
+    <string name="header_systolic">Syc</string>
+    <string name="header_diastolic">Roz</string>
+    <string name="header_pulse">Tętno</string>
+    
+    <!-- Table Screen Actions (Accessibility) -->
+    <string name="cd_toggle_alarms">Przełącz alarmy</string>
+    <string name="cd_search">Szukaj</string>
+    <string name="cd_share">Udostępnij</string>
+    <string name="cd_settings">Otwórz ustawienia</string>
+    <string name="cd_add_measurement">Dodaj pomiar</string>
+    <string name="hint_fab_disabled">Pomiary można zapisywać w ciągu ±15 minut od zaplanowanego czasu.</string>
+    <string name="cd_go_back">Wróć</string>
+
+    <!-- Measurement Edit Dialog -->
+    <string name="dialog_title_edit">Edytuj pomiar</string>
+    <string name="dialog_title_add">Dodaj pomiar</string>
+    <string name="label_measurement_format">SYC/ROZ @TĘTNO</string>
+    <string name="placeholder_measurement">120/80 @72</string>
+    <string name="error_invalid_format">Nieprawidłowy format. Użyj: SYC/ROZ @TĘTNO</string>
+    <string name="error_incorrect_measurements">Nieprawidłowe wymiary</string>
+    <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
+    <string name="dialog_measurement_slot_info">%1$s - Miejsce %2$d</string>
+
+    <!-- Search Dialog -->
+    <string name="dialog_title_search">Szukaj pomiarów</string>
+    <string name="label_search_hint">Wprowadź datę (RRRR-MM-DD) lub wartość</string>
+    <string name="message_no_results">Nie znaleziono wyników</string>
+    <string name="button_jump_to_date">Skocz do daty: %1$s</string>
+    <string name="label_measurement_details">Skurczowe: %1$d, Rozkurczowe: %2$d, Tętno: %3$d</string>
+    <string name="error_invalid_date">Nieprawidłowy format daty (RRRR-MM-DD)</string>
+
+    <!-- Share Dialog -->
+    <string name="dialog_title_share">Udostępnij pomiary</string>
+    <string name="label_select_date_range">Wybierz zakres dat (opcjonalnie)</string>
+    <string name="label_date_from">Od</string>
+    <string name="label_date_to">Do</string>
+    <string name="button_share_message">Udostępnij jako wiadomość</string>
+    <string name="button_export_csv">Eksportuj do CSV</string>
+    <string name="share_chooser_title">Udostępnij dziennik ciśnienia krwi</string>
+    <string name="export_chooser_title">Eksportuj CSV</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Ustawienia</string>
+    <string name="header_measurement_slots">Miejsca pomiarowe</string>
+    <string name="label_slot_number">Miejsce %1$d</string>
+    <string name="label_global_alarm">Globalne przypomnienia o alarmach</string>
+    <string name="label_active">Aktywny</string>
+    <string name="label_alarm">Przypomnij</string>
+    <string name="dialog_title_select_time">Wybierz czas</string>
+    <string name="error_loading_settings">Błąd ładowania ustawień</string>
+
+    <!-- Exact Alarm Warning -->
+    <string name="warning_exact_alarms_title">Dokładne alarmy wyłączone</string>
+    <string name="warning_exact_alarms_body">Alarmy mogą być opóźnione do godziny. Proszę udzielić pozwolenia na precyzyjny pomiar czasu.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Przypomnienia o pomiarach</string>
+    <string name="notification_title">Czas na pomiar</string>
+    <string name="notification_message">Nadszedł czas na zapisanie ciśnienia krwi dla miejsca %1$d.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">Wykres ciśnienia krwi</string>
+    <string name="cd_chart">Wykres ciśnienia krwi</string>
+    <string name="button_configure">Konfiguruj</string>
+    <string name="dialog_title_chart_config">Konfiguracja wykresu</string>
+    <string name="label_select_slots">Wybierz miejsca</string>
+    <string name="label_select_types">Wybierz typy pomiarów</string>
+    <string name="button_apply">Zastosuj</string>
+    <string name="error_no_slots_selected">Proszę wybrać co najmniej jedno miejsce i jeden typ.</string>
+    <string name="error_no_data">Brak dostępnych danych</string>
+    <string name="error_no_data_in_range">Brak danych w wybranym zakresie dat</string>
+    <string name="error_failed_to_export">Nie udało się wyeksportować wykresu: %1$s</string>
+    <string name="label_chart_combined_format">%1$s - %2$s</string>
+    <string name="error_invalid_date_format">Nieprawidłowy format daty</string>
+    <string name="error_from_after_to">Data początkowa nie może być późniejsza niż końcowa</string>
+    <string name="placeholder_date">RRRR-MM-DD</string>
+    <!-- About Section -->
+    <string name="header_about">O aplikacji</string>
+    <string name="label_version">Wersja %1$s</string>
+    <string name="label_repo">Kod źródłowy (GitHub)</string>
+    <string name="label_privacy_policy">Polityka prywatności</string>
+    <string name="button_show_onboarding">Pokaż wprowadzenie</string>
+
+    <!-- Data Management Section -->
+    <string name="header_data_management">Zarządzanie danymi</string>
+    <string name="button_import_csv">Importuj CSV</string>
+    <string name="dialog_title_import">Importuj dane</string>
+    <string name="label_import_strategy">Obsługa kolizji (ta sama data/miejsce):</string>
+    <string name="option_overwrite">Nadpisz istniejące</string>
+    <string name="option_skip">Pomiń (zachowaj istniejące)</string>
+    <string name="message_import_success">Pomyślnie zaimportowano %1$d pomiarów.</string>
+    <string name="message_import_error">Import nie powiódł się: %1$s</string>
+    <string name="import_chooser_title">Wybierz plik CSV</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_slide1_caption">Licznik UnderPressure</string>
+    <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia krwi i tętna, który przechowuje wszystkie dane wyłącznie na telefonie. Bez serwerów, bez zbierania danych, bez reklam, bez opłat.</string>
+    <string name="onboarding_slide2_caption">Do 4 miejsc każdego dnia</string>
+    <string name="onboarding_slide2_description">Możesz dodać do 4 przedziałów czasowych na pomiar. Wprowadzanie danych jest możliwe w ciągu +/- 15 minut od każdego z nich. Przedziały czasowe możesz skonfigurować w Ustawieniach.</string>
+    <string name="onboarding_slide3_caption">Wykres pomiarów</string>
+    <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
+    <string name="onboarding_slide4_caption">Udostępnij dane</string>
+    <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
+    <string name="button_onboarding_close">Zacznijmy</string>
+</resources>

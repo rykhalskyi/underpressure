@@ -262,6 +262,18 @@ fun SettingsScreen(
 
                     item {
                         ListItem(
+                            headlineContent = { Text(stringResource(R.string.label_privacy_policy)) },
+                            supportingContent = { Text("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md") },
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md"))
+                                context.startActivity(intent)
+                            }
+                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
+                        ListItem(
                             headlineContent = { Text(stringResource(R.string.label_repo)) },
                             supportingContent = { Text("https://github.com/rykhalskyi/underpressure") },
                             modifier = Modifier.clickable {
