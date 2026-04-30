@@ -9,7 +9,6 @@ import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
 import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
-import android.util.Log
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -84,8 +83,9 @@ class MeasurementTableViewModel(
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
         
-        // Use default if settings are null
-        val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
+        // Use default if settings are null, but always ensure slot 1 is active
+        val activeFlags = (settings?.slotActiveFlags ?: listOf(true, false, false, false))
+            .toMutableList().apply { this[0] = true }
         val allTimesStr = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
         
         // Filter headers by active status
@@ -159,8 +159,6 @@ class MeasurementTableViewModel(
             // Using seconds for better precision during the 15-min window check
             val diffSeconds = Duration.between(slotTime, now).getSeconds()
             val diffMinutes = diffSeconds / 60.0
-            
-            Log.d("MeasurementVM", "Checking slot $originalIndex at $slotTimeStr. Now: $now. Diff mins: $diffMinutes")
 
             if (abs(diffMinutes) <= 15.0) {
                 // Check if slot is empty
@@ -168,7 +166,6 @@ class MeasurementTableViewModel(
                 if (!alreadyExists) {
                     originalIndex to diffMinutes
                 } else {
-                    Log.d("MeasurementVM", "Slot $originalIndex already filled for today")
                     null
                 }
             } else null
@@ -189,8 +186,6 @@ class MeasurementTableViewModel(
                 }
             }
         }
-
-        Log.d("MeasurementVM", "FAB Enabled: ${fabTargetSlotIndex != null}, Target: $fabTargetSlotIndex")
 
         TableUiState(
             isLoading = false,

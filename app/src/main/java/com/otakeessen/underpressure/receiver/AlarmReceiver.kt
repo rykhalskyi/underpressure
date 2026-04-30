@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.otakeessen.underpressure.MainActivity
@@ -34,7 +33,9 @@ class AlarmReceiver : BroadcastReceiver() {
         val slotIndex = intent.getIntExtra(AlarmScheduler.EXTRA_SLOT_INDEX, -1)
         val timeStr = intent.getStringExtra(AlarmScheduler.EXTRA_TIME_STR)
 
-        if (slotIndex == -1) return
+        if (slotIndex == -1) {
+            return
+        }
 
         val pendingResult = goAsync()
         scope.launch {
@@ -48,19 +49,21 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 if (!alreadyFilled) {
                     showNotification(context, slotIndex)
-                } else {
-                    Log.d("AlarmReceiver", "Skipping notification for slot $slotIndex - already filled today ($todayStr)")
                 }
                 
                 // Reschedule for tomorrow
                 if (timeStr != null) {
-                    AlarmScheduler(context).scheduleAlarm(slotIndex, timeStr)
+                    AlarmScheduler(context.applicationContext).scheduleAlarm(slotIndex, timeStr)
                 }
             } catch (e: Exception) {
-                Log.e("AlarmReceiver", "Error processing alarm for slot $slotIndex", e)
-                // If anything fails, reschedule for tomorrow to avoid losing the alarm chain
-                if (timeStr != null) {
-                    AlarmScheduler(context).scheduleAlarm(slotIndex, timeStr)
+                // If anything fails, try one last time to reschedule for tomorrow to avoid losing the alarm chain
+                // but wrap it in a separate try-catch to avoid infinite loop
+                try {
+                    if (timeStr != null) {
+                        AlarmScheduler(context.applicationContext).scheduleAlarm(slotIndex, timeStr)
+                    }
+                } catch (reschedError: Exception) {
+                    // Ignore
                 }
             } finally {
                 pendingResult.finish()
@@ -93,14 +96,15 @@ class AlarmReceiver : BroadcastReceiver() {
 
         with(NotificationManagerCompat.from(context)) {
             if (!areNotificationsEnabled()) {
-                Log.e("AlarmReceiver", "Notifications are BLOCKED by the system settings")
                 return
             }
 
             try {
                 notify(slotIndex, builder.build())
             } catch (e: SecurityException) {
-                Log.e("AlarmReceiver", "Failed to show notification: Missing permission", e)
+                // Ignore
+            } catch (e: Exception) {
+                // Ignore
             }
         }
     }

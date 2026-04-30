@@ -25,6 +25,7 @@ class SettingsViewModelTest {
 
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var alarmScheduler: AlarmScheduler
+    private lateinit var importManager: com.otakeessen.underpressure.data.export.TableImportManager
     private lateinit var viewModel: SettingsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -33,6 +34,7 @@ class SettingsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         settingsRepository = mockk()
         alarmScheduler = mockk(relaxed = true)
+        importManager = mockk(relaxed = true)
     }
 
     @Test
@@ -43,7 +45,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -63,7 +65,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
         viewModel.updateSlotTime(1, "14:30")
 
         coVerify {
@@ -82,7 +84,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
         viewModel.updateSlotActive(1, true)
 
         coVerify {
@@ -100,7 +102,7 @@ class SettingsViewModelTest {
         val settings = AppSettingsEntity(slotActiveFlags = listOf(true, false, false, false))
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
         viewModel.updateSlotActive(0, false)
 
         coVerify(exactly = 0) {

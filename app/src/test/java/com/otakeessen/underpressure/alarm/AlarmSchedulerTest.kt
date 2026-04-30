@@ -115,5 +115,24 @@ class AlarmSchedulerTest {
         verify(exactly = 2) { alarmManager.setExactAndAllowWhileIdle(any(), any<Long>(), any<android.app.PendingIntent>()) }
         verify(exactly = 2) { alarmManager.cancel(any<android.app.PendingIntent>()) }
     }
+
+    @Test
+    fun `updateAlarms always schedules slot 0 if masterAlarmEnabled is true`() {
+        // Arrange
+        val settings = AppSettingsEntity(
+            masterAlarmEnabled = true,
+            slotActiveFlags = listOf(false, false, false, false), // Slot 0 forced to false
+            slotAlarmsEnabled = listOf(false, false, false, false) // Slot 0 forced to false
+        )
+
+        // Act
+        alarmScheduler.updateAlarms(settings)
+
+        // Assert
+        // Slot 0 should be scheduled because it is forced true in logic
+        // Slot 1, 2, 3 should be canceled
+        verify(exactly = 1) { alarmManager.setExactAndAllowWhileIdle(any(), any<Long>(), any<android.app.PendingIntent>()) }
+        verify(exactly = 3) { alarmManager.cancel(any<android.app.PendingIntent>()) }
+    }
 }
 

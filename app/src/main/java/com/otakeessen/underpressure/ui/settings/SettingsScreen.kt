@@ -222,7 +222,7 @@ fun SettingsScreen(
                             headlineContent = { Text(stringResource(R.string.button_import_csv)) },
                             leadingContent = {
                                 Icon(
-                                    imageVector = Icons.Default.Info, // Use appropriate icon if available
+                                    imageVector = Icons.Default.Info,
                                     contentDescription = null
                                 )
                             },
@@ -321,9 +321,9 @@ fun SettingsScreen(
                 title = { Text(stringResource(R.string.dialog_title_import)) },
                 text = {
                     Text(
-                        if (result.contains("/")) 
+                        if (result.contains("/"))
                             stringResource(R.string.message_import_success, result.split("/")[0].toInt())
-                        else 
+                        else
                             stringResource(R.string.message_import_error, result)
                     )
                 },
@@ -354,7 +354,7 @@ fun ImportDialog(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                
+
                 StrategyOption(
                     text = stringResource(R.string.option_skip),
                     selected = !overwrite,
@@ -449,4 +449,3 @@ fun ExactAlarmWarning(
         }
     }
 }
-

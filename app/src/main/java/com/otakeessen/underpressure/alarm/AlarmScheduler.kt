@@ -23,23 +23,18 @@ class AlarmScheduler(private val context: Context) {
      * Required for Android 12 (API 31) and higher.
      */
     fun canScheduleExactAlarms(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> true // USE_EXACT_ALARM is granted at install time
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> alarmManager.canScheduleExactAlarms()
+            else -> true
         }
     }
 
-    /**
-     * Reconciles all slot alarms based on current settings.
-     * Schedules alarms for active slots with enabled alarms, and cancels the rest.
-     *
-     * @param settings Current application settings.
-     */
     fun updateAlarms(settings: AppSettingsEntity) {
         for (i in 0 until 4) {
-            val isActive = settings.slotActiveFlags.getOrElse(i) { i == 0 }
-            val isAlarmEnabled = settings.slotAlarmsEnabled.getOrElse(i) { false }
+            // Slot 1 (index 0) is always active and its alarm is only controlled by masterAlarmEnabled
+            val isActive = if (i == 0) true else settings.slotActiveFlags.getOrElse(i) { false }
+            val isAlarmEnabled = if (i == 0) true else settings.slotAlarmsEnabled.getOrElse(i) { false }
             val time = settings.slotTimes.getOrElse(i) { "07:00" }
 
             if (settings.masterAlarmEnabled && isActive && isAlarmEnabled) {
@@ -60,14 +55,14 @@ class AlarmScheduler(private val context: Context) {
         val intent = createPendingIntent(slotIndex, timeStr)
         val triggerAtMillis = calculateTriggerTime(timeStr)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setAndAllowWhileIdle(
+        if (canScheduleExactAlarms()) {
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
                 intent
             )
         } else {
-            alarmManager.setExactAndAllowWhileIdle(
+            alarmManager.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
                 intent
@@ -100,11 +95,16 @@ class AlarmScheduler(private val context: Context) {
             putExtra(EXTRA_SLOT_INDEX, slotIndex)
             timeStr?.let { putExtra(EXTRA_TIME_STR, it) }
         }
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
         return PendingIntent.getBroadcast(
             context,
             slotIndex,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            flags
         )
     }
 
