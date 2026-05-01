@@ -117,4 +117,10 @@
     <string name="onboarding_slide4_caption">Поделиться данными</string>
     <string name="onboarding_slide4_description">Вы можете поделиться данными, если хотите. В остальных случаях ваши данные не покинут ваш телефон. Мы также не собираем никакой телеметрии или логов.</string>
     <string name="button_onboarding_close">Начать</string>
+
+    <!-- Guidance Popup -->
+    <string name="guidance_title">Кажется, это не ваше время измерения</string>
+    <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?</string>
+    <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
+    <string name="hint_cannot_create_slot">Не удается создать слот сейчас. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
 </resources>

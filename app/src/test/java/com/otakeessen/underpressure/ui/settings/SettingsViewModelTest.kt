@@ -60,8 +60,10 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `updateSlotTime calls repository save and alarm scheduler`() = runTest {
-        val settings = AppSettingsEntity()
+    fun `updateSlotTime calls repository save and marks slot as modified`() = runTest {
+        val settings = AppSettingsEntity(
+            slotModifiedFlags = listOf(false, false, false, false)
+        )
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
@@ -70,7 +72,7 @@ class SettingsViewModelTest {
 
         coVerify {
             settingsRepository.saveSettings(match {
-                it.slotTimes[1] == "14:30"
+                it.slotTimes[1] == "14:30" && it.slotModifiedFlags[1] == true
             })
         }
         verify {

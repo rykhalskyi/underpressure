@@ -8,7 +8,9 @@ data class MeasurementDialogState(
     val date: String = "",
     val slotIndex: Int = 0,
     val initialValue: String = "",
-    val existingMeasurementId: Long? = null
+    val existingMeasurementId: Long? = null,
+    val isGuidanceVisible: Boolean = false,
+    val suggestedSlotTime: String = ""
 )
 
 /**
@@ -23,6 +25,8 @@ data class MeasurementDialogState(
  * @property dialogState State for the measurement entry/edit dialog.
  * @property isFabEnabled True if a slot is currently eligible for measurement entry.
  * @property fabTargetSlotIndex The slot index the FAB should target, if enabled.
+ * @property isGuidanceRequired True if clicking the FAB should show guidance instead of the edit dialog.
+ * @property fabHint Optional hint message to show when FAB is clicked (or if disabled).
  * @property isMasterAlarmEnabled True if the global alarm reminder switch is ON.
  * @property error Error message if data load fails.
  */
@@ -36,6 +40,8 @@ data class TableUiState(
     val dialogState: MeasurementDialogState = MeasurementDialogState(),
     val isFabEnabled: Boolean = false,
     val fabTargetSlotIndex: Int? = null,
+    val isGuidanceRequired: Boolean = false,
+    val fabHint: String? = null,
     val isMasterAlarmEnabled: Boolean = false,
     val error: String? = null,
 )

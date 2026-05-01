@@ -83,7 +83,10 @@ class SettingsViewModel(
         val newTimes = settings.slotTimes.toMutableList().apply {
             this[index] = time
         }
-        saveSettings(settings.copy(slotTimes = newTimes))
+        val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
+            this[index] = true
+        }
+        saveSettings(settings.copy(slotTimes = newTimes, slotModifiedFlags = newModifiedFlags))
     }
 
     fun updateSlotActive(index: Int, isActive: Boolean) {

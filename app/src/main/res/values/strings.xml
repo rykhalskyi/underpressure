@@ -117,4 +117,10 @@
     <string name="onboarding_slide4_caption">Share Data</string>
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
     <string name="button_onboarding_close">Get Started</string>
+
+    <!-- Guidance Popup -->
+    <string name="guidance_title">It doesn\'t seem to be your measurement time</string>
+    <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?</string>
+    <string name="hint_edit_slot">You can change value of slot %1$d by tapping on it.</string>
+    <string name="hint_cannot_create_slot">Cannot create slot now. It must be at least 30 minutes away from neighbor slots. Use the next slot at %1$s.</string>
 </resources>
