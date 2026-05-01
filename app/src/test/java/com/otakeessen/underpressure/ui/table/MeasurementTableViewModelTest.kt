@@ -28,8 +28,11 @@ import org.junit.Test
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Month
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MeasurementTableViewModelTest {
@@ -43,6 +46,11 @@ class MeasurementTableViewModelTest {
     // Fixed clock for testing: 2023-10-27 at 12:00:00
     private val fixedClock = Clock.fixed(Instant.parse("2023-10-27T12:00:00Z"), ZoneId.of("UTC"))
     private val today = LocalDate.now(fixedClock).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+    private fun getExpectedMonthName(month: Month): String {
+        return month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    }
 
     @Before
     fun setUp() {
@@ -260,9 +268,9 @@ class MeasurementTableViewModelTest {
 
         assertEquals(5, state.displayItems.size)
         assertTrue(state.displayItems[0] is TableItem.YearHeader && (state.displayItems[0] as TableItem.YearHeader).year == 2023 && (state.displayItems[0] as TableItem.YearHeader).isExpanded)
-        assertTrue(state.displayItems[1] is TableItem.MonthHeader && (state.displayItems[1] as TableItem.MonthHeader).monthName == "October" && (state.displayItems[1] as TableItem.MonthHeader).isExpanded)
+        assertTrue(state.displayItems[1] is TableItem.MonthHeader && (state.displayItems[1] as TableItem.MonthHeader).monthName == getExpectedMonthName(Month.OCTOBER) && (state.displayItems[1] as TableItem.MonthHeader).isExpanded)
         assertTrue(state.displayItems[2] is TableItem.DayRow && (state.displayItems[2] as TableItem.DayRow).summary.date == "2023-10-27")
-        assertTrue(state.displayItems[3] is TableItem.MonthHeader && (state.displayItems[3] as TableItem.MonthHeader).monthName == "September" && !(state.displayItems[3] as TableItem.MonthHeader).isExpanded)
+        assertTrue(state.displayItems[3] is TableItem.MonthHeader && (state.displayItems[3] as TableItem.MonthHeader).monthName == getExpectedMonthName(Month.SEPTEMBER) && !(state.displayItems[3] as TableItem.MonthHeader).isExpanded)
         assertTrue(state.displayItems[4] is TableItem.YearHeader && (state.displayItems[4] as TableItem.YearHeader).year == 2022 && !(state.displayItems[4] as TableItem.YearHeader).isExpanded)
     }
 
@@ -291,7 +299,7 @@ class MeasurementTableViewModelTest {
         // Now 2022 should be expanded
         assertTrue(state.displayItems[0] is TableItem.YearHeader && (state.displayItems[0] as TableItem.YearHeader).year == 2022 && (state.displayItems[0] as TableItem.YearHeader).isExpanded)
         // Should show MonthHeader for December
-        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "December" })
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == getExpectedMonthName(Month.DECEMBER) })
     }
 
     @Test
@@ -309,15 +317,14 @@ class MeasurementTableViewModelTest {
         var state = viewModel.uiState.first { !it.isLoading }
         
         // 2023 is expanded, but September (prev month) is collapsed by default
-        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "September" && !it.isExpanded })
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == getExpectedMonthName(Month.SEPTEMBER) && !it.isExpanded })
         
         viewModel.toggleMonthExpansion("2023-09")
         testDispatcher.scheduler.runCurrent()
         state = viewModel.uiState.value
         
         // Now September should be expanded
-        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == "September" && it.isExpanded })
+        assertTrue(state.displayItems.any { it is TableItem.MonthHeader && it.monthName == getExpectedMonthName(Month.SEPTEMBER) && it.isExpanded })
         assertTrue(state.displayItems.any { it is TableItem.DayRow && it.summary.date == "2023-09-15" })
     }
 }
-
