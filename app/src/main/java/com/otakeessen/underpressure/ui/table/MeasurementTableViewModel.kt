@@ -26,6 +26,9 @@ import java.time.LocalTime
 import java.time.Clock
 import java.time.format.DateTimeFormatter
 import java.time.Duration
+import java.time.format.TextStyle
+import java.util.Locale
+import java.time.Month
 import kotlin.math.abs
 
 /**
@@ -127,7 +130,7 @@ class MeasurementTableViewModel(
                 groupedByMonth.keys.sortedDescending().forEach { yearMonth ->
                     val isMonthExpanded = expandedMonths.contains(yearMonth)
                     val monthDate = LocalDate.parse("$yearMonth-01", dateFormatter)
-                    val monthName = monthDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
+                    val monthName = monthDate.format(DateTimeFormatter.ofPattern("MMMM", Locale.getDefault()))
                     
                     // Optional: calculate summary for month
                     val monthMeasurements = groupedByMonth[yearMonth] ?: emptyList()
