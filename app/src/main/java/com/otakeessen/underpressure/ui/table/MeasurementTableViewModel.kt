@@ -130,7 +130,8 @@ class MeasurementTableViewModel(
                 groupedByMonth.keys.sortedDescending().forEach { yearMonth ->
                     val isMonthExpanded = expandedMonths.contains(yearMonth)
                     val monthDate = LocalDate.parse("$yearMonth-01", dateFormatter)
-                    val monthName = monthDate.format(DateTimeFormatter.ofPattern("MMMM", Locale.getDefault()))
+                    val monthName = monthDate.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
                     
                     // Optional: calculate summary for month
                     val monthMeasurements = groupedByMonth[yearMonth] ?: emptyList()
