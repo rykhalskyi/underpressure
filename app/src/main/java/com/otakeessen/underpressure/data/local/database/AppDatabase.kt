@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.otakeessen.underpressure.data.local.converters.Converters
 import com.otakeessen.underpressure.data.local.dao.AppSettingsDao
 import com.otakeessen.underpressure.data.local.dao.MeasurementDao
@@ -19,7 +21,7 @@ import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
         MeasurementEntity::class,
         AppSettingsEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -31,6 +33,56 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // No changes in schema between 1 and 2
+            }
+        }
+
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN lastOnboardedVersion TEXT")
+            }
+        }
+
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN slotModifiedFlags TEXT NOT NULL DEFAULT 'false,false,false,false'")
+            }
+        }
+
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // SQLite doesn't support DROP COLUMN before 3.35.0 (API 34).
+                // Standard Room pattern: create new table, copy data, drop old table, rename.
+                
+                // 1. Create the new table
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `app_settings_new` (
+                        `id` INTEGER NOT NULL, 
+                        `masterAlarmEnabled` INTEGER NOT NULL, 
+                        `slotTimes` TEXT NOT NULL, 
+                        `slotActiveFlags` TEXT NOT NULL, 
+                        `slotModifiedFlags` TEXT NOT NULL, 
+                        `lastOnboardedVersion` TEXT, 
+                        PRIMARY KEY(`id`)
+                    )
+                """.trimIndent())
+
+                // 2. Copy the data (omitting slotAlarmsEnabled)
+                db.execSQL("""
+                    INSERT INTO `app_settings_new` (id, masterAlarmEnabled, slotTimes, slotActiveFlags, slotModifiedFlags, lastOnboardedVersion)
+                    SELECT id, masterAlarmEnabled, slotTimes, slotActiveFlags, slotModifiedFlags, lastOnboardedVersion FROM app_settings
+                """.trimIndent())
+
+                // 3. Drop the old table
+                db.execSQL("DROP TABLE app_settings")
+
+                // 4. Rename the new table
+                db.execSQL("ALTER TABLE app_settings_new RENAME TO app_settings")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -38,7 +90,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "under_pressure_database"
                 )
-                .fallbackToDestructiveMigration()
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .build()
                 INSTANCE = instance
                 instance

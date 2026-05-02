@@ -32,12 +32,11 @@ class AlarmScheduler(private val context: Context) {
 
     fun updateAlarms(settings: AppSettingsEntity) {
         for (i in 0 until 4) {
-            // Slot 1 (index 0) is always active and its alarm is only controlled by masterAlarmEnabled
+            // Slot 1 (index 0) is always active
             val isActive = if (i == 0) true else settings.slotActiveFlags.getOrElse(i) { false }
-            val isAlarmEnabled = if (i == 0) true else settings.slotAlarmsEnabled.getOrElse(i) { false }
             val time = settings.slotTimes.getOrElse(i) { "07:00" }
 
-            if (settings.masterAlarmEnabled && isActive && isAlarmEnabled) {
+            if (settings.masterAlarmEnabled && isActive) {
                 scheduleAlarm(i, time)
             } else {
                 cancelAlarm(i)
@@ -96,13 +95,17 @@ class AlarmScheduler(private val context: Context) {
             timeStr?.let { putExtra(EXTRA_TIME_STR, it) }
         }
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
+        
+        // Use an offset to avoid conflicts with other component IDs (e.g., 0)
+        val requestCode = 100 + slotIndex
+        
         return PendingIntent.getBroadcast(
             context,
-            slotIndex,
+            requestCode,
             intent,
             flags
         )

@@ -84,8 +84,7 @@ class AlarmSchedulerTest {
         // Arrange
         val settings = AppSettingsEntity(
             masterAlarmEnabled = false,
-            slotActiveFlags = listOf(true, true, true, true),
-            slotAlarmsEnabled = listOf(true, true, true, true)
+            slotActiveFlags = listOf(true, true, true, true)
         )
 
         // Act
@@ -102,8 +101,7 @@ class AlarmSchedulerTest {
         // Arrange
         val settings = AppSettingsEntity(
             masterAlarmEnabled = true,
-            slotActiveFlags = listOf(true, false, true, false),
-            slotAlarmsEnabled = listOf(true, true, true, true) // enabled but depends on active
+            slotActiveFlags = listOf(true, false, true, false)
         )
 
         // Act
@@ -121,8 +119,7 @@ class AlarmSchedulerTest {
         // Arrange
         val settings = AppSettingsEntity(
             masterAlarmEnabled = true,
-            slotActiveFlags = listOf(false, false, false, false), // Slot 0 forced to false
-            slotAlarmsEnabled = listOf(false, false, false, false) // Slot 0 forced to false
+            slotActiveFlags = listOf(false, false, false, false) // Slot 0 forced to false
         )
 
         // Act

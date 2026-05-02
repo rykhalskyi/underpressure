@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.otakeessen.underpressure.MainActivity
@@ -57,13 +58,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             } catch (e: Exception) {
                 // If anything fails, try one last time to reschedule for tomorrow to avoid losing the alarm chain
-                // but wrap it in a separate try-catch to avoid infinite loop
                 try {
                     if (timeStr != null) {
                         AlarmScheduler(context.applicationContext).scheduleAlarm(slotIndex, timeStr)
                     }
                 } catch (reschedError: Exception) {
-                    // Ignore
                 }
             } finally {
                 pendingResult.finish()
@@ -78,16 +77,20 @@ class AlarmReceiver : BroadcastReceiver() {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        
+        // Use the same offset for notification requestCode to avoid conflicts
+        val requestCode = 100 + slotIndex
+        
         val pendingIntent = PendingIntent.getActivity(
             context, 
-            0, 
+            requestCode, 
             intent, 
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val slotNumber = slotIndex + 1
         val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // Using existing icon
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(context.getString(R.string.notification_title))
             .setContentText(context.getString(R.string.notification_message, slotNumber))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -95,16 +98,18 @@ class AlarmReceiver : BroadcastReceiver() {
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {
-            if (!areNotificationsEnabled()) {
+            val enabled = areNotificationsEnabled()
+
+            if (!enabled) {
                 return
             }
 
             try {
                 notify(slotIndex, builder.build())
             } catch (e: SecurityException) {
-                // Ignore
+                Log.e("AlarmReceiver", "SecurityException while posting notification", e)
             } catch (e: Exception) {
-                // Ignore
+                Log.e("AlarmReceiver", "Unexpected error while posting notification", e)
             }
         }
     }

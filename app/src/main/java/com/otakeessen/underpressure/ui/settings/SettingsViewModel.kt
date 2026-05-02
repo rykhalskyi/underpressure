@@ -50,11 +50,9 @@ class SettingsViewModel(
                     val entity = settings ?: AppSettingsEntity()
                     
                     // Self-healing: if slot 1 is false in DB, force it to true and save
-                    if (!entity.slotActiveFlags.getOrElse(0) { true } || 
-                        !entity.slotAlarmsEnabled.getOrElse(0) { true }) {
+                    if (!entity.slotActiveFlags.getOrElse(0) { true }) {
                         val healedEntity = entity.copy(
-                            slotActiveFlags = entity.slotActiveFlags.toMutableList().apply { this[0] = true },
-                            slotAlarmsEnabled = entity.slotAlarmsEnabled.toMutableList().apply { this[0] = true }
+                            slotActiveFlags = entity.slotActiveFlags.toMutableList().apply { this[0] = true }
                         )
                         saveSettings(healedEntity)
                         return@collect
@@ -118,10 +116,7 @@ class SettingsViewModel(
         val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
             this[index] = isActive
         }
-        val newAlarmsEnabled = settings.slotAlarmsEnabled.toMutableList().apply {
-            this[index] = isActive
-        }
-        saveSettings(settings.copy(slotActiveFlags = newActiveFlags, slotAlarmsEnabled = newAlarmsEnabled))
+        saveSettings(settings.copy(slotActiveFlags = newActiveFlags))
     }
 
     fun setOnboardingSeen(version: String) {
@@ -190,7 +185,7 @@ class SettingsViewModel(
                 number = i + 1,
                 time = slotTimes.getOrElse(i) { if (i == 0) "07:00" else "12:00" },
                 isActive = if (i == 0) true else slotActiveFlags.getOrElse(i) { false },
-                isAlarmEnabled = if (i == 0) true else slotAlarmsEnabled.getOrElse(i) { false },
+                isAlarmEnabled = if (i == 0) true else slotActiveFlags.getOrElse(i) { false },
                 isToggleable = i > 0
             )
         }
