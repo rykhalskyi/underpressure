@@ -21,7 +21,7 @@ import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
         MeasurementEntity::class,
         AppSettingsEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -51,6 +51,38 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // SQLite doesn't support DROP COLUMN before 3.35.0 (API 34).
+                // Standard Room pattern: create new table, copy data, drop old table, rename.
+                
+                // 1. Create the new table
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `app_settings_new` (
+                        `id` INTEGER NOT NULL, 
+                        `masterAlarmEnabled` INTEGER NOT NULL, 
+                        `slotTimes` TEXT NOT NULL, 
+                        `slotActiveFlags` TEXT NOT NULL, 
+                        `slotModifiedFlags` TEXT NOT NULL, 
+                        `lastOnboardedVersion` TEXT, 
+                        PRIMARY KEY(`id`)
+                    )
+                """.trimIndent())
+
+                // 2. Copy the data (omitting slotAlarmsEnabled)
+                db.execSQL("""
+                    INSERT INTO `app_settings_new` (id, masterAlarmEnabled, slotTimes, slotActiveFlags, slotModifiedFlags, lastOnboardedVersion)
+                    SELECT id, masterAlarmEnabled, slotTimes, slotActiveFlags, slotModifiedFlags, lastOnboardedVersion FROM app_settings
+                """.trimIndent())
+
+                // 3. Drop the old table
+                db.execSQL("DROP TABLE app_settings")
+
+                // 4. Rename the new table
+                db.execSQL("ALTER TABLE app_settings_new RENAME TO app_settings")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -58,7 +90,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "under_pressure_database"
                 )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                 .build()
                 INSTANCE = instance
                 instance
