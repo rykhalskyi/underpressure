@@ -53,16 +53,11 @@ class TableImportManager(
                 return@withContext ImportResult(0, 0, "Invalid CSV format: first column must be 'Date'")
             }
 
-            // Get current settings to map slot times to indices
-            val settings = settingsRepository.getSettingsSync() ?: return@withContext ImportResult(0, 0, "Could not retrieve settings")
-            val slotTimes = settings.slotTimes
-
-            // Map CSV column index to slot index in the app
+            // Map CSV column index to slot index in the app by order/position
             val columnToSlotMap = mutableMapOf<Int, Int>()
             for (i in 1 until headers.size) {
-                val headerTime = headers[i].trim()
-                val slotIndex = slotTimes.indexOf(headerTime)
-                if (slotIndex != -1) {
+                val slotIndex = i - 1
+                if (slotIndex < 4) {
                     columnToSlotMap[i] = slotIndex
                 }
             }
