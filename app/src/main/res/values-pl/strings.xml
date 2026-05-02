@@ -62,6 +62,7 @@
     <string name="label_active">Aktywny</string>
     <string name="label_alarm">Przypomnij</string>
     <string name="dialog_title_select_time">Wybierz czas</string>
+    <string name="dialog_title_invalid_time">Nieprawidłowe miejsce pomiarowe</string>
     <string name="error_loading_settings">Błąd ładowania ustawień</string>
 
     <!-- Exact Alarm Warning -->
@@ -116,5 +117,11 @@
     <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
     <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
-    <string name="button_onboarding_close">Zacznijmy</string>
-</resources>
+    <string name="button_onboarding_close">Zaczynamy</string>
+
+    <!-- Guidance Popup -->
+    <string name="guidance_title">Wydaje się, że to nie jest twój czas pomiaru</string>
+    <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?</string>
+    <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
+    <string name="hint_cannot_create_slot">Nie można teraz utworzyć slotu. Musi on być oddalony o co najmniej 30 minut od sąsiednich slotów. Użyj następnego slotu o %1$s.</string>
+    </resources>

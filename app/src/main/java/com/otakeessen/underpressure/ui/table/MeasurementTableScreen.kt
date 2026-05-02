@@ -229,12 +229,25 @@ fun MeasurementTableScreen(
             )
         },
         floatingActionButton = {
-            val hintMessage = stringResource(R.string.hint_fab_disabled)
+            val fabHint = uiState.fabHint
+            val defaultHint = stringResource(R.string.hint_fab_disabled)
+            
+            val displayHint = remember(fabHint) {
+                if (fabHint == null) return@remember defaultHint
+                val parts = fabHint.split("|")
+                when (parts[0]) {
+                    "edit_slot" -> context.getString(R.string.hint_edit_slot, parts.getOrNull(1)?.toIntOrNull() ?: 1)
+                    "cannot_create" -> context.getString(R.string.hint_cannot_create_slot, parts.getOrNull(1) ?: "")
+                    "all_modified" -> context.getString(R.string.hint_fab_disabled)
+                    else -> defaultHint
+                }
+            }
+
             TooltipBox(
                 positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
                 tooltip = {
                     PlainTooltip {
-                        Text(hintMessage)
+                        Text(displayHint)
                     }
                 },
                 state = rememberTooltipState()
@@ -245,7 +258,7 @@ fun MeasurementTableScreen(
                             viewModel.onFabClicked()
                         } else {
                             scope.launch {
-                                snackbarHostState.showSnackbar(hintMessage)
+                                snackbarHostState.showSnackbar(displayHint)
                             }
                         }
                     },
@@ -337,6 +350,7 @@ fun MeasurementTableScreen(
             MeasurementEditDialog(
                 state = uiState.dialogState,
                 onSave = { viewModel.onSaveMeasurement(it) },
+                onAcceptGuidance = { viewModel.onAcceptGuidance() },
                 onDismiss = { viewModel.onDialogDismiss() }
             )
         }

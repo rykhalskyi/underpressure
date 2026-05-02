@@ -26,6 +26,9 @@ import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
 
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+
 /**
  * Dialog for entering or editing a blood pressure measurement.
  */
@@ -33,10 +36,41 @@ import com.otakeessen.underpressure.ui.table.MeasurementDialogState
 fun MeasurementEditDialog(
     state: MeasurementDialogState,
     onSave: (String) -> Unit,
+    onAcceptGuidance: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (!state.isOpen) return
+
+    if (state.isGuidanceVisible) {
+        AlertDialog(
+            modifier = modifier,
+            onDismissRequest = onDismiss,
+            title = {
+                Text(text = stringResource(R.string.guidance_title))
+            },
+            text = {
+                Text(
+                    text = stringResource(
+                        R.string.guidance_message,
+                        state.slotIndex + 1,
+                        state.suggestedSlotTime
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = onAcceptGuidance) {
+                    Text(stringResource(R.string.button_ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.button_cancel))
+                }
+            }
+        )
+        return
+    }
 
     var textValue by remember(state.initialValue) { mutableStateOf(state.initialValue) }
     val validator = remember { BloodPressureValidator() }

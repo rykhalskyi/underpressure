@@ -62,6 +62,7 @@
     <string name="label_active">Активно</string>
     <string name="label_alarm">Нагадати</string>
     <string name="dialog_title_select_time">Виберіть час</string>
+    <string name="dialog_title_invalid_time">Неприпустимий слот часу</string>
     <string name="error_loading_settings">Помилка завантаження налаштувань</string>
 
     <!-- Exact Alarm Warning -->
@@ -117,4 +118,10 @@
     <string name="onboarding_slide4_caption">Поділитися даними</string>
     <string name="onboarding_slide4_description">Ви можете поділитися даними, якщо хочете. В інших випадках ваші дані не залишать ваш телефон. Ми також не збираємо жодної телеметрії чи журналів.</string>
     <string name="button_onboarding_close">Розпочати</string>
+
+    <!-- Guidance Popup -->
+    <string name="guidance_title">Здається, це не ваш час вимірювання</string>
+    <string name="guidance_message">Схоже, ви намагаєтесь додати вимірювання не в той час. UnderPressure працює за фіксованими часовими слотами, щоб вимірювання були точнішими та регулярними. Хочете встановити час для Слот %1$d на %2$s і додати вимірювання зараз?</string>
+    <string name="hint_edit_slot">Ви можете змінити значення слота %1$d, натиснувши на нього.</string>
+    <string name="hint_cannot_create_slot">Не вдається створити слот зараз. Він повинен бути принаймні за 30 хвилин від сусідніх слотів. Використовуйте наступний слот о %1$s.</string>
 </resources>

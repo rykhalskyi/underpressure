@@ -160,12 +160,6 @@ fun SettingsScreen(
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator()
-            } else if (uiState.error != null) {
-                Text(
-                    text = uiState.error ?: stringResource(R.string.error_loading_settings),
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
-                )
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -289,6 +283,32 @@ fun SettingsScreen(
         if (showOnboarding) {
             OnboardingDialog(
                 onDismiss = { showOnboarding = false }
+            )
+        }
+
+        // Error Dialog
+        uiState.error?.let { errorText ->
+            val isTimeError = errorText.startsWith("hint_cannot_create_slot|")
+            val displayedError = if (isTimeError) {
+                val time = errorText.substringAfter("|")
+                stringResource(R.string.hint_cannot_create_slot, time)
+            } else {
+                errorText
+            }
+            AlertDialog(
+                onDismissRequest = { viewModel.clearError() },
+                title = { 
+                    Text(
+                        if (isTimeError) stringResource(R.string.dialog_title_invalid_time) 
+                        else stringResource(R.string.unknown_error)
+                    ) 
+                },
+                text = { Text(displayedError) },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text(stringResource(R.string.button_ok))
+                    }
+                }
             )
         }
 
