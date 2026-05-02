@@ -62,6 +62,7 @@
     <string name="label_active">Активно</string>
     <string name="label_alarm">Нагадати</string>
     <string name="dialog_title_select_time">Виберіть час</string>
+    <string name="dialog_title_invalid_time">Неприпустимий слот часу</string>
     <string name="error_loading_settings">Помилка завантаження налаштувань</string>
 
     <!-- Exact Alarm Warning -->

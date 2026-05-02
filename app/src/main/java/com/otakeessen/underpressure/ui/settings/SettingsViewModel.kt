@@ -7,12 +7,17 @@ import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.export.TableImportManager
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.Duration
+import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * ViewModel for the Settings screen.
@@ -80,6 +85,22 @@ class SettingsViewModel(
 
     fun updateSlotTime(index: Int, time: String) {
         val settings = currentSettings ?: return
+
+        // Validate time difference from other active slots
+        val newTime = LocalTime.parse(time)
+        val conflictNeighbor = settings.slotTimes.mapIndexedNotNull { i, t ->
+            if (i != index && settings.slotActiveFlags[i]) LocalTime.parse(t) else null
+        }.find { otherTime ->
+            val diff = abs(Duration.between(newTime, otherTime).toMinutes())
+            val wrappedDiff = min(diff, 1440 - diff)
+            wrappedDiff < MIN_SLOT_DIFFERENCE_MINUTES
+        }
+
+        if (conflictNeighbor != null) {
+            _uiState.update { it.copy(error = "hint_cannot_create_slot|$conflictNeighbor") }
+            return
+        }
+
         val newTimes = settings.slotTimes.toMutableList().apply {
             this[index] = time
         }
@@ -135,6 +156,13 @@ class SettingsViewModel(
             }
             selectedImportUri = null
         }
+    }
+
+    /**
+     * Clears the current error message.
+     */
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
     }
 
     /**

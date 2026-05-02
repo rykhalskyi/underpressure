@@ -62,6 +62,7 @@
     <string name="label_active">Aktiv</string>
     <string name="label_alarm">Erinnern</string>
     <string name="dialog_title_select_time">Zeit auswählen</string>
+    <string name="dialog_title_invalid_time">Ungültiges Zeitfenster</string>
     <string name="error_loading_settings">Fehler beim Laden der Einstellungen</string>
 
     <!-- Exact Alarm Warning -->

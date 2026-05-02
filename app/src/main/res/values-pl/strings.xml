@@ -62,6 +62,7 @@
     <string name="label_active">Aktywny</string>
     <string name="label_alarm">Przypomnij</string>
     <string name="dialog_title_select_time">Wybierz czas</string>
+    <string name="dialog_title_invalid_time">Nieprawidłowe miejsce pomiarowe</string>
     <string name="error_loading_settings">Błąd ładowania ustawień</string>
 
     <!-- Exact Alarm Warning -->

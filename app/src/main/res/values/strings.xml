@@ -62,6 +62,7 @@
     <string name="label_active">Active</string>
     <string name="label_alarm">Remind</string>
     <string name="dialog_title_select_time">Select Time</string>
+    <string name="dialog_title_invalid_time">Invalid Time Slot</string>
     <string name="error_loading_settings">Error loading settings</string>
 
     <!-- Exact Alarm Warning -->
