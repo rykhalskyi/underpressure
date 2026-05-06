@@ -91,7 +91,7 @@ fun DayRow(
                     weight = 1f,
                     fontSize = measurementFontSize,
                     isBold = false,//data != null,
-                    onClick = if (summary.isToday) { { onCellClick(i) } } else null
+                    onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
         }
