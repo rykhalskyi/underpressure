@@ -186,4 +186,94 @@ class MeasurementTableViewModelTest {
         assertFalse(state.isFabEnabled)
         assertEquals("all_modified", state.fabHint)
     }
+
+    @Test
+    fun `past slot is clickable even if empty`() = runTest {
+        // Current time is 12:00. Slot is at 08:00 (past)
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("08:00"),
+            slotActiveFlags = listOf(true)
+        )
+        // We need at least one measurement for the date to appear in the table
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = today, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        val todayRow = state.items.find { it.date == today }
+        
+        assertTrue("Past slot should be clickable", todayRow?.clickableSlots?.contains(0) == true)
+    }
+
+    @Test
+    fun `future empty slot is not clickable`() = runTest {
+        // Current time is 12:00. Slot is at 20:00 (future, outside 15-min window)
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("20:00"),
+            slotActiveFlags = listOf(true)
+        )
+        // Ensure today row exists by adding a measurement for a DIFFERENT slot
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = today, slotIndex = 1, systolic = 120, diastolic = 80, pulse = 70)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        val todayRow = state.items.find { it.date == today }
+        
+        assertFalse("Future empty slot should NOT be clickable", todayRow?.clickableSlots?.contains(0) == true)
+    }
+
+    @Test
+    fun `future filled slot IS clickable (for editing)`() = runTest {
+        // Current time is 12:00. Slot is at 20:00, but ALREADY has data.
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("20:00"),
+            slotActiveFlags = listOf(true)
+        )
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = today, slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        val todayRow = state.items.find { it.date == today }
+        
+        assertTrue("Future filled slot SHOULD be clickable for editing", todayRow?.clickableSlots?.contains(0) == true)
+    }
+
+    @Test
+    fun `onCellClicked does not open dialog for future empty slot`() = runTest {
+        // Current time is 12:00. Slot is at 20:00
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("20:00"),
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { measurementRepository.getMeasurementsByDateSync(today) } returns emptyList()
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        // Wait for uiState to be ready
+        viewModel.uiState.first { !it.isLoading }
+        
+        viewModel.onCellClicked(today, 0)
+        
+        // Advance time for co-routines
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        assertFalse("Dialog should remain closed for future empty slot", viewModel.uiState.value.dialogState.isOpen)
+    }
 }

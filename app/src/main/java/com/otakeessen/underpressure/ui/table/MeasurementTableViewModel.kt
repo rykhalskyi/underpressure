@@ -87,6 +87,7 @@ class MeasurementTableViewModel(
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
+        val now = LocalTime.now(clock)
         
         val activeFlags = (settings?.slotActiveFlags ?: listOf(true, false, false, false))
             .toMutableList().apply { this[0] = true }
@@ -104,10 +105,26 @@ class MeasurementTableViewModel(
                     }
                 }.toMap()
 
+                val clickableSlots = mutableSetOf<Int>()
+                if (date == todayStr) {
+                    activeIndices.forEachIndexed { uiIndex, originalIndex ->
+                        val hasData = activeSlots.containsKey(uiIndex)
+                        val slotTimeStr = allTimesStr.getOrNull(originalIndex) ?: "00:00"
+                        val slotTime = LocalTime.parse(slotTimeStr, timeFormatter)
+                        val diffMinutes = Duration.between(slotTime, now).toMinutes()
+                        
+                        // Clickable if it has data OR is not in the future (within window)
+                        if (hasData || diffMinutes >= -SLOT_WINDOW_MINUTES) {
+                            clickableSlots.add(uiIndex)
+                        }
+                    }
+                }
+
                 DayMeasurementSummary(
                     date = date,
                     slots = activeSlots,
-                    isToday = date == todayStr
+                    isToday = date == todayStr,
+                    clickableSlots = clickableSlots
                 )
             }
             .sortedByDescending { it.date }
@@ -151,7 +168,6 @@ class MeasurementTableViewModel(
         }
 
         // FAB & Guidance Logic
-        val now = LocalTime.now(clock)
         val todayMeasurements = measurements.filter { it.date == todayStr }
         val modifiedFlags = settings?.slotModifiedFlags ?: listOf(false, false, false, false)
         val hasUnmodifiedSlot = modifiedFlags.any { !it }
@@ -304,6 +320,20 @@ class MeasurementTableViewModel(
             val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
             val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
             val originalIndex = activeIndices.getOrNull(uiSlotIndex) ?: return@launch
+            
+            // Check if slot is in the future
+            val slotTimeStr = settings?.slotTimes?.getOrNull(originalIndex) ?: return@launch
+            val slotTime = LocalTime.parse(slotTimeStr, timeFormatter)
+            val now = LocalTime.now(clock)
+            val diffMinutes = Duration.between(slotTime, now).toMinutes()
+            
+            val existing = measurementRepository.getMeasurementsByDateSync(date)
+                .find { it.slotIndex == originalIndex }
+            
+            if (existing == null && diffMinutes < -SLOT_WINDOW_MINUTES) {
+                // Future empty slot, ignore click
+                return@launch
+            }
             
             openDialog(date, originalIndex)
         }

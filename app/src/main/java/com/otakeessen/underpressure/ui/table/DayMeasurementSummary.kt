@@ -20,5 +20,6 @@ data class DayMeasurementSummary(
     val date: String,
     val slots: Map<Int, SlotData> = emptyMap(),
     val isToday: Boolean = false,
+    val clickableSlots: Set<Int> = emptySet()
 )
 
