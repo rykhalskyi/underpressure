@@ -349,6 +349,7 @@ fun MeasurementTableScreen(
         if (uiState.dialogState.isOpen) {
             MeasurementEditDialog(
                 state = uiState.dialogState,
+                onValueChange = { viewModel.onMeasurementInputChanged(it) },
                 onSave = { viewModel.onSaveMeasurement(it) },
                 onAcceptGuidance = { viewModel.onAcceptGuidance() },
                 onDismiss = { viewModel.onDialogDismiss() }

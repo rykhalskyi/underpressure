@@ -1,5 +1,7 @@
 package com.otakeessen.underpressure.ui.table
 
+import androidx.compose.ui.text.input.TextFieldValue
+
 /**
  * UI state for the Measurement Edit Dialog.
  */
@@ -8,6 +10,7 @@ data class MeasurementDialogState(
     val date: String = "",
     val slotIndex: Int = 0,
     val initialValue: String = "",
+    val inputValue: TextFieldValue = TextFieldValue(""),
     val existingMeasurementId: Long? = null,
     val isGuidanceVisible: Boolean = false,
     val suggestedSlotTime: String = ""
