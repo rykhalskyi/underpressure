@@ -31,6 +31,9 @@ import java.util.Locale
 import java.time.Month
 import kotlin.math.abs
 
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.TextRange
+
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import com.otakeessen.underpressure.util.Constants.SLOT_WINDOW_MINUTES
 
@@ -413,6 +416,7 @@ class MeasurementTableViewModel(
                 date = date,
                 slotIndex = originalSlotIndex,
                 initialValue = initialValue,
+                inputValue = TextFieldValue(initialValue, TextRange(initialValue.length)),
                 existingMeasurementId = existing?.id,
                 isGuidanceVisible = false
             )
@@ -424,6 +428,67 @@ class MeasurementTableViewModel(
      */
     fun onDialogDismiss() {
         _dialogState.update { MeasurementDialogState() }
+    }
+
+    /**
+     * Called when the measurement input text changes.
+     * Applies auto-formatting for delimiters and moves cursor to end.
+     */
+    fun onMeasurementInputChanged(newInput: TextFieldValue) {
+        val oldInput = _dialogState.value.inputValue
+        val formatted = formatBloodPressureInput(newInput, oldInput)
+        _dialogState.update { it.copy(inputValue = formatted) }
+    }
+
+    private fun formatBloodPressureInput(newInput: TextFieldValue, oldInput: TextFieldValue): TextFieldValue {
+        val newText = newInput.text
+        val oldText = oldInput.text
+
+        if (newText.length < oldText.length) return newInput // Deleting, don't auto-format
+
+        val digits = newText.filter { it.isDigit() }
+        val sb = StringBuilder()
+        var i = 0
+
+        // Systolic: 3 digits if starts with 1 or 2, else 2 digits
+        if (i < digits.length) {
+            val start = i
+            val len = if (digits[i] == '1' || digits[i] == '2') 3 else 2
+            while (i < digits.length && i < start + len) {
+                sb.append(digits[i])
+                i++
+            }
+            if (i == start + len) {
+                sb.append("/")
+            }
+        }
+
+        // Diastolic: 3 digits if starts with 1 or 2, else 2 digits
+        if (i < digits.length) {
+            val start = i
+            val len = if (digits[i] == '1' || digits[i] == '2') 3 else 2
+            while (i < digits.length && i < start + len) {
+                sb.append(digits[i])
+                i++
+            }
+            if (i == start + len) {
+                sb.append(" @")
+            }
+        }
+
+        // Pulse (optional, just the rest of digits)
+        while (i < digits.length) {
+            sb.append(digits[i])
+            i++
+        }
+
+        val resultText = sb.toString()
+        return if (resultText != newText) {
+            // If we added a delimiter, move cursor to the end
+            TextFieldValue(resultText, TextRange(resultText.length))
+        } else {
+            newInput
+        }
     }
 
     /**

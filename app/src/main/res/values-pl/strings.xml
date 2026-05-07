@@ -35,6 +35,7 @@
     <string name="error_incorrect_measurements">Nieprawidłowe wymiary</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">%1$s - Miejsce %2$d</string>
+    <string name="hypertension_warning">Ostrzeżenie o nadciśnieniu</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Szukaj pomiarów</string>
