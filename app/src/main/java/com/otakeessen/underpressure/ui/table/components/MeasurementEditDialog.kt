@@ -92,7 +92,11 @@ fun MeasurementEditDialog(
     val textFieldValue = state.inputValue
     val textValue = textFieldValue.text
     val validator = remember { BloodPressureValidator() }
-    val validationResult = validator.validate(textValue)
+    
+    // Trim for validation to allow saving when pulse is omitted but delimiter is present
+    val trimmedForValidation = textValue.trim().removeSuffix("@").removeSuffix("/").trim()
+    val validationResult = validator.validate(trimmedForValidation)
+    
     val isError = textValue.isNotEmpty() && validationResult is ValidationResult.Error
     
     // Hypertension check (SYS >= 140 or DIA >= 90)

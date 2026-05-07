@@ -496,7 +496,9 @@ class MeasurementTableViewModel(
      */
     fun onSaveMeasurement(input: String) {
         val currentState = _dialogState.value
-        val validationResult = validator.validate(input)
+        // Trim trailing delimiters (e.g., "120/80 @" -> "120/80") for easier saving without pulse
+        val trimmedInput = input.trim().removeSuffix("@").removeSuffix("/").trim()
+        val validationResult = validator.validate(trimmedInput)
 
         if (validationResult is ValidationResult.Success) {
             viewModelScope.launch {
