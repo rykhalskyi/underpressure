@@ -18,7 +18,8 @@ import androidx.compose.ui.graphics.ColorFilter
 data class OnboardingSlideData(
     val icon: ImageVector,
     val caption: String,
-    val description: String
+    val description: String,
+    val version: String? = null
 )
 
 @Composable
@@ -52,7 +53,16 @@ fun OnboardingSlideView(
             text = slide.description,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = if (slide.version != null) 16.dp else 0.dp)
         )
+        slide.version?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }

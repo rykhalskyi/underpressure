@@ -53,7 +53,7 @@
     <!-- Search Dialog -->
     <string name="dialog_title_search">Search Measurements</string>
     <string name="label_search">Search</string>
-    <string name="helper_search_hint">YYYY, YYYY-MM-DD or 140/90/60</string>
+    <string name="helper_search_hint">YYYY, YYYY-MM-DD or 140 90 60</string>
     <string name="message_no_results">No results found</string>
     <string name="button_jump_to_date">Jump to Date: %1$s</string>
     <string name="label_measurement_details">Systolic: %1$d, Diastolic: %2$d, Pulse: %3$d</string>
@@ -105,7 +105,7 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
-    <!-- About Section -->
+    <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>

@@ -40,7 +40,7 @@
     <!-- Search Dialog -->
     <string name="dialog_title_search">Пошук вимірювань</string>
     <string name="label_search">Пошук</string>
-    <string name="helper_search_hint">РРРР, РРРР-ММ-ДД або 140/90/60</string>
+    <string name="helper_search_hint">РРРР, РРРР-ММ-ДД або 140 90 60</string>
     <string name="message_no_results">Результатів не знайдено</string>
     <string name="button_jump_to_date">Перейти до дати: %1$s</string>
     <string name="label_measurement_details">Систолічний: %1$d, Діастолічний: %2$d, Пульс: %3$d</string>
@@ -93,6 +93,7 @@
     <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
     <string name="placeholder_date">РРРР-ММ-ДД</string>
     <!-- About Section -->
+    <string name="onboarding_version_label">Версія: %1$s</string>
     <string name="header_about">Про програму</string>
     <string name="label_version">Версія %1$s</string>
     <string name="label_repo">Вихідний код (GitHub)</string>

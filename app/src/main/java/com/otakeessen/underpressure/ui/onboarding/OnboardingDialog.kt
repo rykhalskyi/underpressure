@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.otakeessen.underpressure.BuildConfig
 import com.otakeessen.underpressure.R
 
 @Composable
@@ -30,7 +31,8 @@ fun OnboardingDialog(
         OnboardingSlideData(
             icon = Icons.Default.Security,
             caption = stringResource(R.string.onboarding_slide1_caption),
-            description = stringResource(R.string.onboarding_slide1_description)
+            description = stringResource(R.string.onboarding_slide1_description),
+            version = stringResource(R.string.onboarding_version_label, BuildConfig.VERSION_NAME)
         ),
         OnboardingSlideData(
             icon = Icons.Default.Schedule,

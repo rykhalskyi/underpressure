@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +17,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.otakeessen.underpressure.R
@@ -36,6 +41,7 @@ fun SearchDialog(
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val uiState by viewModel.resultsState.collectAsStateWithLifecycle()
+    val focusManager = LocalFocusManager.current
 
     AlertDialog(
         modifier = modifier.fillMaxHeight(0.8f),
@@ -51,6 +57,15 @@ fun SearchDialog(
                     label = { Text(stringResource(R.string.label_search)) },
                     supportingText = { Text(stringResource(R.string.helper_search_hint)) },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            focusManager.clearFocus()
+                        }
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)

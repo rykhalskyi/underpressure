@@ -40,7 +40,7 @@
     <!-- Search Dialog -->
     <string name="dialog_title_search">Messungen suchen</string>
     <string name="label_search">Suche</string>
-    <string name="helper_search_hint">JJJJ, JJJJ-MM-TT oder 140/90/60</string>
+    <string name="helper_search_hint">JJJJ, JJJJ-MM-TT oder 140 90 60</string>
     <string name="message_no_results">Keine Ergebnisse gefunden</string>
     <string name="button_jump_to_date">Zum Datum springen: %1$s</string>
     <string name="label_measurement_details">Systolisch: %1$d, Diastolisch: %2$d, Puls: %3$d</string>
@@ -93,6 +93,7 @@
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
     <string name="placeholder_date">JJJJ-MM-TT</string>
     <!-- About Section -->
+    <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">Über</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Quellcode (GitHub)</string>
