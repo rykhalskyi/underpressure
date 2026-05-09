@@ -114,6 +114,11 @@
 
     <!-- Data Management Section -->
     <string name="header_classification_guidelines">Classification Guidelines</string>
+    <string name="label_guideline_aha_title">American (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Hypertension starts at 130/80</string>
+    <string name="label_guideline_esc_title">European (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Hypertension starts at 140/90</string>
+
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
     <string name="dialog_title_import">Import Data</string>

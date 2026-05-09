@@ -22,7 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -43,6 +46,7 @@ import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
+import com.otakeessen.underpressure.ui.util.BpLevelMapper
 
 /**
  * Dialog for entering or editing a blood pressure measurement.
@@ -106,13 +110,8 @@ fun MeasurementEditDialog(
     
     val isHypertension = classification != null && classification.level >= BloodPressureLevel.STAGE_2
 
-    val bpLevelText = when (classification?.level) {
-        BloodPressureLevel.NORMAL -> stringResource(R.string.bp_level_normal)
-        BloodPressureLevel.ELEVATED -> if (guidelines == BpGuidelines.ESC_ESH) stringResource(R.string.bp_level_high_normal) else stringResource(R.string.bp_level_elevated)
-        BloodPressureLevel.STAGE_1 -> if (guidelines == BpGuidelines.ESC_ESH) stringResource(R.string.bp_level_grade1) else stringResource(R.string.bp_level_stage1)
-        BloodPressureLevel.STAGE_2 -> if (guidelines == BpGuidelines.ESC_ESH) stringResource(R.string.bp_level_grade2) else stringResource(R.string.bp_level_stage2)
-        BloodPressureLevel.CRISIS -> stringResource(R.string.bp_level_crisis)
-        else -> null
+    val bpLevelText = classification?.let {
+        stringResource(BpLevelMapper.getStringRes(it.level, guidelines))
     }
 
     val errorMessage = when (validationResult) {
@@ -123,6 +122,7 @@ fun MeasurementEditDialog(
     
     val focusRequester = remember { FocusRequester() }
     val haptic = LocalHapticFeedback.current
+    var lastLength by remember { mutableStateOf(textValue.length) }
 
     LaunchedEffect(state.isOpen) {
         if (state.isOpen) {
@@ -132,10 +132,10 @@ fun MeasurementEditDialog(
 
     // Trigger haptic feedback when a delimiter is added
     LaunchedEffect(textValue) {
-        if (textValue.contains("/") || textValue.contains("@")) {
-            // Only trigger if it's likely a new delimiter (simple heuristic)
+        if (textValue.length > lastLength && (textValue.endsWith("/") || textValue.endsWith("@") || textValue.endsWith(" "))) {
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         }
+        lastLength = textValue.length
     }
 
     AlertDialog(

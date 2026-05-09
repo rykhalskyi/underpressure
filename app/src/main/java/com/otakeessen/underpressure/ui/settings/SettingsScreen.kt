@@ -383,14 +383,14 @@ fun GuidelineSelection(
 ) {
     Column(modifier = modifier.selectableGroup()) {
         GuidelineOption(
-            title = "American (AHA/ACC)",
-            subtitle = "Hypertension starts at 130/80",
+            title = stringResource(R.string.label_guideline_aha_title),
+            subtitle = stringResource(R.string.label_guideline_aha_subtitle),
             selected = selected == BpGuidelines.AHA_ACC,
             onClick = { onSelected(BpGuidelines.AHA_ACC) }
         )
         GuidelineOption(
-            title = "European (ESC/ESH)",
-            subtitle = "Hypertension starts at 140/90",
+            title = stringResource(R.string.label_guideline_esc_title),
+            subtitle = stringResource(R.string.label_guideline_esc_subtitle),
             selected = selected == BpGuidelines.ESC_ESH,
             onClick = { onSelected(BpGuidelines.ESC_ESH) }
         )

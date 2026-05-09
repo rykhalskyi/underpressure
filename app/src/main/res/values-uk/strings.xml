@@ -104,11 +104,17 @@
     <string name="bp_level_normal">Нормальний</string>
     <string name="bp_level_elevated">Підвищений</string>
     <string name="bp_level_high_normal">Високий нормальний</string>
-    <string name="bp_level_stage1">Гіпертонія 1 стадії</string>
-    <string name="bp_level_grade1">Гіпертонія 1 ступеня</string>
-    <string name="bp_level_stage2">Гіпертонія 2 стадії</string>
-    <string name="bp_level_grade2">Гіпертонія 2 ступеня</string>
+    <string name="bp_level_stage1">Гіпертензія 1 ст.</string>
+    <string name="bp_level_grade1">Гіпертензія 1 ст.</string>
+    <string name="bp_level_stage2">Гіпертензія 2 ст.</string>
+    <string name="bp_level_grade2">Гіпертензія 2 ст.</string>
     <string name="bp_level_crisis">Гіпертонічний криз</string>
+
+    <string name="header_classification_guidelines">Рекомендації з класифікації</string>
+    <string name="label_guideline_aha_title">Американські (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Гіпертензія від 130/80</string>
+    <string name="label_guideline_esc_title">Європейські (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Гіпертензія від 140/90</string>
 
     <!-- Data Management Section -->
     <string name="header_classification_summary">Зведення класифікації</string>

@@ -110,6 +110,12 @@
     <string name="bp_level_grade2">Hypertonie Grad 2</string>
     <string name="bp_level_crisis">Hypertensive Krise</string>
 
+    <string name="header_classification_guidelines">Klassifizierungsrichtlinien</string>
+    <string name="label_guideline_aha_title">Amerikanisch (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Hypertonie beginnt bei 130/80</string>
+    <string name="label_guideline_esc_title">Europäisch (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Hypertonie beginnt bei 140/90</string>
+
     <!-- Data Management Section -->
     <string name="header_classification_summary">Klassifizierungsübersicht</string>
     <string name="label_classification_all_time">Gesamt</string>

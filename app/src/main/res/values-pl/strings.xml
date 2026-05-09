@@ -110,6 +110,12 @@
     <string name="bp_level_grade2">Nadciśnienie 2 stopnia</string>
     <string name="bp_level_crisis">Przełom nadciśnieniowy</string>
 
+    <string name="header_classification_guidelines">Wytyczne klasyfikacji</string>
+    <string name="label_guideline_aha_title">Amerykańskie (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Nadciśnienie od 130/80</string>
+    <string name="label_guideline_esc_title">Europejskie (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Nadciśnienie od 140/90</string>
+
     <!-- Data Management Section -->
     <string name="header_classification_summary">Podsumowanie klasyfikacji</string>
     <string name="label_classification_all_time">Cały czas</string>

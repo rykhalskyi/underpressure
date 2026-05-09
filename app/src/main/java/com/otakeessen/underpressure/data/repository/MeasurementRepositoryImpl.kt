@@ -43,10 +43,12 @@ class MeasurementRepositoryImpl(
     }
 
     override fun searchMeasurementsComplex(digits: List<String>): Flow<List<MeasurementEntity>> {
-        val s = digits.getOrNull(0) ?: ""
-        val d = digits.getOrNull(1) ?: ""
-        val p = digits.getOrNull(2) ?: ""
-        return measurementDao.searchByComplexValue("%$s%", "%$d%", "%$p%")
+        val s = digits.getOrNull(0)?.let { "%$it%" } ?: "%"
+        val d = digits.getOrNull(1)?.let { "%$it%" } ?: "%"
+        val p = digits.getOrNull(2)?.let { "%$it%" } ?: "%"
+        
+        // If s is "%", it means digits was empty, should be handled by caller but safe here
+        return measurementDao.searchByComplexValue(s, d, p)
     }
 
     override fun searchMeasurementsByDate(dateQuery: String): Flow<List<MeasurementEntity>> {

@@ -22,6 +22,7 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.BloodPressureClassifier.toColor
+import com.otakeessen.underpressure.ui.util.BpLevelMapper
 
 /**
  * Displays summary statistics for blood pressure classifications.
@@ -41,6 +42,7 @@ fun ClassificationSummary(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // Title
         Text(
             text = "${stringResource(R.string.header_classification_summary)} (${stringResource(R.string.label_classification_all_time)})",
             style = MaterialTheme.typography.titleSmall,
@@ -53,15 +55,15 @@ fun ClassificationSummary(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(24.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(6.dp))
         ) {
-            BloodPressureLevel.values().forEach { level ->
+            BloodPressureLevel.entries.forEach { level ->
                 val count = stats[level] ?: 0
                 if (count > 0) {
                     val weight = count / total
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(weight)
+                            .weight(weight)
                             .height(24.dp)
                             .background(level.toColor())
                     )
@@ -71,17 +73,11 @@ fun ClassificationSummary(
 
         // Legend with percentages
         Column(modifier = Modifier.padding(top = 8.dp)) {
-            BloodPressureLevel.values().forEach { level ->
+            BloodPressureLevel.entries.forEach { level ->
                 val count = stats[level] ?: 0
                 if (count > 0) {
                     val percentage = (count / total * 100).toInt()
-                    val labelRes = when (level) {
-                        BloodPressureLevel.NORMAL -> R.string.bp_level_normal
-                        BloodPressureLevel.ELEVATED -> if (guidelines == BpGuidelines.ESC_ESH) R.string.bp_level_high_normal else R.string.bp_level_elevated
-                        BloodPressureLevel.STAGE_1 -> if (guidelines == BpGuidelines.ESC_ESH) R.string.bp_level_grade1 else R.string.bp_level_stage1
-                        BloodPressureLevel.STAGE_2 -> if (guidelines == BpGuidelines.ESC_ESH) R.string.bp_level_grade2 else R.string.bp_level_stage2
-                        BloodPressureLevel.CRISIS -> R.string.bp_level_crisis
-                    }
+                    val labelRes = BpLevelMapper.getStringRes(level, guidelines)
                     Row(
                         modifier = Modifier.padding(vertical = 2.dp),
                         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically

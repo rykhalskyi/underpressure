@@ -36,6 +36,25 @@ data class ClassificationResult(
  */
 object BloodPressureClassifier {
     
+    // Centralized thresholds
+    private const val AHA_CRISIS_SYS = 180
+    private const val AHA_CRISIS_DIA = 120
+    private const val AHA_STAGE2_SYS = 140
+    private const val AHA_STAGE2_DIA = 90
+    private const val AHA_STAGE1_SYS = 130
+    private const val AHA_STAGE1_DIA = 80
+    private const val AHA_ELEVATED_SYS = 120
+    private const val AHA_ELEVATED_DIA_MAX = 80
+
+    private const val ESC_CRISIS_SYS = 180
+    private const val ESC_CRISIS_DIA = 110
+    private const val ESC_STAGE2_SYS = 160
+    private const val ESC_STAGE2_DIA = 100
+    private const val ESC_STAGE1_SYS = 140
+    private const val ESC_STAGE1_DIA = 90
+    private const val ESC_ELEVATED_SYS = 130
+    private const val ESC_ELEVATED_DIA = 85
+
     // Centralized colors
     private val COLOR_NORMAL = Color(0xFF2E7D32)   // Green
     private val COLOR_ELEVATED = Color(0xFFE6AC00) // Amber
@@ -65,20 +84,20 @@ object BloodPressureClassifier {
 
     private fun classifyAmerican(systolic: Int, diastolic: Int): BloodPressureLevel {
         return when {
-            systolic >= 180 || diastolic >= 120 -> BloodPressureLevel.CRISIS
-            systolic >= 140 || diastolic >= 90 -> BloodPressureLevel.STAGE_2
-            systolic >= 130 || diastolic >= 80 -> BloodPressureLevel.STAGE_1
-            systolic >= 120 && diastolic < 80 -> BloodPressureLevel.ELEVATED
+            systolic >= AHA_CRISIS_SYS || diastolic >= AHA_CRISIS_DIA -> BloodPressureLevel.CRISIS
+            systolic >= AHA_STAGE2_SYS || diastolic >= AHA_STAGE2_DIA -> BloodPressureLevel.STAGE_2
+            systolic >= AHA_STAGE1_SYS || diastolic >= AHA_STAGE1_DIA -> BloodPressureLevel.STAGE_1
+            systolic >= AHA_ELEVATED_SYS && diastolic < AHA_ELEVATED_DIA_MAX -> BloodPressureLevel.ELEVATED
             else -> BloodPressureLevel.NORMAL
         }
     }
 
     private fun classifyEuropean(systolic: Int, diastolic: Int): BloodPressureLevel {
         return when {
-            systolic >= 180 || diastolic >= 110 -> BloodPressureLevel.CRISIS
-            systolic >= 160 || diastolic >= 100 -> BloodPressureLevel.STAGE_2 // Grade 2
-            systolic >= 140 || diastolic >= 90 -> BloodPressureLevel.STAGE_1  // Grade 1
-            systolic >= 130 || diastolic >= 85 -> BloodPressureLevel.ELEVATED // High Normal
+            systolic >= ESC_CRISIS_SYS || diastolic >= ESC_CRISIS_DIA -> BloodPressureLevel.CRISIS
+            systolic >= ESC_STAGE2_SYS || diastolic >= ESC_STAGE2_DIA -> BloodPressureLevel.STAGE_2 // Grade 2
+            systolic >= ESC_STAGE1_SYS || diastolic >= ESC_STAGE1_DIA -> BloodPressureLevel.STAGE_1  // Grade 1
+            systolic >= ESC_ELEVATED_SYS || diastolic >= ESC_ELEVATED_DIA -> BloodPressureLevel.ELEVATED // High Normal
             else -> BloodPressureLevel.NORMAL
         }
     }

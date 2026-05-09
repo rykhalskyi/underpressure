@@ -85,7 +85,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         private val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE app_settings ADD COLUMN bpGuidelines TEXT NOT NULL DEFAULT 'AHA_ACC'")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN bpGuidelines TEXT NOT NULL DEFAULT 'ESC_ESH'")
             }
         }
 
