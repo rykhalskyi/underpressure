@@ -99,7 +99,19 @@
     <string name="label_privacy_policy">Политика конфиденциальности</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Нормально</string>
+    <string name="bp_level_elevated">Повышенное</string>
+    <string name="bp_level_high_normal">Высокое нормальное</string>
+    <string name="bp_level_stage1">Гипертония 1 стадии</string>
+    <string name="bp_level_grade1">Гипертония 1 степени</string>
+    <string name="bp_level_stage2">Гипертония 2 стадии</string>
+    <string name="bp_level_grade2">Гипертония 2 степени</string>
+    <string name="bp_level_crisis">Гипертонический криз</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Сводка классификации</string>
+    <string name="label_classification_all_time">За всё время</string>
     <string name="header_data_management">Управление данными</string>
     <string name="button_import_csv">Импортировать CSV</string>
     <string name="dialog_title_import">Импорт данных</string>

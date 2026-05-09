@@ -350,6 +350,7 @@ fun MeasurementTableScreen(
                                         summary = item.summary,
                                         slotCount = uiState.slotHeaders.size,
                                         guidelines = uiState.activeGuidelines,
+                                        isSummaryVisible = uiState.isSummaryVisible,
                                         onCellClick = { slotIndex -> 
                                             viewModel.onCellClicked(item.summary.date, slotIndex)
                                         }

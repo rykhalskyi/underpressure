@@ -99,7 +99,19 @@
     <string name="label_privacy_policy">Polityka prywatności</string>
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Prawidłowe</string>
+    <string name="bp_level_elevated">Podwyższone</string>
+    <string name="bp_level_high_normal">Wysokie prawidłowe</string>
+    <string name="bp_level_stage1">Nadciśnienie 1 stopnia</string>
+    <string name="bp_level_grade1">Nadciśnienie 1 stopnia</string>
+    <string name="bp_level_stage2">Nadciśnienie 2 stopnia</string>
+    <string name="bp_level_grade2">Nadciśnienie 2 stopnia</string>
+    <string name="bp_level_crisis">Przełom nadciśnieniowy</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Podsumowanie klasyfikacji</string>
+    <string name="label_classification_all_time">Cały czas</string>
     <string name="header_data_management">Zarządzanie danymi</string>
     <string name="button_import_csv">Importuj CSV</string>
     <string name="dialog_title_import">Importuj dane</string>

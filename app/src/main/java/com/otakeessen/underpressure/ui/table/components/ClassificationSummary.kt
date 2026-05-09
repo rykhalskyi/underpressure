@@ -42,7 +42,7 @@ fun ClassificationSummary(
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.header_classification_summary),
+            text = "${stringResource(R.string.header_classification_summary)} (${stringResource(R.string.label_classification_all_time)})",
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 8.dp)

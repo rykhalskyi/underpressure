@@ -47,7 +47,8 @@
     <string name="bp_level_grade2">Hypertension Grade 2</string>
     <string name="bp_level_crisis">Hypertensive Crisis</string>
 
-    <string name="header_classification_summary">Classification Summary (All Time)</string>
+    <string name="header_classification_summary">Classification Summary</string>
+    <string name="label_classification_all_time">All Time</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Search Measurements</string>

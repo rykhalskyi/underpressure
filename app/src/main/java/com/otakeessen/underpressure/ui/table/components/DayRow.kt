@@ -38,6 +38,7 @@ fun DayRow(
     slotCount: Int,
     guidelines: BpGuidelines,
     onCellClick: (slotIndex: Int) -> Unit,
+    isSummaryVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val date = remember(summary.date) { LocalDate.parse(summary.date) }
@@ -100,8 +101,8 @@ fun DayRow(
                     weight = 1f,
                     fontSize = measurementFontSize,
                     isBold = classification?.isBold ?: false,
-                    textColor = classification?.textColor ?: Color.Unspecified,
-                    backgroundColor = classification?.backgroundColor ?: Color.Transparent,
+                    textColor = if (isSummaryVisible) (classification?.textColor ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    backgroundColor = Color.Transparent,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }

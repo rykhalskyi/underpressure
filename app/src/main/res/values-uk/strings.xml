@@ -99,7 +99,19 @@
     <string name="label_privacy_policy">Політика конфіденційності</string>
     <string name="button_show_onboarding">Показати знайомство</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Нормальний</string>
+    <string name="bp_level_elevated">Підвищений</string>
+    <string name="bp_level_high_normal">Високий нормальний</string>
+    <string name="bp_level_stage1">Гіпертонія 1 стадії</string>
+    <string name="bp_level_grade1">Гіпертонія 1 ступеня</string>
+    <string name="bp_level_stage2">Гіпертонія 2 стадії</string>
+    <string name="bp_level_grade2">Гіпертонія 2 ступеня</string>
+    <string name="bp_level_crisis">Гіпертонічний криз</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Зведення класифікації</string>
+    <string name="label_classification_all_time">За весь час</string>
     <string name="header_data_management">Керування даними</string>
     <string name="button_import_csv">Імпортувати CSV</string>
     <string name="dialog_title_import">Імпорт даних</string>

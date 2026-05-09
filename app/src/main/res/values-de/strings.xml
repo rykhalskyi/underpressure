@@ -99,7 +99,19 @@
     <string name="label_privacy_policy">Datenschutzerklärung</string>
     <string name="button_show_onboarding">Einführung anzeigen</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Normal</string>
+    <string name="bp_level_elevated">Erhöht</string>
+    <string name="bp_level_high_normal">Hoch Normal</string>
+    <string name="bp_level_stage1">Hypertonie Stadium 1</string>
+    <string name="bp_level_grade1">Hypertonie Grad 1</string>
+    <string name="bp_level_stage2">Hypertonie Stadium 2</string>
+    <string name="bp_level_grade2">Hypertonie Grad 2</string>
+    <string name="bp_level_crisis">Hypertensive Krise</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Klassifizierungsübersicht</string>
+    <string name="label_classification_all_time">Gesamt</string>
     <string name="header_data_management">Datenverwaltung</string>
     <string name="button_import_csv">CSV importieren</string>
     <string name="dialog_title_import">Daten importieren</string>
