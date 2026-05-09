@@ -131,6 +131,8 @@
     <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
     <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
+    <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
+    <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do zaleceń lekarza.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->

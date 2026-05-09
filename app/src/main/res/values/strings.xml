@@ -133,6 +133,8 @@
     <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
     <string name="onboarding_slide4_caption">Share Data</string>
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
+    <string name="onboarding_slide5_caption">Classification Guidelines</string>
+    <string name="onboarding_slide5_description">UnderPressure supports both ACC/AHA and ESC/ESH classification guidelines. Switch between them in settings to match your doctor\'s advice.</string>
     <string name="button_onboarding_close">Get Started</string>
 
     <!-- Guidance Popup -->

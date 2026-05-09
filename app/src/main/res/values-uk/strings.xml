@@ -131,6 +131,8 @@
     <string name="onboarding_slide3_description">Ви можете переглядати та ділитися графіками вимірювань. Налаштуйте графіки для потрібних слотів і даних.</string>
     <string name="onboarding_slide4_caption">Поділитися даними</string>
     <string name="onboarding_slide4_description">Ви можете поділитися даними, якщо хочете. В інших випадках ваші дані не залишать ваш телефон. Ми також не збираємо жодної телеметрії чи журналів.</string>
+    <string name="onboarding_slide5_caption">Рекомендації щодо класифікації</string>
+    <string name="onboarding_slide5_description">UnderPressure підтримує рекомендації щодо класифікації як ACC/AHA, так і ESC/ESH. Перемикайтеся між ними в налаштуваннях, щоб вони відповідали порадам вашого лікаря.</string>
     <string name="button_onboarding_close">Розпочати</string>
 
     <!-- Guidance Popup -->

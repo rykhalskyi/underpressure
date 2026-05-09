@@ -131,6 +131,8 @@
     <string name="onboarding_slide3_description">Sie können Messwertdiagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
     <string name="onboarding_slide4_caption">Daten teilen</string>
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
+    <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
+    <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Arztes anzupassen.</string>
     <string name="button_onboarding_close">Loslegen</string>
 
     <!-- Guidance Popup -->

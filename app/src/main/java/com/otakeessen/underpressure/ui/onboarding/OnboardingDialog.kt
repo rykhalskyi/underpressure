@@ -6,6 +6,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
@@ -45,6 +46,11 @@ fun OnboardingDialog(
             icon = Icons.Default.Share,
             caption = stringResource(R.string.onboarding_slide4_caption),
             description = stringResource(R.string.onboarding_slide4_description)
+        ),
+        OnboardingSlideData(
+            icon = Icons.Default.Analytics,
+            caption = stringResource(R.string.onboarding_slide5_caption),
+            description = stringResource(R.string.onboarding_slide5_description)
         )
     )
 
