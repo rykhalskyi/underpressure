@@ -37,9 +37,22 @@
     <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
     <string name="hypertension_warning">Hypertension Warning</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Normal</string>
+    <string name="bp_level_elevated">Elevated</string>
+    <string name="bp_level_high_normal">High Normal</string>
+    <string name="bp_level_stage1">Hypertension Stage 1</string>
+    <string name="bp_level_grade1">Hypertension Grade 1</string>
+    <string name="bp_level_stage2">Hypertension Stage 2</string>
+    <string name="bp_level_grade2">Hypertension Grade 2</string>
+    <string name="bp_level_crisis">Hypertensive Crisis</string>
+
+    <string name="header_classification_summary">Classification Summary (All Time)</string>
+
     <!-- Search Dialog -->
     <string name="dialog_title_search">Search Measurements</string>
-    <string name="label_search_hint">Enter date (YYYY-MM-DD) or value</string>
+    <string name="label_search">Search</string>
+    <string name="helper_search_hint">YYYY, YYYY-MM-DD or 140/90/60</string>
     <string name="message_no_results">No results found</string>
     <string name="button_jump_to_date">Jump to Date: %1$s</string>
     <string name="label_measurement_details">Systolic: %1$d, Diastolic: %2$d, Pulse: %3$d</string>
@@ -99,6 +112,7 @@
     <string name="button_show_onboarding">Show Onboarding</string>
 
     <!-- Data Management Section -->
+    <string name="header_classification_guidelines">Classification Guidelines</string>
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
     <string name="dialog_title_import">Import Data</string>

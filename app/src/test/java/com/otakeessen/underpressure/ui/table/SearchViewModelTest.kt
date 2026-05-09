@@ -42,7 +42,7 @@ class SearchViewModelTest {
 
     @Test
     fun `initial state is empty`() = runTest {
-        val state = viewModel.uiState.value
+        val state = viewModel.resultsState.value
         assertEquals("", state.query)
         assertTrue(state.results.isEmpty())
         assertFalse(state.isLoading)
@@ -59,7 +59,7 @@ class SearchViewModelTest {
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce (300ms) + buffer
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.first { it.results == mockResults }
         assertEquals(query, state.query)
         assertEquals(mockResults, state.results)
         assertFalse(state.isLoading)
@@ -72,7 +72,7 @@ class SearchViewModelTest {
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.first { it.query == query }
         assertEquals(query, state.query)
         assertNotNull(state.dateErrorRes)
         assertTrue(state.results.isEmpty())
@@ -84,7 +84,7 @@ class SearchViewModelTest {
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.first { it.query == query }
         assertEquals(query, state.query)
         assertEquals(null, state.dateErrorRes)
     }

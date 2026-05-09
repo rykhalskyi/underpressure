@@ -6,6 +6,7 @@ import android.net.Uri
 import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.export.TableImportManager
+import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,9 @@ class SettingsViewModel(
                     _uiState.update { it.copy(isLoading = false, error = e.message) }
                 }
                 .collect { settings ->
-                    val entity = settings ?: AppSettingsEntity()
+                    val entity = settings ?: AppSettingsEntity(
+                        bpGuidelines = detectDefaultGuidelines()
+                    )
                     
                     // Self-healing: if slot 1 is false in DB, force it to true and save
                     if (!entity.slotActiveFlags.getOrElse(0) { true }) {
@@ -64,12 +67,18 @@ class SettingsViewModel(
                             isLoading = false,
                             slots = entity.toSlotConfigs(),
                             isMasterAlarmEnabled = entity.masterAlarmEnabled,
+                            bpGuidelines = entity.bpGuidelines,
                             lastOnboardedVersion = entity.lastOnboardedVersion,
                             error = null
                         )
                     }
                 }
         }
+    }
+
+    private fun detectDefaultGuidelines(): BpGuidelines {
+        val country = java.util.Locale.getDefault().country
+        return if (country == "US") BpGuidelines.AHA_ACC else BpGuidelines.ESC_ESH
     }
 
     fun refreshPermissionStatus() {
@@ -79,6 +88,11 @@ class SettingsViewModel(
     fun updateMasterAlarmEnabled(isEnabled: Boolean) {
         val settings = currentSettings ?: return
         saveSettings(settings.copy(masterAlarmEnabled = isEnabled))
+    }
+
+    fun updateBpGuidelines(guidelines: BpGuidelines) {
+        val settings = currentSettings ?: return
+        saveSettings(settings.copy(bpGuidelines = guidelines))
     }
 
     fun updateSlotTime(index: Int, time: String) {

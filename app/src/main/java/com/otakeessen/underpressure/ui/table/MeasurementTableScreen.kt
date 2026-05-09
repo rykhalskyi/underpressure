@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
@@ -53,6 +54,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
+import com.otakeessen.underpressure.ui.table.components.ClassificationSummary
 import com.otakeessen.underpressure.ui.table.components.ShareDialog
 import com.otakeessen.underpressure.ui.table.components.DayRow
 import com.otakeessen.underpressure.ui.table.components.MeasurementEditDialog
@@ -145,6 +147,16 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
+                    IconButton(onClick = { viewModel.toggleSummaryVisibility() }) {
+                        Icon(
+                            imageVector = Icons.Default.Analytics,
+                            contentDescription = "Toggle Summary",
+                            tint = if (uiState.isSummaryVisible) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                     IconButton(onClick = { showMenu = !showMenu }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -299,6 +311,14 @@ fun MeasurementTableScreen(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyListState
                     ) {
+                        if (uiState.isSummaryVisible) {
+                            item {
+                                ClassificationSummary(
+                                    stats = uiState.classificationStats,
+                                    guidelines = uiState.activeGuidelines
+                                )
+                            }
+                        }
                         items(
                             items = uiState.displayItems,
                             key = { item ->
@@ -329,6 +349,7 @@ fun MeasurementTableScreen(
                                     DayRow(
                                         summary = item.summary,
                                         slotCount = uiState.slotHeaders.size,
+                                        guidelines = uiState.activeGuidelines,
                                         onCellClick = { slotIndex -> 
                                             viewModel.onCellClicked(item.summary.date, slotIndex)
                                         }
@@ -349,6 +370,7 @@ fun MeasurementTableScreen(
         if (uiState.dialogState.isOpen) {
             MeasurementEditDialog(
                 state = uiState.dialogState,
+                guidelines = uiState.activeGuidelines,
                 onValueChange = { viewModel.onMeasurementInputChanged(it) },
                 onSave = { viewModel.onSaveMeasurement(it) },
                 onAcceptGuidance = { viewModel.onAcceptGuidance() },
@@ -359,6 +381,7 @@ fun MeasurementTableScreen(
         if (isSearchDialogOpen) {
             SearchDialog(
                 viewModel = searchViewModel,
+                guidelines = uiState.activeGuidelines,
                 onDismiss = { isSearchDialogOpen = false },
                 onResultClick = { date ->
                     isSearchDialogOpen = false

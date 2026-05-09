@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,6 +21,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.ui.table.DayMeasurementSummary
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -32,6 +36,7 @@ import java.time.format.DateTimeFormatter
 fun DayRow(
     summary: DayMeasurementSummary,
     slotCount: Int,
+    guidelines: BpGuidelines,
     onCellClick: (slotIndex: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,12 +90,18 @@ fun DayRow(
                         bp
                     }
                 } ?: stringResource(R.string.empty_value)
+
+                val classification = data?.let { 
+                    BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
+                }
                 
                 TableCell(
                     text = text, 
                     weight = 1f,
                     fontSize = measurementFontSize,
-                    isBold = false,//data != null,
+                    isBold = classification?.isBold ?: false,
+                    textColor = classification?.textColor ?: Color.Unspecified,
+                    backgroundColor = classification?.backgroundColor ?: Color.Transparent,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
@@ -105,22 +116,30 @@ private fun RowScope.TableCell(
     fontSize: TextUnit = 12.sp,
     isTitle: Boolean = false,
     isBold: Boolean = false,
+    textColor: Color = Color.Unspecified,
+    backgroundColor: Color = Color.Transparent,
     onClick: (() -> Unit)? = null
 ) {
-    Text(
-        text = text,
+    Surface(
+        color = backgroundColor,
         modifier = Modifier
             .weight(weight)
-            .padding(horizontal = 4.dp)
-            .let { if (onClick != null) it.clickable(onClick = onClick) else it },
-        style = MaterialTheme.typography.bodyMedium.copy(
-            fontSize = fontSize,
-            fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
-            lineHeight = fontSize * 1.2f
-        ),
-        textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis
-    )
+            .padding(horizontal = 2.dp)
+            .let { if (onClick != null) it.clickable(onClick = onClick) else it }
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier
+                .padding(vertical = 4.dp, horizontal = 4.dp),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = textColor,
+                fontSize = fontSize,
+                fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
+                lineHeight = fontSize * 1.2f
+            ),
+            textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
 }
-

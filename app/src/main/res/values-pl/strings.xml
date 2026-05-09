@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Szukaj pomiarów</string>
-    <string name="label_search_hint">Wprowadź datę (RRRR-MM-DD) lub wartość</string>
+    <string name="label_search">Szukaj</string>
+    <string name="helper_search_hint">RRRR, RRRR-MM-DD lub 140/90/60</string>
     <string name="message_no_results">Nie znaleziono wyników</string>
     <string name="button_jump_to_date">Skocz do daty: %1$s</string>
     <string name="label_measurement_details">Skurczowe: %1$d, Rozkurczowe: %2$d, Tętno: %3$d</string>

@@ -2,6 +2,7 @@ package com.otakeessen.underpressure.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.otakeessen.underpressure.domain.BpGuidelines
 
 /**
  * Represents application settings in the local database.
@@ -23,5 +24,6 @@ data class AppSettingsEntity(
     val slotActiveFlags: List<Boolean> = listOf(true, false, false, false),
     val slotModifiedFlags: List<Boolean> = listOf(false, false, false, false),
     val lastOnboardedVersion: String? = null,
+    val bpGuidelines: BpGuidelines = BpGuidelines.AHA_ACC
 )
 

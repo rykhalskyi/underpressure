@@ -36,6 +36,9 @@ import androidx.compose.ui.text.TextRange
 
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import com.otakeessen.underpressure.util.Constants.SLOT_WINDOW_MINUTES
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 
 /**
  * ViewModel for the Measurement Table Screen.
@@ -53,6 +56,7 @@ class MeasurementTableViewModel(
     private val validator = BloodPressureValidator()
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
+    private val _isSummaryVisible = MutableStateFlow(true)
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
     private val _expandedYears = MutableStateFlow<Set<Int>>(
@@ -77,6 +81,7 @@ class MeasurementTableViewModel(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
         _dialogState,
+        _isSummaryVisible,
         _expandedYears,
         _expandedMonths,
         tickFlow,
@@ -85,8 +90,9 @@ class MeasurementTableViewModel(
         val measurements = args[0] as List<MeasurementEntity>
         val settings = args[1] as AppSettingsEntity?
         val dialogState = args[2] as MeasurementDialogState
-        val expandedYears = args[3] as Set<Int>
-        val expandedMonths = args[4] as Set<String>
+        val isSummaryVisible = args[3] as Boolean
+        val expandedYears = args[4] as Set<Int>
+        val expandedMonths = args[5] as Set<String>
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
@@ -244,6 +250,12 @@ class MeasurementTableViewModel(
             fabHint = "all_modified"
         }
 
+        // Calculate stats
+        val guidelines = settings?.bpGuidelines ?: detectDefaultGuidelines()
+        val stats = measurements.map { 
+            BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
+        }.groupingBy { it.level }.eachCount()
+
         TableUiState(
             isLoading = false,
             slotHeaders = headers,
@@ -256,13 +268,23 @@ class MeasurementTableViewModel(
             fabTargetSlotIndex = fabTargetSlotIndex,
             isGuidanceRequired = isGuidanceRequired,
             fabHint = fabHint,
-            isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false
+            isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false,
+            isSummaryVisible = isSummaryVisible,
+            activeGuidelines = guidelines,
+            classificationStats = stats
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TableUiState(isLoading = true)
     )
+
+    /**
+     * Toggles visibility of the classification summary.
+     */
+    fun toggleSummaryVisibility() {
+        _isSummaryVisible.update { !it }
+    }
 
     /**
      * Toggles expansion state for a year.
@@ -308,6 +330,11 @@ class MeasurementTableViewModel(
      */
     fun refresh() {
         manualRefreshTrigger.value = System.currentTimeMillis()
+    }
+
+    private fun detectDefaultGuidelines(): BpGuidelines {
+        val country = java.util.Locale.getDefault().country
+        return if (country == "US") BpGuidelines.AHA_ACC else BpGuidelines.ESC_ESH
     }
 
     /**
@@ -532,5 +559,3 @@ class MeasurementTableViewModel(
         }
     }
 }
-
-

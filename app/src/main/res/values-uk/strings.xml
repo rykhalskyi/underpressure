@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Пошук вимірювань</string>
-    <string name="label_search_hint">Введіть дату (РРРР-ММ-ДД) або значення</string>
+    <string name="label_search">Пошук</string>
+    <string name="helper_search_hint">РРРР, РРРР-ММ-ДД або 140/90/60</string>
     <string name="message_no_results">Результатів не знайдено</string>
     <string name="button_jump_to_date">Перейти до дати: %1$s</string>
     <string name="label_measurement_details">Систолічний: %1$d, Діастолічний: %2$d, Пульс: %3$d</string>

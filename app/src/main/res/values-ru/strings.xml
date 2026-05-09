@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Поиск измерений</string>
-    <string name="label_search_hint">Введите дату (ГГГГ-ММ-ДД) или значение</string>
+    <string name="label_search">Поиск</string>
+    <string name="helper_search_hint">ГГГГ, ГГГГ-ММ-ДД или 140/90/60</string>
     <string name="message_no_results">Результатов не найдено</string>
     <string name="button_jump_to_date">Перейти к дате: %1$s</string>
     <string name="label_measurement_details">Систолическое: %1$d, Диастолическое: %2$d, Пульс: %3$d</string>

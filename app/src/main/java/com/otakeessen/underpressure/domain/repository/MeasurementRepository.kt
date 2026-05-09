@@ -46,6 +46,16 @@ interface MeasurementRepository {
     suspend fun getAllMeasurementsSync(): List<MeasurementEntity>
 
     /**
+     * Searches for measurements by complex numeric criteria.
+     */
+    fun searchMeasurementsComplex(digits: List<String>): Flow<List<MeasurementEntity>>
+
+    /**
+     * Searches for measurements by date partial match.
+     */
+    fun searchMeasurementsByDate(dateQuery: String): Flow<List<MeasurementEntity>>
+
+    /**
      * Searches for measurements by partial numeric value matches.
      */
     fun searchMeasurements(query: String): Flow<List<MeasurementEntity>>

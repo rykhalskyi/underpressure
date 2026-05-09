@@ -58,6 +58,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ListItem
+import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
 import androidx.compose.material3.AlertDialog
 import androidx.compose.foundation.selection.selectable
@@ -201,6 +202,23 @@ fun SettingsScreen(
                             enabled = uiState.isMasterAlarmEnabled,
                             onCheckedChange = { viewModel.updateMasterAlarmEnabled(it) }
                         )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
+                        Text(
+                            text = stringResource(R.string.header_classification_guidelines),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                        )
+                    }
+
+                    item {
+                        GuidelineSelection(
+                            selected = uiState.bpGuidelines,
+                            onSelected = { viewModel.updateBpGuidelines(it) }
+                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
                     }
 
                     item {
@@ -352,6 +370,65 @@ fun SettingsScreen(
                         Text(stringResource(R.string.button_ok))
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun GuidelineSelection(
+    selected: BpGuidelines,
+    onSelected: (BpGuidelines) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.selectableGroup()) {
+        GuidelineOption(
+            title = "American (AHA/ACC)",
+            subtitle = "Hypertension starts at 130/80",
+            selected = selected == BpGuidelines.AHA_ACC,
+            onClick = { onSelected(BpGuidelines.AHA_ACC) }
+        )
+        GuidelineOption(
+            title = "European (ESC/ESH)",
+            subtitle = "Hypertension starts at 140/90",
+            selected = selected == BpGuidelines.ESC_ESH,
+            onClick = { onSelected(BpGuidelines.ESC_ESH) }
+        )
+    }
+}
+
+@Composable
+fun GuidelineOption(
+    title: String,
+    subtitle: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .selectable(
+                selected = selected,
+                onClick = onClick,
+                role = Role.RadioButton
+            )
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = null
+        )
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

@@ -36,7 +36,7 @@ class SearchViewModel(
 
     private val _isLoading = MutableStateFlow(false)
 
-    val uiState: StateFlow<SearchUiState> = _query
+    val resultsState: StateFlow<SearchUiState> = _query
         .debounce(300L)
         .distinctUntilChanged()
         .flatMapLatest { query ->
@@ -44,14 +44,17 @@ class SearchViewModel(
                 flowOf(SearchUiState())
             } else {
                 _isLoading.value = true
+
+                // Separate Date vs Numeric logic
+                // If it's a 4-digit number, treat it as a year (date search). 
+                // Otherwise check for hyphen or mixed digits/other chars to route correctly.
+                val isYearOnly = query.matches(Regex("""^\d{4}$"""))
+                val containsHyphen = query.contains("-")
                 
-                // Determine if query is potentially a date or a numeric search
-                val isDateQuery = query.any { it == '-' }
-                
-                if (isDateQuery) {
-                    validateAndSearchByDate(query)
+                if (isYearOnly || containsHyphen) {
+                    performDateSearch(query)
                 } else {
-                    searchByNumericValue(query)
+                    performNumericSearch(query)
                 }
             }
         }
@@ -64,30 +67,31 @@ class SearchViewModel(
             initialValue = SearchUiState()
         )
 
-    private fun validateAndSearchByDate(query: String) = flowOf(
-        try {
-            LocalDate.parse(query, dateFormatter)
-            _isLoading.value = false
-            SearchUiState(query = query) // Valid date format, result will be handled by navigation
-        } catch (e: DateTimeParseException) {
-            _isLoading.value = false
-            SearchUiState(query = query, dateErrorRes = R.string.error_invalid_date)
-        }
-    )
-
-    private fun searchByNumericValue(query: String) = 
-        measurementRepository.searchMeasurements(query)
+    private fun performDateSearch(query: String) =
+        measurementRepository.searchMeasurementsByDate(query)
             .flatMapLatest { results ->
                 _isLoading.value = false
-                flowOf(SearchUiState(
-                    query = query,
-                    results = results,
-                    isNoResults = results.isEmpty()
-                ))
+                flowOf(SearchUiState(query = query, results = results, isNoResults = results.isEmpty()))
             }
+
+    private fun performNumericSearch(query: String) = run {
+        // Parse numeric patterns: SYS, SYS/DIA, SYS/DIA/PULSE, SYS/DIA@PULSE
+        // Use a regex to extract numeric parts, ignoring non-digit separators
+        val digits = query.split(Regex("[^0-9]+")).filter { it.isNotEmpty() }
+        
+        if (digits.isEmpty()) {
+            _isLoading.value = false
+            flowOf(SearchUiState(query = query, results = emptyList(), isNoResults = true))
+        } else {
+            measurementRepository.searchMeasurementsComplex(digits)
+                .flatMapLatest { results ->
+                    _isLoading.value = false
+                    flowOf(SearchUiState(query = query, results = results, isNoResults = results.isEmpty()))
+                }
+        }
+    }
 
     fun updateQuery(newQuery: String) {
         _query.value = newQuery
     }
-}
-
+    }

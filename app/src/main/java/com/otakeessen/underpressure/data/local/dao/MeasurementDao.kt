@@ -35,6 +35,12 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements ORDER BY date DESC, createdAt DESC")
     suspend fun getAllSync(): List<MeasurementEntity>
 
+    @Query("SELECT * FROM measurements WHERE CAST(systolic AS TEXT) LIKE :systolic AND CAST(diastolic AS TEXT) LIKE :diastolic AND CAST(pulse AS TEXT) LIKE :pulse ORDER BY date DESC, createdAt DESC")
+    fun searchByComplexValue(systolic: String, diastolic: String, pulse: String): Flow<List<MeasurementEntity>>
+
+    @Query("SELECT * FROM measurements WHERE date LIKE :dateQuery ORDER BY date DESC, createdAt DESC")
+    fun searchByDate(dateQuery: String): Flow<List<MeasurementEntity>>
+
     @Query("SELECT * FROM measurements WHERE CAST(systolic AS TEXT) LIKE :query OR CAST(diastolic AS TEXT) LIKE :query OR CAST(pulse AS TEXT) LIKE :query ORDER BY date DESC, createdAt DESC")
     fun searchByValue(query: String): Flow<List<MeasurementEntity>>
 

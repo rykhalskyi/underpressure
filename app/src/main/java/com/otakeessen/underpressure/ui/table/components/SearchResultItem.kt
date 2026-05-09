@@ -10,12 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
-
-import androidx.compose.ui.res.stringResource
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BpGuidelines
 
 /**
  * A reusable component to display an individual search result.
@@ -23,6 +25,7 @@ import com.otakeessen.underpressure.R
 @Composable
 fun SearchResultItem(
     measurement: MeasurementEntity,
+    guidelines: BpGuidelines,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -47,18 +50,22 @@ fun SearchResultItem(
                     measurement.pulse
                 )
             } else {
-                // Manually construct or use a new string. For now, let's just use first two parts of current string or similar.
-                // To keep it simple and localized-friendly without adding new strings if possible:
                 val sysLabel = stringResource(R.string.header_systolic)
                 val diaLabel = stringResource(R.string.header_diastolic)
                 "$sysLabel: ${measurement.systolic}, $diaLabel: ${measurement.diastolic}"
             }
+            
+            val classification = BloodPressureClassifier.classify(
+                measurement.systolic, 
+                measurement.diastolic,
+                guidelines
+            )
+            
             Text(
                 text = details,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = classification.textColor
             )
         }
     }
 }
-

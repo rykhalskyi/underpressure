@@ -42,6 +42,18 @@ class MeasurementRepositoryImpl(
         return measurementDao.getAllSync()
     }
 
+    override fun searchMeasurementsComplex(digits: List<String>): Flow<List<MeasurementEntity>> {
+        val s = digits.getOrNull(0) ?: ""
+        val d = digits.getOrNull(1) ?: ""
+        val p = digits.getOrNull(2) ?: ""
+        return measurementDao.searchByComplexValue("%$s%", "%$d%", "%$p%")
+    }
+
+    override fun searchMeasurementsByDate(dateQuery: String): Flow<List<MeasurementEntity>> {
+        val formattedQuery = "%$dateQuery%"
+        return measurementDao.searchByDate(formattedQuery)
+    }
+
     override fun searchMeasurements(query: String): Flow<List<MeasurementEntity>> {
         val formattedQuery = "%$query%"
         return measurementDao.searchByValue(formattedQuery)

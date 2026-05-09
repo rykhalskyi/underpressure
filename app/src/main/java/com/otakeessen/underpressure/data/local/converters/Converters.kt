@@ -2,10 +2,22 @@ package com.otakeessen.underpressure.data.local.converters
 
 import androidx.room.TypeConverter
 
+import com.otakeessen.underpressure.domain.BpGuidelines
+
 /**
  * Room TypeConverters for serializing complex data types.
  */
 class Converters {
+    @TypeConverter
+    fun fromBpGuidelines(value: BpGuidelines): String {
+        return value.name
+    }
+
+    @TypeConverter
+    fun toBpGuidelines(value: String): BpGuidelines {
+        return BpGuidelines.valueOf(value)
+    }
+
     @TypeConverter
     fun fromStringList(value: List<String>): String {
         return value.joinToString(",")

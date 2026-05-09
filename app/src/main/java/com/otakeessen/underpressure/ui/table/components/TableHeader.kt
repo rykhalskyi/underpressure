@@ -57,7 +57,7 @@ private fun RowScope.HeaderCell(
         modifier = Modifier.weight(weight),
         style = MaterialTheme.typography.labelSmall.copy(
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 12.sp
+            fontSize = 14.sp
         ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = textAlign,
