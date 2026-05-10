@@ -13,6 +13,9 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -42,7 +45,7 @@ class SearchViewModelTest {
 
     @Test
     fun `initial state is empty`() = runTest {
-        val state = viewModel.uiState.value
+        val state = viewModel.resultsState.value
         assertEquals("", state.query)
         assertTrue(state.results.isEmpty())
         assertFalse(state.isLoading)
@@ -56,10 +59,14 @@ class SearchViewModelTest {
         )
         every { repository.searchMeasurements(query) } returns flowOf(mockResults)
 
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.resultsState.collect { }
+        }
+
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce (300ms) + buffer
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.value
         assertEquals(query, state.query)
         assertEquals(mockResults, state.results)
         assertFalse(state.isLoading)
@@ -68,11 +75,15 @@ class SearchViewModelTest {
 
     @Test
     fun `invalid date format shows error`() = runTest {
-        val query = "2024-03"
+        val query = "2024-13" // Invalid month
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.resultsState.collect { }
+        }
+
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.value
         assertEquals(query, state.query)
         assertNotNull(state.dateErrorRes)
         assertTrue(state.results.isEmpty())
@@ -81,10 +92,16 @@ class SearchViewModelTest {
     @Test
     fun `valid date format shows no error`() = runTest {
         val query = "2024-03-01"
+        every { repository.searchMeasurementsByDate(query) } returns flowOf(emptyList())
+
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.resultsState.collect { }
+        }
+
         viewModel.updateQuery(query)
         advanceTimeBy(1000) // Debounce
 
-        val state = viewModel.uiState.first { it.query == query }
+        val state = viewModel.resultsState.value
         assertEquals(query, state.query)
         assertEquals(null, state.dateErrorRes)
     }

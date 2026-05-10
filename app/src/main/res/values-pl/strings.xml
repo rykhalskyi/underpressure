@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Szukaj pomiarów</string>
-    <string name="label_search_hint">Wprowadź datę (RRRR-MM-DD) lub wartość</string>
+    <string name="label_search">Szukaj</string>
+    <string name="helper_search_hint">RRRR, RRRR-MM-DD lub 140 90 60</string>
     <string name="message_no_results">Nie znaleziono wyników</string>
     <string name="button_jump_to_date">Skocz do daty: %1$s</string>
     <string name="label_measurement_details">Skurczowe: %1$d, Rozkurczowe: %2$d, Tętno: %3$d</string>
@@ -92,13 +93,32 @@
     <string name="error_from_after_to">Data początkowa nie może być późniejsza niż końcowa</string>
     <string name="placeholder_date">RRRR-MM-DD</string>
     <!-- About Section -->
+    <string name="onboarding_version_label">Wersja: %1$s</string>
     <string name="header_about">O aplikacji</string>
     <string name="label_version">Wersja %1$s</string>
     <string name="label_repo">Kod źródłowy (GitHub)</string>
     <string name="label_privacy_policy">Polityka prywatności</string>
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Prawidłowe</string>
+    <string name="bp_level_elevated">Podwyższone</string>
+    <string name="bp_level_high_normal">Wysokie prawidłowe</string>
+    <string name="bp_level_stage1">Nadciśnienie 1 stopnia</string>
+    <string name="bp_level_grade1">Nadciśnienie 1 stopnia</string>
+    <string name="bp_level_stage2">Nadciśnienie 2 stopnia</string>
+    <string name="bp_level_grade2">Nadciśnienie 2 stopnia</string>
+    <string name="bp_level_crisis">Przełom nadciśnieniowy</string>
+
+    <string name="header_classification_guidelines">Wytyczne klasyfikacji</string>
+    <string name="label_guideline_aha_title">Amerykańskie (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Nadciśnienie od 130/80</string>
+    <string name="label_guideline_esc_title">Europejskie (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Nadciśnienie od 140/90</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Podsumowanie klasyfikacji</string>
+    <string name="label_classification_all_time">Cały czas</string>
     <string name="header_data_management">Zarządzanie danymi</string>
     <string name="button_import_csv">Importuj CSV</string>
     <string name="dialog_title_import">Importuj dane</string>
@@ -118,11 +138,13 @@
     <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
     <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
+    <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
+    <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do zaleceń lekarza.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
     <string name="guidance_title">Wydaje się, że to nie jest twój czas pomiaru</string>
-    <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?</string>
+    <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?\n\nZawsze możesz zmienić czas slotu w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
     <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
     <string name="hint_cannot_create_slot">Nie można teraz utworzyć slotu. Musi on być oddalony o co najmniej 30 minut od sąsiednich slotów. Użyj następnego slotu o %1$s.</string>
     </resources>

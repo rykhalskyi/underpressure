@@ -37,9 +37,23 @@
     <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
     <string name="hypertension_warning">Hypertension Warning</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Normal</string>
+    <string name="bp_level_elevated">Elevated</string>
+    <string name="bp_level_high_normal">High Normal</string>
+    <string name="bp_level_stage1">Hypertension Stage 1</string>
+    <string name="bp_level_grade1">Hypertension Grade 1</string>
+    <string name="bp_level_stage2">Hypertension Stage 2</string>
+    <string name="bp_level_grade2">Hypertension Grade 2</string>
+    <string name="bp_level_crisis">Hypertensive Crisis</string>
+
+    <string name="header_classification_summary">Classification Summary</string>
+    <string name="label_classification_all_time">All Time</string>
+
     <!-- Search Dialog -->
     <string name="dialog_title_search">Search Measurements</string>
-    <string name="label_search_hint">Enter date (YYYY-MM-DD) or value</string>
+    <string name="label_search">Search</string>
+    <string name="helper_search_hint">YYYY, YYYY-MM-DD or 140 90 60</string>
     <string name="message_no_results">No results found</string>
     <string name="button_jump_to_date">Jump to Date: %1$s</string>
     <string name="label_measurement_details">Systolic: %1$d, Diastolic: %2$d, Pulse: %3$d</string>
@@ -91,7 +105,7 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
-    <!-- About Section -->
+    <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>
@@ -99,6 +113,12 @@
     <string name="button_show_onboarding">Show Onboarding</string>
 
     <!-- Data Management Section -->
+    <string name="header_classification_guidelines">Classification Guidelines</string>
+    <string name="label_guideline_aha_title">American (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Hypertension starts at 130/80</string>
+    <string name="label_guideline_esc_title">European (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Hypertension starts at 140/90</string>
+
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
     <string name="dialog_title_import">Import Data</string>
@@ -118,11 +138,13 @@
     <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
     <string name="onboarding_slide4_caption">Share Data</string>
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
+    <string name="onboarding_slide5_caption">Classification Guidelines</string>
+    <string name="onboarding_slide5_description">UnderPressure supports both ACC/AHA and ESC/ESH classification guidelines. Switch between them in settings to match your doctor\'s advice.</string>
     <string name="button_onboarding_close">Get Started</string>
 
     <!-- Guidance Popup -->
     <string name="guidance_title">It doesn\'t seem to be your measurement time</string>
-    <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?</string>
+    <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?\n\nYou can always change the slot time in Settings or by simply tapping on the time in the table header.</string>
     <string name="hint_edit_slot">You can change value of slot %1$d by tapping on it.</string>
     <string name="hint_cannot_create_slot">Cannot create slot now. It must be at least 30 minutes away from neighbor slots. Use the next slot at %1$s.</string>
 </resources>

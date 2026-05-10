@@ -6,6 +6,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.otakeessen.underpressure.BuildConfig
 import com.otakeessen.underpressure.R
 
 @Composable
@@ -29,7 +31,8 @@ fun OnboardingDialog(
         OnboardingSlideData(
             icon = Icons.Default.Security,
             caption = stringResource(R.string.onboarding_slide1_caption),
-            description = stringResource(R.string.onboarding_slide1_description)
+            description = stringResource(R.string.onboarding_slide1_description),
+            version = stringResource(R.string.onboarding_version_label, BuildConfig.VERSION_NAME)
         ),
         OnboardingSlideData(
             icon = Icons.Default.Schedule,
@@ -45,6 +48,11 @@ fun OnboardingDialog(
             icon = Icons.Default.Share,
             caption = stringResource(R.string.onboarding_slide4_caption),
             description = stringResource(R.string.onboarding_slide4_description)
+        ),
+        OnboardingSlideData(
+            icon = Icons.Default.Analytics,
+            caption = stringResource(R.string.onboarding_slide5_caption),
+            description = stringResource(R.string.onboarding_slide5_description)
         )
     )
 

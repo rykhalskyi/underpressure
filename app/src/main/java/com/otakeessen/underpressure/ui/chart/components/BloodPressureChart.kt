@@ -2,6 +2,7 @@ package com.otakeessen.underpressure.ui.chart.components
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color as AndroidColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.formatter.ValueFormatter
@@ -61,6 +63,33 @@ fun BloodPressureChart(
 
                 axisLeft.apply {
                     setDrawGridLines(true)
+                    
+                    // Add hypertension limit lines
+                    val limit140 = LimitLine(140f).apply {
+                        lineColor = AndroidColor.parseColor("#C0392B") // Red
+                        lineWidth = 1f
+                        enableDashedLine(10f, 10f, 0f)
+                    }
+                    val limit90 = LimitLine(90f).apply {
+                        lineColor = AndroidColor.parseColor("#C0392B") // Red
+                        lineWidth = 1f
+                        enableDashedLine(10f, 10f, 0f)
+                    }
+                    val limit130 = LimitLine(130f).apply {
+                        lineColor = AndroidColor.parseColor("#E67E22") // Orange
+                        lineWidth = 1f
+                        enableDashedLine(10f, 10f, 0f)
+                    }
+                    val limit80 = LimitLine(80f).apply {
+                        lineColor = AndroidColor.parseColor("#E67E22") // Orange
+                        lineWidth = 1f
+                        enableDashedLine(10f, 10f, 0f)
+                    }
+                    
+                    addLimitLine(limit140)
+                    addLimitLine(limit90)
+                    addLimitLine(limit130)
+                    addLimitLine(limit80)
                 }
 
                 axisRight.isEnabled = false

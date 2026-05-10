@@ -36,6 +36,9 @@ import androidx.compose.ui.text.TextRange
 
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import com.otakeessen.underpressure.util.Constants.SLOT_WINDOW_MINUTES
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 
 /**
  * ViewModel for the Measurement Table Screen.
@@ -53,6 +56,8 @@ class MeasurementTableViewModel(
     private val validator = BloodPressureValidator()
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
+    private val _isSummaryVisible = MutableStateFlow(true)
+    private val _manualError = MutableStateFlow<String?>(null)
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
     private val _expandedYears = MutableStateFlow<Set<Int>>(
@@ -77,16 +82,20 @@ class MeasurementTableViewModel(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
         _dialogState,
+        _isSummaryVisible,
         _expandedYears,
         _expandedMonths,
+        _manualError,
         tickFlow,
         manualRefreshTrigger
     ) { args: Array<Any?> ->
         val measurements = args[0] as List<MeasurementEntity>
         val settings = args[1] as AppSettingsEntity?
         val dialogState = args[2] as MeasurementDialogState
-        val expandedYears = args[3] as Set<Int>
-        val expandedMonths = args[4] as Set<String>
+        val isSummaryVisible = args[3] as Boolean
+        val expandedYears = args[4] as Set<Int>
+        val expandedMonths = args[5] as Set<String>
+        val manualError = args[6] as String?
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
@@ -244,6 +253,12 @@ class MeasurementTableViewModel(
             fabHint = "all_modified"
         }
 
+        // Calculate stats
+        val guidelines = settings?.bpGuidelines ?: detectDefaultGuidelines()
+        val stats = measurements.map { 
+            BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
+        }.groupingBy { it.level }.eachCount()
+
         TableUiState(
             isLoading = false,
             slotHeaders = headers,
@@ -256,13 +271,24 @@ class MeasurementTableViewModel(
             fabTargetSlotIndex = fabTargetSlotIndex,
             isGuidanceRequired = isGuidanceRequired,
             fabHint = fabHint,
-            isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false
+            isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false,
+            isSummaryVisible = isSummaryVisible,
+            activeGuidelines = guidelines,
+            error = manualError,
+            classificationStats = stats
         )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TableUiState(isLoading = true)
     )
+
+    /**
+     * Toggles visibility of the classification summary.
+     */
+    fun toggleSummaryVisibility() {
+        _isSummaryVisible.update { !it }
+    }
 
     /**
      * Toggles expansion state for a year.
@@ -308,6 +334,60 @@ class MeasurementTableViewModel(
      */
     fun refresh() {
         manualRefreshTrigger.value = System.currentTimeMillis()
+    }
+
+    /**
+     * Updates the time for a measurement slot.
+     * @param uiSlotIndex The index of the slot as displayed in the UI.
+     * @param newTimeStr The new time string (HH:mm).
+     */
+    fun updateSlotTime(uiSlotIndex: Int, newTimeStr: String) {
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: return@launch
+            val activeFlags = settings.slotActiveFlags
+            val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
+            val originalIndex = activeIndices.getOrNull(uiSlotIndex) ?: return@launch
+
+            // Validate time difference from other active slots
+            val newTime = LocalTime.parse(newTimeStr, timeFormatter)
+            val conflictNeighbor = settings.slotTimes.mapIndexedNotNull { i, t ->
+                if (i != originalIndex && settings.slotActiveFlags[i]) LocalTime.parse(t, timeFormatter) else null
+            }.find { otherTime ->
+                val diff = abs(Duration.between(newTime, otherTime).toMinutes())
+                val wrappedDiff = kotlin.math.min(diff, 1440L - diff)
+                wrappedDiff < MIN_SLOT_DIFFERENCE_MINUTES
+            }
+
+            if (conflictNeighbor != null) {
+                _manualError.update { "hint_cannot_create_slot|${conflictNeighbor.format(timeFormatter)}" }
+                return@launch
+            }
+
+            val newTimes = settings.slotTimes.toMutableList().apply {
+                this[originalIndex] = newTimeStr
+            }
+            val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
+                this[originalIndex] = true
+            }
+            
+            val updatedSettings = settings.copy(
+                slotTimes = newTimes,
+                slotModifiedFlags = newModifiedFlags
+            )
+            settingsRepository.saveSettings(updatedSettings)
+            alarmScheduler.updateAlarms(updatedSettings)
+        }
+    }
+
+    /**
+     * Clears the manual error message.
+     */
+    fun clearError() {
+        _manualError.update { null }
+    }
+
+    private fun detectDefaultGuidelines(): BpGuidelines {
+        return BpGuidelines.ESC_ESH
     }
 
     /**
@@ -532,5 +612,3 @@ class MeasurementTableViewModel(
         }
     }
 }
-
-

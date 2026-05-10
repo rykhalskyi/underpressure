@@ -1,6 +1,7 @@
 package com.otakeessen.underpressure.ui.table.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import com.otakeessen.underpressure.R
 @Composable
 fun TableHeader(
     slotHeaders: List<String>,
+    onSlotClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -36,11 +38,12 @@ fun TableHeader(
             textAlign = TextAlign.Start
         )
         
-        slotHeaders.forEach { time ->
+        slotHeaders.forEachIndexed { index, time ->
             HeaderCell(
                 text = time,
                 weight = 1f,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                onClick = { onSlotClick(index) }
             )
         }
     }
@@ -50,14 +53,17 @@ fun TableHeader(
 private fun RowScope.HeaderCell(
     text: String,
     weight: Float,
-    textAlign: TextAlign
+    textAlign: TextAlign,
+    onClick: (() -> Unit)? = null
 ) {
     Text(
         text = text,
-        modifier = Modifier.weight(weight),
+        modifier = Modifier
+            .weight(weight)
+            .let { if (onClick != null) it.clickable(onClick = onClick) else it },
         style = MaterialTheme.typography.labelSmall.copy(
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 12.sp
+            fontSize = 14.sp
         ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = textAlign,

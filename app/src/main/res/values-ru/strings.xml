@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Поиск измерений</string>
-    <string name="label_search_hint">Введите дату (ГГГГ-ММ-ДД) или значение</string>
+    <string name="label_search">Поиск</string>
+    <string name="helper_search_hint">ГГГГ, ГГГГ-ММ-ДД или 140 90 60</string>
     <string name="message_no_results">Результатов не найдено</string>
     <string name="button_jump_to_date">Перейти к дате: %1$s</string>
     <string name="label_measurement_details">Систолическое: %1$d, Диастолическое: %2$d, Пульс: %3$d</string>
@@ -92,13 +93,32 @@
     <string name="error_from_after_to">Дата «С» не может быть позже даты «По»</string>
     <string name="placeholder_date">ГГГГ-ММ-ДД</string>
     <!-- About Section -->
+    <string name="onboarding_version_label">Версия: %1$s</string>
     <string name="header_about">О приложении</string>
     <string name="label_version">Версия %1$s</string>
     <string name="label_repo">Исходный код (GitHub)</string>
     <string name="label_privacy_policy">Политика конфиденциальности</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Нормальное</string>
+    <string name="bp_level_elevated">Повышенное</string>
+    <string name="bp_level_high_normal">Высокое нормальное</string>
+    <string name="bp_level_stage1">Гипертензия 1 ст.</string>
+    <string name="bp_level_grade1">Гипертензия 1 ст.</string>
+    <string name="bp_level_stage2">Гипертензия 2 ст.</string>
+    <string name="bp_level_grade2">Гипертензия 2 ст.</string>
+    <string name="bp_level_crisis">Гипертонический криз</string>
+
+    <string name="header_classification_guidelines">Рекомендации по классификации</string>
+    <string name="label_guideline_aha_title">Американские (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Гипертензия от 130/80</string>
+    <string name="label_guideline_esc_title">Европейские (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Гипертензия от 140/90</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Сводка классификации</string>
+    <string name="label_classification_all_time">За всё время</string>
     <string name="header_data_management">Управление данными</string>
     <string name="button_import_csv">Импортировать CSV</string>
     <string name="dialog_title_import">Импорт данных</string>
@@ -118,11 +138,13 @@
     <string name="onboarding_slide3_description">Вы можете просматривать и делиться графиками измерений. Настройте графики для нужных слотов и данных.</string>
     <string name="onboarding_slide4_caption">Поделиться данными</string>
     <string name="onboarding_slide4_description">Вы можете поделиться данными, если хотите. В остальных случаях ваши данные не покинут ваш телефон. Мы также не собираем никакой телеметрии или логов.</string>
+    <string name="onboarding_slide5_caption">Рекомендации по классификации</string>
+    <string name="onboarding_slide5_description">UnderPressure поддерживает рекомендации по классификации как ACC/AHA, так и ESC/ESH. Переключайтесь между ними в настройках, чтобы они соответствовали рекомендациям вашего врача.</string>
     <string name="button_onboarding_close">Начать</string>
 
     <!-- Guidance Popup -->
     <string name="guidance_title">Кажется, это не ваше время измерения</string>
-    <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?</string>
+    <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
     <string name="hint_cannot_create_slot">Не удается создать слот сейчас. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
 </resources>

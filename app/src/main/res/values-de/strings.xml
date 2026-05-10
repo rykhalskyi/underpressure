@@ -39,7 +39,8 @@
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Messungen suchen</string>
-    <string name="label_search_hint">Datum (JJJJ-MM-TT) oder Wert eingeben</string>
+    <string name="label_search">Suche</string>
+    <string name="helper_search_hint">JJJJ, JJJJ-MM-TT oder 140 90 60</string>
     <string name="message_no_results">Keine Ergebnisse gefunden</string>
     <string name="button_jump_to_date">Zum Datum springen: %1$s</string>
     <string name="label_measurement_details">Systolisch: %1$d, Diastolisch: %2$d, Puls: %3$d</string>
@@ -92,13 +93,32 @@
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
     <string name="placeholder_date">JJJJ-MM-TT</string>
     <!-- About Section -->
+    <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">Über</string>
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Quellcode (GitHub)</string>
     <string name="label_privacy_policy">Datenschutzerklärung</string>
     <string name="button_show_onboarding">Einführung anzeigen</string>
 
+    <!-- BP Levels -->
+    <string name="bp_level_normal">Normal</string>
+    <string name="bp_level_elevated">Erhöht</string>
+    <string name="bp_level_high_normal">Hoch Normal</string>
+    <string name="bp_level_stage1">Hypertonie Stadium 1</string>
+    <string name="bp_level_grade1">Hypertonie Grad 1</string>
+    <string name="bp_level_stage2">Hypertonie Stadium 2</string>
+    <string name="bp_level_grade2">Hypertonie Grad 2</string>
+    <string name="bp_level_crisis">Hypertensive Krise</string>
+
+    <string name="header_classification_guidelines">Klassifizierungsrichtlinien</string>
+    <string name="label_guideline_aha_title">Amerikanisch (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Hypertonie beginnt bei 130/80</string>
+    <string name="label_guideline_esc_title">Europäisch (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Hypertonie beginnt bei 140/90</string>
+
     <!-- Data Management Section -->
+    <string name="header_classification_summary">Klassifizierungsübersicht</string>
+    <string name="label_classification_all_time">Gesamt</string>
     <string name="header_data_management">Datenverwaltung</string>
     <string name="button_import_csv">CSV importieren</string>
     <string name="dialog_title_import">Daten importieren</string>
@@ -118,11 +138,13 @@
     <string name="onboarding_slide3_description">Sie können Messwertdiagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
     <string name="onboarding_slide4_caption">Daten teilen</string>
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
+    <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
+    <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Arztes anzupassen.</string>
     <string name="button_onboarding_close">Loslegen</string>
 
     <!-- Guidance Popup -->
     <string name="guidance_title">Das scheint nicht deine Messzeit zu sein</string>
-    <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?</string>
+    <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
     <string name="hint_cannot_create_slot">Slot kann jetzt nicht erstellt werden. Er muss mindestens 30 Minuten von benachbarten Slots entfernt sein. Nutze den nächsten Slot um %1$s.</string>
 </resources>

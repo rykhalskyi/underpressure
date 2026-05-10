@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,7 +22,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -38,11 +40,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import com.otakeessen.underpressure.ui.util.BpLevelMapper
 
 /**
  * Dialog for entering or editing a blood pressure measurement.
@@ -50,6 +54,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MeasurementEditDialog(
     state: MeasurementDialogState,
+    guidelines: BpGuidelines,
     onValueChange: (TextFieldValue) -> Unit,
     onSave: (String) -> Unit,
     onAcceptGuidance: () -> Unit,
@@ -59,7 +64,6 @@ fun MeasurementEditDialog(
     if (!state.isOpen) return
 
     if (state.isGuidanceVisible) {
-        // ... (guidance dialog code remains same)
         AlertDialog(
             modifier = modifier,
             onDismissRequest = onDismiss,
@@ -99,9 +103,16 @@ fun MeasurementEditDialog(
     
     val isError = textValue.isNotEmpty() && validationResult is ValidationResult.Error
     
-    // Hypertension check (SYS >= 140 or DIA >= 90)
-    val isHypertension = validationResult is ValidationResult.Success && 
-            (validationResult.systolic >= 140 || validationResult.diastolic >= 90)
+    // Hypertension classification
+    val classification = if (validationResult is ValidationResult.Success) {
+        BloodPressureClassifier.classify(validationResult.systolic, validationResult.diastolic, guidelines)
+    } else null
+    
+    val isHypertension = classification != null && classification.level >= BloodPressureLevel.STAGE_2
+
+    val bpLevelText = classification?.let {
+        stringResource(BpLevelMapper.getStringRes(it.level, guidelines))
+    }
 
     val errorMessage = when (validationResult) {
         is ValidationResult.Error.IncorrectMeasurements, 
@@ -111,6 +122,7 @@ fun MeasurementEditDialog(
     
     val focusRequester = remember { FocusRequester() }
     val haptic = LocalHapticFeedback.current
+    var lastLength by remember { mutableStateOf(textValue.length) }
 
     LaunchedEffect(state.isOpen) {
         if (state.isOpen) {
@@ -120,10 +132,10 @@ fun MeasurementEditDialog(
 
     // Trigger haptic feedback when a delimiter is added
     LaunchedEffect(textValue) {
-        if (textValue.contains("/") || textValue.contains("@")) {
-            // Only trigger if it's likely a new delimiter (simple heuristic)
+        if (textValue.length > lastLength && (textValue.endsWith("/") || textValue.endsWith("@") || textValue.endsWith(" "))) {
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         }
+        lastLength = textValue.length
     }
 
     AlertDialog(
@@ -155,19 +167,21 @@ fun MeasurementEditDialog(
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         fontWeight = FontWeight.Bold
                     )
-                    if (isHypertension) {
+                    if (classification != null) {
                         Spacer(modifier = Modifier.width(8.dp))
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = Color(0xFFF44336), // Red
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        if (isHypertension) {
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = classification.textColor,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                        }
                         Text(
-                            text = stringResource(R.string.hypertension_warning),
+                            text = bpLevelText ?: "",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFF44336)
+                            color = classification.textColor
                         )
                     }
                 }
@@ -193,12 +207,12 @@ fun MeasurementEditDialog(
                             }
                         }
                     },
-                    colors = if (isHypertension && !isError) {
+                    colors = if (classification != null && classification.level != BloodPressureLevel.NORMAL && !isError) {
                         OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFF44336),
-                            unfocusedBorderColor = Color(0xFFF44336).copy(alpha = 0.5f),
-                            focusedLabelColor = Color(0xFFF44336),
-                            cursorColor = Color(0xFFF44336)
+                            focusedBorderColor = classification.textColor,
+                            unfocusedBorderColor = classification.textColor.copy(alpha = 0.5f),
+                            focusedLabelColor = classification.textColor,
+                            cursorColor = classification.textColor
                         )
                     } else OutlinedTextFieldDefaults.colors(),
                     keyboardOptions = KeyboardOptions(

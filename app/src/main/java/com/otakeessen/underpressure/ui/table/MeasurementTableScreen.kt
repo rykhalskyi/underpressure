@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
@@ -52,7 +53,10 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.TextButton
+import com.otakeessen.underpressure.ui.table.components.ClassificationSummary
 import com.otakeessen.underpressure.ui.table.components.ShareDialog
 import com.otakeessen.underpressure.ui.table.components.DayRow
 import com.otakeessen.underpressure.ui.table.components.MeasurementEditDialog
@@ -60,6 +64,7 @@ import com.otakeessen.underpressure.ui.table.components.SearchDialog
 import com.otakeessen.underpressure.ui.table.components.TableHeader
 import com.otakeessen.underpressure.ui.table.components.YearHeader
 import com.otakeessen.underpressure.ui.table.components.MonthHeader
+import com.otakeessen.underpressure.ui.settings.components.TimePickerDialog
 
 import androidx.compose.ui.res.stringResource
 import com.otakeessen.underpressure.R
@@ -79,6 +84,7 @@ fun MeasurementTableScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     var isSearchDialogOpen by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
+    var showTimePickerForUiIndex by remember { mutableStateOf<Int?>(null) }
     val lazyListState = rememberLazyListState()
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -145,6 +151,16 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
+                    IconButton(onClick = { viewModel.toggleSummaryVisibility() }) {
+                        Icon(
+                            imageVector = Icons.Default.Analytics,
+                            contentDescription = "Toggle Summary",
+                            tint = if (uiState.isSummaryVisible) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                     IconButton(onClick = { showMenu = !showMenu }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
@@ -287,18 +303,29 @@ fun MeasurementTableScreen(
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator()
-            } else if (uiState.error != null) {
+            } else if (uiState.error != null && uiState.items.isEmpty()) {
                 Text(
                     text = uiState.error ?: stringResource(R.string.unknown_error),
                     color = MaterialTheme.colorScheme.error
                 )
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    TableHeader(slotHeaders = uiState.slotHeaders)
+                    TableHeader(
+                        slotHeaders = uiState.slotHeaders,
+                        onSlotClick = { showTimePickerForUiIndex = it }
+                    )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyListState
                     ) {
+                        if (uiState.isSummaryVisible) {
+                            item {
+                                ClassificationSummary(
+                                    stats = uiState.classificationStats,
+                                    guidelines = uiState.activeGuidelines
+                                )
+                            }
+                        }
                         items(
                             items = uiState.displayItems,
                             key = { item ->
@@ -329,6 +356,8 @@ fun MeasurementTableScreen(
                                     DayRow(
                                         summary = item.summary,
                                         slotCount = uiState.slotHeaders.size,
+                                        guidelines = uiState.activeGuidelines,
+                                        isSummaryVisible = uiState.isSummaryVisible,
                                         onCellClick = { slotIndex -> 
                                             viewModel.onCellClicked(item.summary.date, slotIndex)
                                         }
@@ -349,6 +378,7 @@ fun MeasurementTableScreen(
         if (uiState.dialogState.isOpen) {
             MeasurementEditDialog(
                 state = uiState.dialogState,
+                guidelines = uiState.activeGuidelines,
                 onValueChange = { viewModel.onMeasurementInputChanged(it) },
                 onSave = { viewModel.onSaveMeasurement(it) },
                 onAcceptGuidance = { viewModel.onAcceptGuidance() },
@@ -359,6 +389,7 @@ fun MeasurementTableScreen(
         if (isSearchDialogOpen) {
             SearchDialog(
                 viewModel = searchViewModel,
+                guidelines = uiState.activeGuidelines,
                 onDismiss = { isSearchDialogOpen = false },
                 onResultClick = { date ->
                     isSearchDialogOpen = false
@@ -371,6 +402,45 @@ fun MeasurementTableScreen(
             viewModel = shareViewModel,
             onDismiss = { shareViewModel.onDismissDialog() }
         )
+
+        // Time Picker Dialog Logic
+        showTimePickerForUiIndex?.let { index ->
+            val initialTime = uiState.slotHeaders.getOrNull(index) ?: "00:00"
+            TimePickerDialog(
+                initialTime = initialTime,
+                onDismiss = { showTimePickerForUiIndex = null },
+                onConfirm = { newTime ->
+                    viewModel.updateSlotTime(index, newTime)
+                    showTimePickerForUiIndex = null
+                }
+            )
+        }
+
+        // Error Dialog
+        uiState.error?.let { errorText ->
+            val isTimeError = errorText.startsWith("hint_cannot_create_slot|")
+            val displayedError = if (isTimeError) {
+                val time = errorText.substringAfter("|")
+                stringResource(R.string.hint_cannot_create_slot, time)
+            } else {
+                errorText
+            }
+            AlertDialog(
+                onDismissRequest = { viewModel.clearError() },
+                title = { 
+                    Text(
+                        if (isTimeError) stringResource(R.string.dialog_title_invalid_time) 
+                        else stringResource(R.string.unknown_error)
+                    ) 
+                },
+                text = { Text(displayedError) },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.clearError() }) {
+                        Text(stringResource(R.string.button_ok))
+                    }
+                }
+            )
+        }
     }
 }
 

@@ -1,6 +1,8 @@
 package com.otakeessen.underpressure.ui.table
 
 import androidx.compose.ui.text.input.TextFieldValue
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 
 /**
  * UI state for the Measurement Edit Dialog.
@@ -46,7 +48,10 @@ data class TableUiState(
     val isGuidanceRequired: Boolean = false,
     val fabHint: String? = null,
     val isMasterAlarmEnabled: Boolean = false,
+    val isSummaryVisible: Boolean = true,
+    val activeGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
     val error: String? = null,
+    val classificationStats: Map<BloodPressureLevel, Int> = emptyMap()
 )
 
 /**
