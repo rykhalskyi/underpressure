@@ -57,6 +57,7 @@ class MeasurementTableViewModel(
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
     private val _isSummaryVisible = MutableStateFlow(true)
+    private val _manualError = MutableStateFlow<String?>(null)
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
     private val _expandedYears = MutableStateFlow<Set<Int>>(
@@ -84,6 +85,7 @@ class MeasurementTableViewModel(
         _isSummaryVisible,
         _expandedYears,
         _expandedMonths,
+        _manualError,
         tickFlow,
         manualRefreshTrigger
     ) { args: Array<Any?> ->
@@ -93,6 +95,7 @@ class MeasurementTableViewModel(
         val isSummaryVisible = args[3] as Boolean
         val expandedYears = args[4] as Set<Int>
         val expandedMonths = args[5] as Set<String>
+        val manualError = args[6] as String?
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
@@ -271,6 +274,7 @@ class MeasurementTableViewModel(
             isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false,
             isSummaryVisible = isSummaryVisible,
             activeGuidelines = guidelines,
+            error = manualError,
             classificationStats = stats
         )
     }.stateIn(
@@ -330,6 +334,56 @@ class MeasurementTableViewModel(
      */
     fun refresh() {
         manualRefreshTrigger.value = System.currentTimeMillis()
+    }
+
+    /**
+     * Updates the time for a measurement slot.
+     * @param uiSlotIndex The index of the slot as displayed in the UI.
+     * @param newTimeStr The new time string (HH:mm).
+     */
+    fun updateSlotTime(uiSlotIndex: Int, newTimeStr: String) {
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: return@launch
+            val activeFlags = settings.slotActiveFlags
+            val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
+            val originalIndex = activeIndices.getOrNull(uiSlotIndex) ?: return@launch
+
+            // Validate time difference from other active slots
+            val newTime = LocalTime.parse(newTimeStr, timeFormatter)
+            val conflictNeighbor = settings.slotTimes.mapIndexedNotNull { i, t ->
+                if (i != originalIndex && settings.slotActiveFlags[i]) LocalTime.parse(t, timeFormatter) else null
+            }.find { otherTime ->
+                val diff = abs(Duration.between(newTime, otherTime).toMinutes())
+                val wrappedDiff = kotlin.math.min(diff, 1440L - diff)
+                wrappedDiff < MIN_SLOT_DIFFERENCE_MINUTES
+            }
+
+            if (conflictNeighbor != null) {
+                _manualError.update { "hint_cannot_create_slot|${conflictNeighbor.format(timeFormatter)}" }
+                return@launch
+            }
+
+            val newTimes = settings.slotTimes.toMutableList().apply {
+                this[originalIndex] = newTimeStr
+            }
+            val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
+                this[originalIndex] = true
+            }
+            
+            val updatedSettings = settings.copy(
+                slotTimes = newTimes,
+                slotModifiedFlags = newModifiedFlags
+            )
+            settingsRepository.saveSettings(updatedSettings)
+            alarmScheduler.updateAlarms(updatedSettings)
+        }
+    }
+
+    /**
+     * Clears the manual error message.
+     */
+    fun clearError() {
+        _manualError.update { null }
     }
 
     private fun detectDefaultGuidelines(): BpGuidelines {
