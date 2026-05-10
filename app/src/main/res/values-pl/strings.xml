@@ -133,7 +133,7 @@
     <string name="onboarding_slide1_caption">Licznik UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia krwi i tętna, który przechowuje wszystkie dane wyłącznie na telefonie. Bez serwerów, bez zbierania danych, bez reklam, bez opłat.</string>
     <string name="onboarding_slide2_caption">Do 4 miejsc każdego dnia</string>
-    <string name="onboarding_slide2_description">Możesz dodać do 4 przedziałów czasowych na pomiar. Wprowadzanie danych jest możliwe w ciągu +/- 15 minut od każdego z nich. Przedziały czasowe możesz skonfigurować w Ustawieniach.</string>
+    <string name="onboarding_slide2_description">Możesz dodać do 4 przedziałów czasowych na pomiar. Wprowadzanie danych jest możliwe w ciągu +/- 15 minut od każdego z nich. Przedziały czasowe możesz skonfigurować w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
     <string name="onboarding_slide3_caption">Wykres pomiarów</string>
     <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>

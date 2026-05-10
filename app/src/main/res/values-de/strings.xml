@@ -133,7 +133,7 @@
     <string name="onboarding_slide1_caption">UnderPressure Tracker</string>
     <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Blutdruck- und Pulstracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>
     <string name="onboarding_slide2_caption">Bis zu 4 Zeitfenster täglich</string>
-    <string name="onboarding_slide2_description">Sie können bis zu 4 Zeitfenster für die Messung hinzufügen. Die Dateneingabe ist innerhalb von +/- 15 Minuten möglich. Sie können die Zeitfenster in den Einstellungen konfigurieren.</string>
+    <string name="onboarding_slide2_description">Sie können bis zu 4 Zeitfenster für die Messung hinzufügen. Die Dateneingabe ist innerhalb von +/- 15 Minuten möglich. Sie können die Zeitfenster in den Einstellungen oder durch einfaches Tippen auf die Zeit in der Tabellenüberschrift konfigurieren.</string>
     <string name="onboarding_slide3_caption">Messwertdiagramm</string>
     <string name="onboarding_slide3_description">Sie können Messwertdiagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
     <string name="onboarding_slide4_caption">Daten teilen</string>

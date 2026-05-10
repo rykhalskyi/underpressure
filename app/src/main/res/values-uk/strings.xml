@@ -133,7 +133,7 @@
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — це простий і приватний трекер артеріального тиску та пульсу, який зберігає всі ваші дані лише на вашому телефоні. Жодних серверів, збору даних, реклами чи платежів.</string>
     <string name="onboarding_slide2_caption">До 4 слотів щодня</string>
-    <string name="onboarding_slide2_description">Ви можете додати до 4 часових слотів для вимірювання. Введення даних можливе в межах +/- 15 хвилин від кожного. Налаштувати слоти можна в Налаштуваннях.</string>
+    <string name="onboarding_slide2_description">Ви можете додати до 4 часових слотів для вимірювання. Введення даних можливе в межах +/- 15 хвилин від кожного. Налаштувати слоти можна в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
     <string name="onboarding_slide3_caption">Графік вимірювань</string>
     <string name="onboarding_slide3_description">Ви можете переглядати та ділитися графіками вимірювань. Налаштуйте графіки для потрібних слотів і даних.</string>
     <string name="onboarding_slide4_caption">Поділитися даними</string>
