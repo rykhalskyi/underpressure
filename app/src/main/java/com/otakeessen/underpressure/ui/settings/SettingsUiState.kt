@@ -8,7 +8,7 @@ import com.otakeessen.underpressure.domain.BpGuidelines
 data class SettingsUiState(
     val slots: List<SlotConfig> = emptyList(),
     val isMasterAlarmEnabled: Boolean = false,
-    val bpGuidelines: BpGuidelines = BpGuidelines.AHA_ACC,
+    val bpGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
     val canScheduleExactAlarms: Boolean = true,
     val lastOnboardedVersion: String? = null,
     val isLoading: Boolean = false,

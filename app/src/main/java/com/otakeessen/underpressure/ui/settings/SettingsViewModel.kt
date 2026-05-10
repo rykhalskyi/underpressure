@@ -77,8 +77,7 @@ class SettingsViewModel(
     }
 
     private fun detectDefaultGuidelines(): BpGuidelines {
-        val country = java.util.Locale.getDefault().country
-        return if (country == "US") BpGuidelines.AHA_ACC else BpGuidelines.ESC_ESH
+        return BpGuidelines.ESC_ESH
     }
 
     fun refreshPermissionStatus() {

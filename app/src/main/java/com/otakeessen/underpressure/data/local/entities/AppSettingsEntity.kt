@@ -24,6 +24,6 @@ data class AppSettingsEntity(
     val slotActiveFlags: List<Boolean> = listOf(true, false, false, false),
     val slotModifiedFlags: List<Boolean> = listOf(false, false, false, false),
     val lastOnboardedVersion: String? = null,
-    val bpGuidelines: BpGuidelines = BpGuidelines.AHA_ACC
+    val bpGuidelines: BpGuidelines = BpGuidelines.ESC_ESH
 )
 
