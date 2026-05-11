@@ -67,6 +67,21 @@ class MeasurementTableViewModel(
         setOf(LocalDate.now(clock).format(DateTimeFormatter.ofPattern("yyyy-MM")))
     )
 
+    init {
+        // Ensure slot 0 is always active in DB if it's missing or inactive
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            if (!settings.slotActiveFlags.getOrElse(0) { true }) {
+                val updated = settings.copy(
+                    slotActiveFlags = settings.slotActiveFlags.toMutableList().apply { 
+                        if (isEmpty()) add(true) else this[0] = true 
+                    }
+                )
+                settingsRepository.saveSettings(updated)
+            }
+        }
+    }
+
     private val _scrollToDateEvent = MutableSharedFlow<String>()
     val scrollToDateEvent: SharedFlow<String> = _scrollToDateEvent.asSharedFlow()
 
@@ -344,14 +359,16 @@ class MeasurementTableViewModel(
     fun updateSlotTime(uiSlotIndex: Int, newTimeStr: String) {
         viewModelScope.launch {
             val settings = settingsRepository.getSettingsSync() ?: return@launch
-            val activeFlags = settings.slotActiveFlags
+            val activeFlags = settings.slotActiveFlags.toMutableList().apply { 
+                if (isNotEmpty()) this[0] = true 
+            }
             val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
             val originalIndex = activeIndices.getOrNull(uiSlotIndex) ?: return@launch
 
             // Validate time difference from other active slots
             val newTime = LocalTime.parse(newTimeStr, timeFormatter)
             val conflictNeighbor = settings.slotTimes.mapIndexedNotNull { i, t ->
-                if (i != originalIndex && settings.slotActiveFlags[i]) LocalTime.parse(t, timeFormatter) else null
+                if (i != originalIndex && activeFlags[i]) LocalTime.parse(t, timeFormatter) else null
             }.find { otherTime ->
                 val diff = abs(Duration.between(newTime, otherTime).toMinutes())
                 val wrappedDiff = kotlin.math.min(diff, 1440L - diff)
@@ -390,9 +407,6 @@ class MeasurementTableViewModel(
         return BpGuidelines.ESC_ESH
     }
 
-    /**
-     * Called when a table cell is clicked.
-     */
     fun onCellClicked(date: String, uiSlotIndex: Int) {
         val todayStr = LocalDate.now(clock).format(dateFormatter)
         if (date != todayStr) return
@@ -400,7 +414,8 @@ class MeasurementTableViewModel(
         viewModelScope.launch {
             // We need to find the original slot index based on settings
             val settings = settingsRepository.getSettingsSync() 
-            val activeFlags = settings?.slotActiveFlags ?: listOf(true, false, false, false)
+            val activeFlags = (settings?.slotActiveFlags ?: listOf(true, false, false, false))
+                .toMutableList().apply { if (isNotEmpty()) this[0] = true }
             val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
             val originalIndex = activeIndices.getOrNull(uiSlotIndex) ?: return@launch
             
@@ -462,14 +477,10 @@ class MeasurementTableViewModel(
             val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
                 this[currentState.slotIndex] = true
             }
-            val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
-                this[currentState.slotIndex] = true
-            }
             
             val updatedSettings = settings.copy(
                 slotTimes = newTimes,
-                slotActiveFlags = newActiveFlags,
-                slotModifiedFlags = newModifiedFlags
+                slotActiveFlags = newActiveFlags
             )
             settingsRepository.saveSettings(updatedSettings)
             alarmScheduler.updateAlarms(updatedSettings)
@@ -594,13 +605,22 @@ class MeasurementTableViewModel(
 
                 if (currentState.existingMeasurementId == null) {
                     measurementRepository.saveMeasurement(entity)
-                    // Mark slot as modified
+                    // Mark slot as modified and active
                     val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
-                    if (!settings.slotModifiedFlags.getOrElse(currentState.slotIndex) { false }) {
+                    val isModified = settings.slotModifiedFlags.getOrElse(currentState.slotIndex) { false }
+                    val isActive = settings.slotActiveFlags.getOrElse(currentState.slotIndex) { false }
+                    
+                    if (!isModified || !isActive) {
                         val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
-                            this[currentState.slotIndex] = true
+                            if (size > currentState.slotIndex) this[currentState.slotIndex] = true
                         }
-                        settingsRepository.saveSettings(settings.copy(slotModifiedFlags = newModifiedFlags))
+                        val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
+                            if (size > currentState.slotIndex) this[currentState.slotIndex] = true
+                        }
+                        settingsRepository.saveSettings(settings.copy(
+                            slotModifiedFlags = newModifiedFlags,
+                            slotActiveFlags = newActiveFlags
+                        ))
                     }
                     // Dismiss notification if it was already showing for this slot
                     alarmScheduler.dismissNotification(currentState.slotIndex)

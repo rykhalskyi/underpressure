@@ -52,6 +52,9 @@ class MeasurementTableViewModelTest {
         measurementRepository = mockk()
         settingsRepository = mockk()
         alarmScheduler = mockk(relaxed = true)
+        
+        // Default mock for init block
+        coEvery { settingsRepository.getSettingsSync() } returns null
     }
 
     @After
