@@ -105,6 +105,14 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
+    <string name="label_chart_mode_daily">Daily</string>
+    <string name="label_chart_mode_sequential">Sequential</string>
+    <string name="label_date_preset_7d">Last 7 Days</string>
+    <string name="label_date_preset_30d">Last 30 Days</string>
+    <string name="label_date_preset_month">This Month</string>
+    <string name="label_date_preset_custom">Custom</string>
+    <string name="label_all_time">All Time</string>
+    <string name="label_filter_summary">%1$s, %2$d slots</string>
     <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>

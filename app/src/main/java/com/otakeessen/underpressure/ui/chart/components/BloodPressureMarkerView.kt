@@ -13,7 +13,8 @@ import java.time.format.DateTimeFormatter
 
 class BloodPressureMarkerView(
     private val chart: Chart<*>,
-    private val startDate: LocalDate?
+    private val startDate: LocalDate?,
+    private val xLabels: Map<Float, String> = emptyMap()
 ) : MarkerView(chart.context, R.layout.chart_marker_view) {
 
     private val tvDate: TextView = findViewById(R.id.tv_date)
@@ -21,7 +22,9 @@ class BloodPressureMarkerView(
     private val dateFormatter = DateTimeFormatter.ofPattern("MMM dd")
 
     override fun refreshContent(e: Entry, highlight: Highlight) {
-        val dateText = startDate?.plusDays(e.x.toLong())?.format(dateFormatter) ?: e.x.toString()
+        val dateText = xLabels[e.x]?.replace("\n", " ")
+            ?: startDate?.plusDays(e.x.toLong())?.format(dateFormatter) 
+            ?: e.x.toString()
         
         val sb = StringBuilder()
         val data = chart.data
@@ -45,7 +48,7 @@ class BloodPressureMarkerView(
                 }
             }
             
-            tvDate.text = "$dateText $slotTime"
+            tvDate.text = if (xLabels.containsKey(e.x)) dateText else "$dateText $slotTime"
         } else {
             tvDate.text = dateText
         }
@@ -59,4 +62,3 @@ class BloodPressureMarkerView(
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())
     }
 }
-

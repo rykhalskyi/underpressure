@@ -92,6 +92,14 @@
     <string name="error_invalid_date_format">Неверный формат даты</string>
     <string name="error_from_after_to">Дата «С» не может быть позже даты «По»</string>
     <string name="placeholder_date">ГГГГ-ММ-ДД</string>
+    <string name="label_chart_mode_daily">Дневной</string>
+    <string name="label_chart_mode_sequential">Последовательный</string>
+    <string name="label_date_preset_7d">Последние 7 дней</string>
+    <string name="label_date_preset_30d">Последние 30 дней</string>
+    <string name="label_date_preset_month">В этом месяце</string>
+    <string name="label_date_preset_custom">Пользовательский</string>
+    <string name="label_all_time">За всё время</string>
+    <string name="label_filter_summary">%1$s, %2$d слотов</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Версия: %1$s</string>
     <string name="header_about">О приложении</string>

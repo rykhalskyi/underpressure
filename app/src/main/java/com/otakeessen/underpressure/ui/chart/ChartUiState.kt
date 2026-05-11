@@ -4,16 +4,46 @@ import com.github.mikephil.charting.data.LineData
 import java.time.LocalDate
 
 /**
+ * Modes for displaying the chart data.
+ */
+enum class ChartMode {
+    /**
+     * Grouped by date, X-axis represents calendar days.
+     */
+    DAILY,
+
+    /**
+     * Continuous flow of measurements, X-axis represents measurement index.
+     */
+    SEQUENTIAL
+}
+
+/**
+ * Presets for quick date range selection.
+ */
+enum class DatePreset {
+    LAST_7_DAYS,
+    LAST_30_DAYS,
+    THIS_MONTH,
+    CUSTOM
+}
+
+/**
  * UI State for the Blood Pressure Chart Screen.
  *
  * @property isLoading Whether the data is being loaded.
- * @property lineData The data to be displayed in the MPAndroidChart.
+ * @property bpLineData Line data for blood pressure (Systolic/Diastolic).
+ * @property pulseLineData Line data for pulse.
+ * @property startDate The reference start date for DAILY mode.
  * @property selectedSlots Indices of the slots selected for display (0-3).
  * @property selectedTypes Measurement types selected for display (SYS, DIA, PULSE).
  * @property fromDate The start date of the filtering range.
  * @property toDate The end date of the filtering range.
  * @property isConfigSheetOpen Whether the configuration bottom sheet is open.
- * @property errorMessage Error message to be displayed, if any.
+ * @property errorMessageResId String resource ID for the error message.
+ * @property slotTimes Labels for the time slots.
+ * @property chartMode The current display mode (Daily/Sequential).
+ * @property xLabels Mapping of X-axis values to their formatted labels (e.g., "Oct 12").
  */
 data class ChartUiState(
     val isLoading: Boolean = true,
@@ -26,6 +56,8 @@ data class ChartUiState(
     val toDate: LocalDate? = null,
     val isConfigSheetOpen: Boolean = false,
     val errorMessageResId: Int? = null,
-    val slotTimes: List<String> = emptyList()
+    val slotTimes: List<String> = emptyList(),
+    val chartMode: ChartMode = ChartMode.DAILY,
+    val xLabels: Map<Float, String> = emptyMap(),
+    val selectedDatePreset: DatePreset = DatePreset.CUSTOM
 )
-

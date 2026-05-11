@@ -92,6 +92,14 @@
     <string name="error_invalid_date_format">Ungültiges Datumsformat</string>
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
     <string name="placeholder_date">JJJJ-MM-TT</string>
+    <string name="label_chart_mode_daily">Täglich</string>
+    <string name="label_chart_mode_sequential">Sequenziell</string>
+    <string name="label_date_preset_7d">Letzte 7 Tage</string>
+    <string name="label_date_preset_30d">Letzte 30 Tage</string>
+    <string name="label_date_preset_month">Diesen Monat</string>
+    <string name="label_date_preset_custom">Benutzerdefiniert</string>
+    <string name="label_all_time">Gesamt</string>
+    <string name="label_filter_summary">%1$s, %2$d Zeitfenster</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">Über</string>

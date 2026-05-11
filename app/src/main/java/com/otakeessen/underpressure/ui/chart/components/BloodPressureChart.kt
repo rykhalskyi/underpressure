@@ -21,7 +21,8 @@ import java.time.format.DateTimeFormatter
  * A Composable wrapper for MPAndroidChart's LineChart.
  *
  * @param lineData The data to be displayed in the chart.
- * @param startDate The reference start date for the X-axis (0-index).
+ * @param startDate The reference start date for the X-axis (used in DAILY mode).
+ * @param xLabels Optional map of X-axis indices to labels (used in SEQUENTIAL mode).
  * @param modifier The modifier to be applied to the chart.
  * @param onChartReady Callback that provides a function to capture the chart as a bitmap.
  */
@@ -29,6 +30,7 @@ import java.time.format.DateTimeFormatter
 fun BloodPressureChart(
     lineData: LineData?,
     startDate: LocalDate?,
+    xLabels: Map<Float, String> = emptyMap(),
     modifier: Modifier = Modifier,
     showXAxisLabels: Boolean = true,
     onChartReady: ((() -> Bitmap) -> Unit)? = null
@@ -63,6 +65,11 @@ fun BloodPressureChart(
 
                 axisLeft.apply {
                     setDrawGridLines(true)
+                    // Auto-scaling Y-axis (disabling forced 0)
+                    // Note: In some versions it's axisMinimum = Float.NaN or similar, 
+                    // but usually it's just not setting axisMinimum(0f).
+                    // We will explicitly set it to avoid any defaults.
+                    resetAxisMinimum()
                     
                     // Add hypertension limit lines
                     val limit140 = LimitLine(140f).apply {
@@ -110,7 +117,7 @@ fun BloodPressureChart(
         },
         update = { chart ->
             // Update marker
-            chart.marker = BloodPressureMarkerView(chart, startDate)
+            chart.marker = BloodPressureMarkerView(chart, startDate, xLabels)
             
             // Update colors to handle Dark/Light mode switching
             chart.xAxis.textColor = textColor
@@ -125,7 +132,7 @@ fun BloodPressureChart(
 
             chart.xAxis.valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
-                    return startDate?.plusDays(value.toLong())?.format(dateFormatter) ?: value.toString()
+                    return xLabels[value] ?: startDate?.plusDays(value.toLong())?.format(dateFormatter) ?: value.toString()
                 }
             }
 
@@ -134,4 +141,3 @@ fun BloodPressureChart(
         }
     )
 }
-

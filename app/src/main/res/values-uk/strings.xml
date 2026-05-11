@@ -92,6 +92,14 @@
     <string name="error_invalid_date_format">Невірний формат дати</string>
     <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
     <string name="placeholder_date">РРРР-ММ-ДД</string>
+    <string name="label_chart_mode_daily">Денний</string>
+    <string name="label_chart_mode_sequential">Послідовний</string>
+    <string name="label_date_preset_7d">Останні 7 днів</string>
+    <string name="label_date_preset_30d">Останні 30 днів</string>
+    <string name="label_date_preset_month">В цьому місяці</string>
+    <string name="label_date_preset_custom">Користувацький</string>
+    <string name="label_all_time">За весь час</string>
+    <string name="label_filter_summary">%1$s, %2$d слотів</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Версія: %1$s</string>
     <string name="header_about">Про програму</string>

@@ -79,10 +79,11 @@ class ChartViewModelTest {
     }
 
     @Test
-    fun `data is correctly filtered by date range`() = runTest(testDispatcher) {
+    fun `sequential mode uses incrementing indices for X values`() = runTest(testDispatcher) {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
-            MeasurementEntity(id = 2, date = "2026-03-11", slotIndex = 0, systolic = 130, diastolic = 85, pulse = 75)
+            MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75),
+            MeasurementEntity(id = 3, date = "2026-03-11", slotIndex = 0, systolic = 125, diastolic = 82, pulse = 72)
         )
         coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
         
@@ -91,17 +92,46 @@ class ChartViewModelTest {
         // Wait for initial data
         viewModel.uiState.first { !it.isLoading }
 
-        // Filter from 2026-03-11
-        val fromDate = LocalDate.parse("2026-03-11")
-        viewModel.updateConfiguration(setOf(0, 1, 2, 3), setOf(MeasurementType.SYS), fromDate, null)
+        // Switch to Sequential Mode
+        viewModel.setChartMode(ChartMode.SEQUENTIAL)
         
-        val state = viewModel.uiState.first { it.fromDate == fromDate }
+        val state = viewModel.uiState.first { it.chartMode == ChartMode.SEQUENTIAL }
         assertNotNull("BP LineData should not be null", state.bpLineData)
-        assertEquals(1, state.bpLineData?.dataSets?.get(0)?.entryCount)
+        
+        // Slot 0 has 2 entries (index 0 and 2 because Slot 1 is index 1)
+        val slot0Sys = state.bpLineData?.dataSets?.find { it.label?.startsWith("07:00") == true && it.label?.endsWith("SYS") == true }
+        assertNotNull(slot0Sys)
+        assertEquals(2, slot0Sys?.entryCount)
+        assertEquals(0f, slot0Sys?.getEntryForIndex(0)?.x)
+        assertEquals(2f, slot0Sys?.getEntryForIndex(1)?.x)
+        
+        // Check labels map
+        val mar = LocalDate.of(2026, 3, 1).format(java.time.format.DateTimeFormatter.ofPattern("MMM"))
+        assertEquals("$mar 10\n07:00", state.xLabels[0f])
+        assertEquals("$mar 10\n12:00", state.xLabels[1f])
+        assertEquals("$mar 11\n07:00", state.xLabels[2f])
     }
 
     @Test
-    fun `pulse data is correctly separated`() = runTest(testDispatcher) {
+    fun `date presets correctly filter the data`() = runTest(testDispatcher) {
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        val today = LocalDate.now()
+        
+        // Last 7 Days
+        viewModel.setDatePreset(DatePreset.LAST_7_DAYS)
+        var state = viewModel.uiState.first { it.selectedDatePreset == DatePreset.LAST_7_DAYS }
+        assertEquals(today.minusDays(6), state.fromDate)
+        assertEquals(today, state.toDate)
+        
+        // Last 30 Days
+        viewModel.setDatePreset(DatePreset.LAST_30_DAYS)
+        state = viewModel.uiState.first { it.selectedDatePreset == DatePreset.LAST_30_DAYS }
+        assertEquals(today.minusDays(29), state.fromDate)
+        assertEquals(today, state.toDate)
+    }
+
+    @Test
+    fun `pulse line is solid and has standard width`() = runTest(testDispatcher) {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70)
         )
@@ -109,14 +139,13 @@ class ChartViewModelTest {
         
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         
-        // Filter SYS and PULSE
-        val targetTypes = setOf(MeasurementType.SYS, MeasurementType.PULSE)
-        viewModel.updateConfiguration(setOf(0), targetTypes, null, null)
+        viewModel.updateConfiguration(setOf(0), setOf(MeasurementType.PULSE), null, null)
         
-        val state = viewModel.uiState.first { it.selectedTypes == targetTypes }
-        assertNotNull("BP LineData should not be null", state.bpLineData)
-        assertNotNull("Pulse LineData should not be null", state.pulseLineData)
-        assertEquals(1, state.bpLineData?.dataSets?.size)
+        val state = viewModel.uiState.first { it.selectedTypes.contains(MeasurementType.PULSE) }
+        val pulseDataSet = state.pulseLineData?.dataSets?.get(0) as com.github.mikephil.charting.data.LineDataSet
+        
+        assertEquals(3f, pulseDataSet.lineWidth)
+        assertTrue("Pulse line should be solid (no dash pattern)", pulseDataSet.dashPathEffect == null)
     }
 
     @Test
@@ -137,4 +166,3 @@ class ChartViewModelTest {
         job.cancel()
     }
 }
-

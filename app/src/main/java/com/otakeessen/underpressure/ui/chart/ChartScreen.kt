@@ -3,6 +3,7 @@ package com.otakeessen.underpressure.ui.chart
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,17 +12,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -37,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,6 +57,7 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.ui.chart.components.BloodPressureChart
 import com.otakeessen.underpressure.ui.chart.components.ChartConfigurationSheet
 import kotlinx.coroutines.flow.collectLatest
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,6 +149,28 @@ fun ChartScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            // New Control Bar
+            ChartControlBar(
+                currentMode = uiState.chartMode,
+                currentPreset = uiState.selectedDatePreset,
+                onModeChange = { viewModel.setChartMode(it) },
+                onPresetChange = { viewModel.setDatePreset(it) }
+            )
+
+            // Filter Summary
+            val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd") }
+            val dateRangeStr = if (uiState.fromDate != null && uiState.toDate != null) {
+                "${uiState.fromDate!!.format(dateFormatter)} - ${uiState.toDate!!.format(dateFormatter)}"
+            } else {
+                stringResource(R.string.label_all_time)
+            }
+            Text(
+                text = stringResource(R.string.label_filter_summary, dateRangeStr, uiState.selectedSlots.size),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+            )
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -155,8 +191,9 @@ fun ChartScreen(
                         BloodPressureChart(
                             lineData = uiState.bpLineData,
                             startDate = uiState.startDate,
+                            xLabels = uiState.xLabels,
                             modifier = Modifier
-                                .weight(if (uiState.pulseLineData != null) 2f else 1f)
+                                .weight(if (uiState.pulseLineData != null) 1.5f else 1f)
                                 .fillMaxWidth(),
                             showXAxisLabels = uiState.pulseLineData == null,
                             onChartReady = { captureBPBitmap = it }
@@ -168,6 +205,7 @@ fun ChartScreen(
                         BloodPressureChart(
                             lineData = uiState.pulseLineData,
                             startDate = uiState.startDate,
+                            xLabels = uiState.xLabels,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth(),
@@ -211,6 +249,64 @@ fun ChartScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ChartControlBar(
+    currentMode: ChartMode,
+    currentPreset: DatePreset,
+    onModeChange: (ChartMode) -> Unit,
+    onPresetChange: (DatePreset) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Mode Switcher
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+            ChartMode.entries.forEachIndexed { index, mode ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = ChartMode.entries.size),
+                    onClick = { onModeChange(mode) },
+                    selected = currentMode == mode
+                ) {
+                    Text(stringResource(if (mode == ChartMode.DAILY) R.string.label_chart_mode_daily else R.string.label_chart_mode_sequential))
+                }
+            }
+        }
+
+        // Quick Presets
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val presets = listOf(
+                DatePreset.LAST_7_DAYS to R.string.label_date_preset_7d,
+                DatePreset.LAST_30_DAYS to R.string.label_date_preset_30d,
+                DatePreset.THIS_MONTH to R.string.label_date_preset_month,
+                DatePreset.CUSTOM to R.string.label_date_preset_custom
+            )
+            items(presets) { (preset, labelRes) ->
+                FilterChip(
+                    selected = currentPreset == preset,
+                    onClick = { onPresetChange(preset) },
+                    label = { Text(stringResource(labelRes)) },
+                    leadingIcon = if (currentPreset == preset) {
+                        {
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = null,
+                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                            )
+                        }
+                    } else null
+                )
+            }
+        }
+    }
+}
+
 private fun combineBitmaps(top: Bitmap, bottom: Bitmap): Bitmap {
     val width = maxOf(top.width, bottom.width)
     val height = top.height + bottom.height
@@ -220,4 +316,3 @@ private fun combineBitmaps(top: Bitmap, bottom: Bitmap): Bitmap {
     canvas.drawBitmap(bottom, 0f, top.height.toFloat(), null)
     return combined
 }
-

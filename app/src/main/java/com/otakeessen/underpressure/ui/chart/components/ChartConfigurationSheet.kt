@@ -6,17 +6,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.ui.chart.MeasurementType
+import java.time.Instant
 import java.time.LocalDate
-import java.time.format.DateTimeParseException
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,9 +53,12 @@ fun ChartConfigurationSheet(
 ) {
     var tempSlots by remember { mutableStateOf(selectedSlots) }
     var tempTypes by remember { mutableStateOf(selectedTypes) }
-    var fromDateStr by remember { mutableStateOf(fromDate?.toString() ?: "") }
-    var toDateStr by remember { mutableStateOf(toDate?.toString() ?: "") }
+    var tempFromDate by remember { mutableStateOf(fromDate) }
+    var tempToDate by remember { mutableStateOf(toDate) }
+    var showDatePicker by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+
+    val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd, yyyy") }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -109,22 +120,19 @@ fun ChartConfigurationSheet(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(text = stringResource(R.string.label_select_date_range), style = MaterialTheme.typography.titleMedium)
-            Row(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = fromDateStr,
-                    onValueChange = { fromDateStr = it },
-                    label = { Text(stringResource(R.string.label_date_from)) },
-                    placeholder = { Text(stringResource(R.string.placeholder_date)) },
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                OutlinedTextField(
-                    value = toDateStr,
-                    onValueChange = { toDateStr = it },
-                    label = { Text(stringResource(R.string.label_date_to)) },
-                    placeholder = { Text(stringResource(R.string.placeholder_date)) },
-                    modifier = Modifier.weight(1f)
-                )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = { showDatePicker = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(imageVector = Icons.Default.DateRange, contentDescription = null)
+                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                val dateText = if (tempFromDate != null && tempToDate != null) {
+                    "${tempFromDate!!.format(dateFormatter)} - ${tempToDate!!.format(dateFormatter)}"
+                } else {
+                    stringResource(R.string.label_all_time)
+                }
+                Text(text = dateText)
             }
 
             error?.let {
@@ -135,8 +143,6 @@ fun ChartConfigurationSheet(
             Spacer(modifier = Modifier.height(24.dp))
 
             val errorSelectAtLeastOne = stringResource(R.string.error_no_slots_selected)
-            val errorInvalidDateFormat = stringResource(R.string.error_invalid_date_format)
-            val errorFromAfterTo = stringResource(R.string.error_from_after_to)
 
             Button(
                 onClick = {
@@ -144,27 +150,7 @@ fun ChartConfigurationSheet(
                         error = errorSelectAtLeastOne
                         return@Button
                     }
-                    
-                    val parsedFrom = try {
-                        if (fromDateStr.isNotBlank()) LocalDate.parse(fromDateStr) else null
-                    } catch (e: DateTimeParseException) {
-                        error = errorInvalidDateFormat
-                        return@Button
-                    }
-
-                    val parsedTo = try {
-                        if (toDateStr.isNotBlank()) LocalDate.parse(toDateStr) else null
-                    } catch (e: DateTimeParseException) {
-                        error = errorInvalidDateFormat
-                        return@Button
-                    }
-
-                    if (parsedFrom != null && parsedTo != null && parsedFrom.isAfter(parsedTo)) {
-                        error = errorFromAfterTo
-                        return@Button
-                    }
-
-                    onApply(tempSlots, tempTypes, parsedFrom, parsedTo)
+                    onApply(tempSlots, tempTypes, tempFromDate, tempToDate)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -173,5 +159,41 @@ fun ChartConfigurationSheet(
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
-}
 
+    if (showDatePicker) {
+        val dateRangePickerState = rememberDateRangePickerState(
+            initialSelectedStartDateMillis = tempFromDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli(),
+            initialSelectedEndDateMillis = tempToDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    val start = dateRangePickerState.selectedStartDateMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    }
+                    val end = dateRangePickerState.selectedEndDateMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    }
+                    tempFromDate = start
+                    tempToDate = end
+                    showDatePicker = false
+                }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            }
+        ) {
+            DateRangePicker(
+                state = dateRangePickerState,
+                title = { Text(modifier = Modifier.padding(16.dp), text = stringResource(R.string.label_select_date_range)) },
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
