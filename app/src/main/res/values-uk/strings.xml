@@ -99,6 +99,10 @@
     <string name="label_date_preset_month">В цьому місяці</string>
     <string name="label_date_preset_custom">Користувацький</string>
     <string name="label_all_time">За весь час</string>
+    <string name="label_show_risk_zones">Показати зони ризику</string>
+    <string name="label_show_rolling_average">Показати 7-денне середнє</string>
+    <string name="label_show_slot_chips">Показати фішки слотів</string>
+    <string name="label_visual_features">Візуальні функції</string>
     <string name="label_filter_summary">%1$s, %2$d слотів</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Версія: %1$s</string>

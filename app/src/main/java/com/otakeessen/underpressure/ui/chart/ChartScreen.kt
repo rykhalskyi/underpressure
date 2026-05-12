@@ -3,28 +3,23 @@ package com.otakeessen.underpressure.ui.chart
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDialog
@@ -54,8 +49,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -201,75 +194,50 @@ fun ChartScreen(
                     }
                 } else {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        val slotTimes = uiState.slotTimes
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            // Systolic Chart
+                            if (uiState.sysLineData != null) {
+                                BloodPressureChart(
+                                    lineData = uiState.sysLineData,
+                                    startDate = uiState.startDate,
+                                    xLabels = uiState.xLabels,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
+                                    showXAxisLabels = true,
+                                    onChartReady = { captureSysBitmap = it },
+                                    showRiskZones = uiState.showRiskZones
+                                )
+                            }
 
-                        // Systolic Chart
-                        if (uiState.sysLineData != null) {
-                            BloodPressureChart(
-                                lineData = uiState.sysLineData,
-                                startDate = uiState.startDate,
-                                xLabels = uiState.xLabels,
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                showXAxisLabels = true,
-                                onChartReady = { captureSysBitmap = it },
-                                showRiskZones = uiState.showRiskZones
-                            )
-                        }
+                            // Diastolic Chart
+                            if (uiState.diaLineData != null) {
+                                BloodPressureChart(
+                                    lineData = uiState.diaLineData,
+                                    startDate = uiState.startDate,
+                                    xLabels = uiState.xLabels,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
+                                    showXAxisLabels = true,
+                                    onChartReady = { captureDiaBitmap = it },
+                                    showRiskZones = uiState.showRiskZones
+                                )
+                            }
 
-                        // Diastolic Chart
-                        if (uiState.diaLineData != null) {
-                            BloodPressureChart(
-                                lineData = uiState.diaLineData,
-                                startDate = uiState.startDate,
-                                xLabels = uiState.xLabels,
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                showXAxisLabels = true,
-                                onChartReady = { captureDiaBitmap = it },
-                                showRiskZones = uiState.showRiskZones
-                            )
-                        }
-
-                        // Pulse Chart
-                        if (uiState.pulseLineData != null) {
-                            BloodPressureChart(
-                                lineData = uiState.pulseLineData,
-                                startDate = uiState.startDate,
-                                xLabels = uiState.xLabels,
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                showXAxisLabels = true,
-                                onChartReady = { capturePulseBitmap = it },
-                                showRiskZones = uiState.showRiskZones
-                            )
-                        }
-
-                        // Floating Interactive Legend Overlay
-                        if (uiState.showInteractiveLegend && slotTimes.isNotEmpty()) {
-                            Row(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(8.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color(0xE6000000))
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                (0..3).forEach { slotIndex ->
-                                    val label = slotTimes.getOrElse(slotIndex) { "S${slotIndex + 1}" }
-                                    AssistChip(
-                                        onClick = { viewModel.toggleSlot(slotIndex) },
-                                        label = {
-                                            Text(
-                                                text = label,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = if (uiState.selectedSlots.contains(slotIndex))
-                                                    Color.White else Color.Gray
-                                            )
-                                        }
-                                    )
-                                }
+                            // Pulse Chart
+                            if (uiState.pulseLineData != null) {
+                                BloodPressureChart(
+                                    lineData = uiState.pulseLineData,
+                                    startDate = uiState.startDate,
+                                    xLabels = uiState.xLabels,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
+                                    showXAxisLabels = true,
+                                    onChartReady = { capturePulseBitmap = it },
+                                    showRiskZones = uiState.showRiskZones
+                                )
                             }
                         }
                     }
@@ -309,6 +277,32 @@ fun ChartScreen(
                             }
                         } else null
                     )
+                }
+            }
+
+            // Slot and feature toggle chips
+            // Slot and feature toggle chips
+            if (uiState.showInteractiveLegend) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                ) {
+                    items(uiState.slotTimes.withIndex().toList()) { (index, label) ->
+                        FilterChip(
+                            selected = uiState.selectedSlots.contains(index),
+                            onClick = { viewModel.toggleSlot(index) },
+                            label = { Text(label) }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            selected = uiState.showRollingAverage,
+                            onClick = { viewModel.toggleRollingAverage() },
+                            label = { Text(stringResource(R.string.label_show_rolling_average)) }
+                        )
+                    }
                 }
             }
 

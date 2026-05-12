@@ -43,9 +43,9 @@ class ChartViewModel(
     private val _chartMode = MutableStateFlow(ChartMode.DAILY)
     private val _datePreset = MutableStateFlow(DatePreset.ALL_TIME)
     private val _isConfigSheetOpen = MutableStateFlow(false)
-    private val _showRiskZones = MutableStateFlow(false)
+    private val _showRiskZones = MutableStateFlow(true)
     private val _showRollingAverage = MutableStateFlow(false)
-    private val _showInteractiveLegend = MutableStateFlow(false)
+    private val _showInteractiveLegend = MutableStateFlow(true)
 
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
@@ -377,6 +377,40 @@ class ChartViewModel(
 
         if (sorted.isEmpty()) return emptyList()
 
+        if (mode == ChartMode.DAILY) {
+            val result = mutableListOf<Entry>()
+            val valueForDate = sorted.groupBy { it.date }
+            val sortedDates = valueForDate.keys.sorted()
+
+            for ((index, dateStr) in sortedDates.withIndex()) {
+                val currentDate = LocalDate.parse(dateStr, DATE_FORMATTER)
+                val windowStart = currentDate.minusDays(6)
+
+                var sum = 0f
+                var count = 0
+                for (i in 0..index) {
+                    val d = LocalDate.parse(sortedDates[i], DATE_FORMATTER)
+                    if (!d.isBefore(windowStart)) {
+                        for (m in valueForDate[sortedDates[i]]!!) {
+                            val value = when (type) {
+                                MeasurementType.SYS -> m.systolic.toFloat()
+                                MeasurementType.DIA -> m.diastolic.toFloat()
+                                MeasurementType.PULSE -> m.pulse.toFloat()
+                            }
+                            sum += value
+                            count++
+                        }
+                    }
+                }
+
+                if (count > 0) {
+                    val x = ChronoUnit.DAYS.between(minDate, currentDate).toFloat()
+                    result.add(Entry(x, sum / count))
+                }
+            }
+            return result
+        }
+
         return sorted.mapIndexed { index, m ->
             val windowStart = max(0, index - 6)
             val window = sorted.subList(windowStart, index + 1)
@@ -387,29 +421,25 @@ class ChartViewModel(
                     MeasurementType.PULSE -> entity.pulse.toFloat()
                 }
             }.average().toFloat()
-
-            val x = if (mode == ChartMode.DAILY) {
-                ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
-            } else {
-                index.toFloat()
-            }
-            Entry(x, avg)
+            Entry(index.toFloat(), avg)
         }
     }
 
     fun toggleSlot(slotIndex: Int) {
-        _selectedSlots.value = if (_selectedSlots.value.contains(slotIndex)) {
-            _selectedSlots.value - slotIndex
+        val current = _selectedSlots.value
+        _selectedSlots.value = if (current.contains(slotIndex)) {
+            if (current.size <= 1 && !_showRollingAverage.value) current else current - slotIndex
         } else {
-            _selectedSlots.value + slotIndex
+            current + slotIndex
         }
     }
 
     fun toggleType(type: MeasurementType) {
-        _selectedTypes.value = if (_selectedTypes.value.contains(type)) {
-            _selectedTypes.value - type
+        val current = _selectedTypes.value
+        _selectedTypes.value = if (current.contains(type)) {
+            if (current.size <= 1) current else current - type
         } else {
-            _selectedTypes.value + type
+            current + type
         }
     }
 
@@ -422,6 +452,7 @@ class ChartViewModel(
     }
 
     fun toggleRollingAverage() {
+        if (_showRollingAverage.value && _selectedSlots.value.isEmpty()) return
         _showRollingAverage.value = !_showRollingAverage.value
     }
 

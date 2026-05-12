@@ -44,6 +44,10 @@ fun BloodPressureChart(
     var chartRef by remember { mutableStateOf<LineChart?>(null) }
 
     Box(modifier = modifier) {
+        if (showRiskZones) {
+            RiskZoneOverlay(chartRef)
+        }
+
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
@@ -137,10 +141,6 @@ fun BloodPressureChart(
                 chart.invalidate()
             }
         )
-
-        if (showRiskZones) {
-            RiskZoneOverlay(chartRef)
-        }
     }
 }
 

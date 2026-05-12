@@ -130,7 +130,7 @@ fun ChartConfigurationSheet(
                     checked = showInteractiveLegend,
                     onCheckedChange = { onToggleInteractiveLegend() }
                 )
-                Text(text = stringResource(R.string.label_show_interactive_legend))
+                Text(text = stringResource(R.string.label_show_slot_chips))
             }
 
             Spacer(modifier = Modifier.height(24.dp))

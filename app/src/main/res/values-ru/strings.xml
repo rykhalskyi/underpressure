@@ -99,6 +99,10 @@
     <string name="label_date_preset_month">В этом месяце</string>
     <string name="label_date_preset_custom">Пользовательский</string>
     <string name="label_all_time">За всё время</string>
+    <string name="label_show_risk_zones">Показать зоны риска</string>
+    <string name="label_show_rolling_average">Показать 7-дневное среднее</string>
+    <string name="label_show_slot_chips">Показать фишки слотов</string>
+    <string name="label_visual_features">Визуальные функции</string>
     <string name="label_filter_summary">%1$s, %2$d слотов</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Версия: %1$s</string>

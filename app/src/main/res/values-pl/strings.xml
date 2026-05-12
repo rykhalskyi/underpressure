@@ -99,6 +99,10 @@
     <string name="label_date_preset_month">W tym miesiącu</string>
     <string name="label_date_preset_custom">Niestandardowe</string>
     <string name="label_all_time">Cały czas</string>
+    <string name="label_show_risk_zones">Pokaż strefy ryzyka</string>
+    <string name="label_show_rolling_average">Pokaż średnią 7-dniową</string>
+    <string name="label_show_slot_chips">Pokaż znaczki slotów</string>
+    <string name="label_visual_features">Funkcje wizualne</string>
     <string name="label_filter_summary">%1$s, %2$d miejsc</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Wersja: %1$s</string>

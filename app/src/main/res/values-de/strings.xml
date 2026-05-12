@@ -99,6 +99,10 @@
     <string name="label_date_preset_month">Diesen Monat</string>
     <string name="label_date_preset_custom">Benutzerdefiniert</string>
     <string name="label_all_time">Gesamt</string>
+    <string name="label_show_risk_zones">Risikozonen anzeigen</string>
+    <string name="label_show_rolling_average">7-Tage-Durchschnitt anzeigen</string>
+    <string name="label_show_slot_chips">Slot-Chips anzeigen</string>
+    <string name="label_visual_features">Visuelle Funktionen</string>
     <string name="label_filter_summary">%1$s, %2$d Zeitfenster</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Version: %1$s</string>
