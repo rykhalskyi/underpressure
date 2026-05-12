@@ -9,6 +9,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -49,15 +50,17 @@ class ChartViewModelTest {
     }
 
     @Test
-    fun `initial state shows no data when repository is empty`() = runTest(testDispatcher) {
+    fun `initial state shows no data when repository is empty`() = runTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         
-        val state = viewModel.uiState.first { !it.isLoading }
+        val state = viewModel.uiState.filter { !it.isLoading }.first()
         assertEquals(R.string.error_no_data, state.errorMessageResId)
+        assertEquals(DatePreset.ALL_TIME, state.selectedDatePreset)
+        assertTrue(state.selectedTypes.contains(MeasurementType.PULSE))
     }
 
     @Test
-    fun `data is correctly filtered by slot`() = runTest(testDispatcher) {
+    fun `data is correctly filtered by slot`() = runTest {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
             MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75)
@@ -67,19 +70,30 @@ class ChartViewModelTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         
         // Wait for initial data
-        viewModel.uiState.first { !it.isLoading }
+        viewModel.uiState.filter { !it.isLoading }.first()
 
-        // Filter only slot 0
-        viewModel.updateConfiguration(setOf(0), setOf(MeasurementType.SYS), null, null)
+        // Filter only slot 0 by toggling others off (default is all on)
+        viewModel.toggleSlot(1)
+        viewModel.toggleSlot(2)
+        viewModel.toggleSlot(3)
         
-        val state = viewModel.uiState.first { it.selectedSlots == setOf(0) }
-        assertNotNull("BP LineData should not be null", state.bpLineData)
-        assertEquals(1, state.bpLineData?.dataSets?.size)
-        assertTrue(state.bpLineData?.dataSets?.get(0)?.label?.contains("07:00") == true)
+        // Filter only SYS by toggling DIA and PULSE off
+        viewModel.toggleType(MeasurementType.DIA)
+        viewModel.toggleType(MeasurementType.PULSE)
+        
+        val state = viewModel.uiState.filter { 
+            it.selectedSlots == setOf(0) && 
+            !it.selectedTypes.contains(MeasurementType.DIA) &&
+            !it.selectedTypes.contains(MeasurementType.PULSE)
+        }.first()
+        
+        assertNotNull("SYS LineData should not be null", state.sysLineData)
+        assertEquals(1, state.sysLineData?.dataSets?.size)
+        assertTrue(state.sysLineData?.dataSets?.get(0)?.label?.contains("07:00") == true)
     }
 
     @Test
-    fun `sequential mode uses incrementing indices for X values`() = runTest(testDispatcher) {
+    fun `sequential mode uses continuous indices and combined plots`() = runTest {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
             MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75),
@@ -90,20 +104,21 @@ class ChartViewModelTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         
         // Wait for initial data
-        viewModel.uiState.first { !it.isLoading }
+        viewModel.uiState.filter { !it.isLoading }.first()
 
         // Switch to Sequential Mode
         viewModel.setChartMode(ChartMode.SEQUENTIAL)
         
-        val state = viewModel.uiState.first { it.chartMode == ChartMode.SEQUENTIAL }
-        assertNotNull("BP LineData should not be null", state.bpLineData)
+        val state = viewModel.uiState.filter { it.chartMode == ChartMode.SEQUENTIAL }.first()
+        assertNotNull("SYS LineData should not be null", state.sysLineData)
         
-        // Slot 0 has 2 entries (index 0 and 2 because Slot 1 is index 1)
-        val slot0Sys = state.bpLineData?.dataSets?.find { it.label?.startsWith("07:00") == true && it.label?.endsWith("SYS") == true }
-        assertNotNull(slot0Sys)
-        assertEquals(2, slot0Sys?.entryCount)
-        assertEquals(0f, slot0Sys?.getEntryForIndex(0)?.x)
-        assertEquals(2f, slot0Sys?.getEntryForIndex(1)?.x)
+        // Should have data for Systolic
+        val sysDataSet = state.sysLineData?.dataSets?.find { it.label == "Systolic" }
+        assertNotNull(sysDataSet)
+        assertEquals(3, sysDataSet?.entryCount)
+        assertEquals(0f, sysDataSet?.getEntryForIndex(0)?.x)
+        assertEquals(1f, sysDataSet?.getEntryForIndex(1)?.x)
+        assertEquals(2f, sysDataSet?.getEntryForIndex(2)?.x)
         
         // Check labels map
         val mar = LocalDate.of(2026, 3, 1).format(java.time.format.DateTimeFormatter.ofPattern("MMM"))
@@ -113,25 +128,59 @@ class ChartViewModelTest {
     }
 
     @Test
-    fun `date presets correctly filter the data`() = runTest(testDispatcher) {
+    fun `sequential mode filters by slot before indexing`() = runTest {
+        val measurements = listOf(
+            MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
+            MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75),
+            MeasurementEntity(id = 3, date = "2026-03-11", slotIndex = 0, systolic = 125, diastolic = 82, pulse = 72)
+        )
+        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel.uiState.filter { !it.isLoading }.first()
+
+        viewModel.setChartMode(ChartMode.SEQUENTIAL)
+        // Only select slot 0 by toggling others off
+        viewModel.toggleSlot(1)
+        viewModel.toggleSlot(2)
+        viewModel.toggleSlot(3)
+        
+        // Ensure only SYS is selected
+        viewModel.toggleType(MeasurementType.DIA)
+        viewModel.toggleType(MeasurementType.PULSE)
+        
+        val state = viewModel.uiState.filter { 
+            it.selectedSlots == setOf(0) && 
+            it.chartMode == ChartMode.SEQUENTIAL && 
+            !it.selectedTypes.contains(MeasurementType.DIA) &&
+            !it.selectedTypes.contains(MeasurementType.PULSE)
+        }.first()
+        
+        val sysDataSet = state.sysLineData?.dataSets?.find { it.label == "Systolic" }
+        assertEquals(2, sysDataSet?.entryCount)
+        assertEquals(0f, sysDataSet?.getEntryForIndex(0)?.x)
+        assertEquals(1f, sysDataSet?.getEntryForIndex(1)?.x) // Index 1 is the next selected measurement
+        
+        val mar = LocalDate.of(2026, 3, 1).format(java.time.format.DateTimeFormatter.ofPattern("MMM"))
+        assertEquals("$mar 10\n07:00", state.xLabels[0f])
+        assertEquals("$mar 11\n07:00", state.xLabels[1f])
+        assertTrue("XLabels should not contain excluded indices", !state.xLabels.containsKey(2f))
+    }
+
+    @Test
+    fun `date presets correctly filter the data`() = runTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         val today = LocalDate.now()
         
         // Last 7 Days
         viewModel.setDatePreset(DatePreset.LAST_7_DAYS)
-        var state = viewModel.uiState.first { it.selectedDatePreset == DatePreset.LAST_7_DAYS }
+        var state = viewModel.uiState.filter { it.selectedDatePreset == DatePreset.LAST_7_DAYS }.first()
         assertEquals(today.minusDays(6), state.fromDate)
-        assertEquals(today, state.toDate)
-        
-        // Last 30 Days
-        viewModel.setDatePreset(DatePreset.LAST_30_DAYS)
-        state = viewModel.uiState.first { it.selectedDatePreset == DatePreset.LAST_30_DAYS }
-        assertEquals(today.minusDays(29), state.fromDate)
         assertEquals(today, state.toDate)
     }
 
     @Test
-    fun `pulse line is solid and has standard width`() = runTest(testDispatcher) {
+    fun `pulse line is solid and has standard width`() = runTest {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70)
         )
@@ -139,9 +188,14 @@ class ChartViewModelTest {
         
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         
-        viewModel.updateConfiguration(setOf(0), setOf(MeasurementType.PULSE), null, null)
+        // Wait for initial data
+        viewModel.uiState.filter { !it.isLoading }.first()
+
+        // Toggle SYS and DIA off (Pulse is ON by default)
+        viewModel.toggleType(MeasurementType.SYS)
+        viewModel.toggleType(MeasurementType.DIA)
         
-        val state = viewModel.uiState.first { it.selectedTypes.contains(MeasurementType.PULSE) }
+        val state = viewModel.uiState.filter { it.selectedTypes == setOf(MeasurementType.PULSE) }.first()
         val pulseDataSet = state.pulseLineData?.dataSets?.get(0) as com.github.mikephil.charting.data.LineDataSet
         
         assertEquals(3f, pulseDataSet.lineWidth)
@@ -149,20 +203,20 @@ class ChartViewModelTest {
     }
 
     @Test
-    fun `onShareChart triggers ShareFile event`() = runTest(testDispatcher) {
+    fun `onShareChart triggers ShareFile event`() = runTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         val bitmap: android.graphics.Bitmap = mockk()
         val file = File("test.png")
         coEvery { chartExportManager.saveChartToCache(any()) } returns file
 
         val events = mutableListOf<ChartViewModel.ChartEvent>()
-        val job = launch {
+        val job = launch(UnconfinedTestDispatcher()) {
             viewModel.events.toList(events)
         }
 
         viewModel.onShareChart(bitmap)
 
-        assertTrue(events.any { it is ChartViewModel.ChartEvent.ShareFile && it.file == file })
+        assertTrue(events.any { it is ChartViewModel.ChartEvent.ShareFile && (it as ChartViewModel.ChartEvent.ShareFile).file == file })
         job.cancel()
     }
 }

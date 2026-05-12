@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,8 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -37,7 +40,9 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +62,9 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.ui.chart.components.BloodPressureChart
 import com.otakeessen.underpressure.ui.chart.components.ChartConfigurationSheet
 import kotlinx.coroutines.flow.collectLatest
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,8 +79,10 @@ fun ChartScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val sheetState = rememberModalBottomSheetState()
     
-    var captureBPBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var captureSysBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var captureDiaBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var capturePulseBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.events) {
         viewModel.events.collectLatest { event ->
@@ -121,19 +131,20 @@ fun ChartScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            val bpBitmap = captureBPBitmap?.invoke()
+                            val sysBitmap = captureSysBitmap?.invoke()
+                            val diaBitmap = captureDiaBitmap?.invoke()
                             val pulseBitmap = capturePulseBitmap?.invoke()
+                            val bitmaps = listOfNotNull(sysBitmap, diaBitmap, pulseBitmap)
                             
                             val finalBitmap = when {
-                                bpBitmap != null && pulseBitmap != null -> combineBitmaps(bpBitmap, pulseBitmap)
-                                bpBitmap != null -> bpBitmap
-                                pulseBitmap != null -> pulseBitmap
+                                bitmaps.size >= 2 -> combineBitmaps(bitmaps)
+                                bitmaps.size == 1 -> bitmaps[0]
                                 else -> null
                             }
                             
                             finalBitmap?.let { viewModel.onShareChart(it) }
                         },
-                        enabled = uiState.bpLineData != null || uiState.pulseLineData != null
+                        enabled = uiState.sysLineData != null || uiState.diaLineData != null || uiState.pulseLineData != null
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -149,54 +160,67 @@ fun ChartScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // New Control Bar
-            ChartControlBar(
-                currentMode = uiState.chartMode,
-                currentPreset = uiState.selectedDatePreset,
-                onModeChange = { viewModel.setChartMode(it) },
-                onPresetChange = { viewModel.setDatePreset(it) }
-            )
-
-            // Filter Summary
-            val dateFormatter = remember { DateTimeFormatter.ofPattern("MMM dd") }
-            val dateRangeStr = if (uiState.fromDate != null && uiState.toDate != null) {
-                "${uiState.fromDate!!.format(dateFormatter)} - ${uiState.toDate!!.format(dateFormatter)}"
-            } else {
-                stringResource(R.string.label_all_time)
+            // Mode Switcher at the top
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                ChartMode.entries.forEachIndexed { index, mode ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(index = index, count = ChartMode.entries.size),
+                        onClick = { viewModel.setChartMode(mode) },
+                        selected = uiState.chartMode == mode
+                    ) {
+                        Text(stringResource(if (mode == ChartMode.DAILY) R.string.label_chart_mode_daily else R.string.label_chart_mode_sequential))
+                    }
+                }
             }
-            Text(
-                text = stringResource(R.string.label_filter_summary, dateRangeStr, uiState.selectedSlots.size),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-            )
 
+            // Charts in the middle
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth()
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-                } else if (uiState.errorMessageResId != null && uiState.bpLineData == null && uiState.pulseLineData == null) {
-                    Text(
-                        text = stringResource(uiState.errorMessageResId!!),
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else if (uiState.errorMessageResId != null && uiState.sysLineData == null && uiState.diaLineData == null && uiState.pulseLineData == null) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = stringResource(uiState.errorMessageResId!!),
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
                 } else {
-                    // Blood Pressure Chart
-                    if (uiState.bpLineData != null) {
+                    // Systolic Chart
+                    if (uiState.sysLineData != null) {
                         BloodPressureChart(
-                            lineData = uiState.bpLineData,
+                            lineData = uiState.sysLineData,
                             startDate = uiState.startDate,
                             xLabels = uiState.xLabels,
                             modifier = Modifier
-                                .weight(if (uiState.pulseLineData != null) 1.5f else 1f)
+                                .weight(1f)
                                 .fillMaxWidth(),
-                            showXAxisLabels = uiState.pulseLineData == null,
-                            onChartReady = { captureBPBitmap = it }
+                            showXAxisLabels = true,
+                            onChartReady = { captureSysBitmap = it }
+                        )
+                    }
+
+                    // Diastolic Chart
+                    if (uiState.diaLineData != null) {
+                        BloodPressureChart(
+                            lineData = uiState.diaLineData,
+                            startDate = uiState.startDate,
+                            xLabels = uiState.xLabels,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            showXAxisLabels = true,
+                            onChartReady = { captureDiaBitmap = it }
                         )
                     }
 
@@ -209,12 +233,50 @@ fun ChartScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxWidth(),
+                            showXAxisLabels = true,
                             onChartReady = { capturePulseBitmap = it }
                         )
                     }
                 }
             }
 
+            // Quick Range Presets above the bottom bar
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                val presets = listOf(
+                    DatePreset.ALL_TIME to R.string.label_all_time,
+                    DatePreset.LAST_7_DAYS to R.string.label_date_preset_7d,
+                    DatePreset.THIS_MONTH to R.string.label_date_preset_month,
+                    DatePreset.CUSTOM to R.string.label_date_preset_custom
+                )
+                items(presets) { (preset, labelRes) ->
+                    FilterChip(
+                        selected = uiState.selectedDatePreset == preset,
+                        onClick = { 
+                            viewModel.setDatePreset(preset)
+                            if (preset == DatePreset.CUSTOM) {
+                                showDatePicker = true
+                            }
+                        },
+                        label = { Text(stringResource(labelRes)) },
+                        leadingIcon = if (uiState.selectedDatePreset == preset) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Default.Done,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        } else null
+                    )
+                }
+            }
+
+            // Bottom Bar with Configure button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -237,82 +299,66 @@ fun ChartScreen(
             ChartConfigurationSheet(
                 selectedSlots = uiState.selectedSlots,
                 selectedTypes = uiState.selectedTypes,
-                fromDate = uiState.fromDate,
-                toDate = uiState.toDate,
                 onDismiss = { viewModel.toggleConfigSheet(false) },
-                onApply = { slots, types, from, to ->
-                    viewModel.updateConfiguration(slots, types, from, to)
-                },
+                onToggleSlot = { viewModel.toggleSlot(it) },
+                onToggleType = { viewModel.toggleType(it) },
                 sheetState = sheetState
             )
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ChartControlBar(
-    currentMode: ChartMode,
-    currentPreset: DatePreset,
-    onModeChange: (ChartMode) -> Unit,
-    onPresetChange: (DatePreset) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Mode Switcher
-        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-            ChartMode.entries.forEachIndexed { index, mode ->
-                SegmentedButton(
-                    shape = SegmentedButtonDefaults.itemShape(index = index, count = ChartMode.entries.size),
-                    onClick = { onModeChange(mode) },
-                    selected = currentMode == mode
-                ) {
-                    Text(stringResource(if (mode == ChartMode.DAILY) R.string.label_chart_mode_daily else R.string.label_chart_mode_sequential))
+    if (showDatePicker) {
+        val dateRangePickerState = rememberDateRangePickerState(
+            initialSelectedStartDateMillis = uiState.fromDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli(),
+            initialSelectedEndDateMillis = uiState.toDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+        )
+
+        DatePickerDialog(
+            onDismissRequest = {
+                viewModel.setDatePreset(DatePreset.ALL_TIME)
+                showDatePicker = false
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    val start = dateRangePickerState.selectedStartDateMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    }
+                    val end = dateRangePickerState.selectedEndDateMillis?.let {
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                    }
+                    viewModel.setCustomDateRange(start, end)
+                    showDatePicker = false
+                }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.setDatePreset(DatePreset.ALL_TIME)
+                    showDatePicker = false
+                }) {
+                    Text(stringResource(android.R.string.cancel))
                 }
             }
-        }
-
-        // Quick Presets
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
         ) {
-            val presets = listOf(
-                DatePreset.LAST_7_DAYS to R.string.label_date_preset_7d,
-                DatePreset.LAST_30_DAYS to R.string.label_date_preset_30d,
-                DatePreset.THIS_MONTH to R.string.label_date_preset_month,
-                DatePreset.CUSTOM to R.string.label_date_preset_custom
+            DateRangePicker(
+                state = dateRangePickerState,
+                title = { Text(modifier = Modifier.padding(16.dp), text = stringResource(R.string.label_select_date_range)) },
+                modifier = Modifier.weight(1f)
             )
-            items(presets) { (preset, labelRes) ->
-                FilterChip(
-                    selected = currentPreset == preset,
-                    onClick = { onPresetChange(preset) },
-                    label = { Text(stringResource(labelRes)) },
-                    leadingIcon = if (currentPreset == preset) {
-                        {
-                            Icon(
-                                imageVector = Icons.Default.Done,
-                                contentDescription = null,
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
-                            )
-                        }
-                    } else null
-                )
-            }
         }
     }
 }
 
-private fun combineBitmaps(top: Bitmap, bottom: Bitmap): Bitmap {
-    val width = maxOf(top.width, bottom.width)
-    val height = top.height + bottom.height
+private fun combineBitmaps(bitmaps: List<Bitmap>): Bitmap {
+    val width = bitmaps.maxOf { it.width }
+    val height = bitmaps.sumOf { it.height }
     val combined = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(combined)
-    canvas.drawBitmap(top, 0f, 0f, null)
-    canvas.drawBitmap(bottom, 0f, top.height.toFloat(), null)
+    var y = 0f
+    for (bitmap in bitmaps) {
+        canvas.drawBitmap(bitmap, 0f, y, null)
+        y += bitmap.height.toFloat()
+    }
     return combined
 }

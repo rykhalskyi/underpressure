@@ -35,11 +35,11 @@ class ChartViewModel(
 ) : ViewModel() {
 
     private val _selectedSlots = MutableStateFlow(setOf(0, 1, 2, 3))
-    private val _selectedTypes = MutableStateFlow(setOf(MeasurementType.SYS, MeasurementType.DIA))
+    private val _selectedTypes = MutableStateFlow(setOf(MeasurementType.SYS, MeasurementType.DIA, MeasurementType.PULSE))
     private val _fromDate = MutableStateFlow<LocalDate?>(null)
     private val _toDate = MutableStateFlow<LocalDate?>(null)
     private val _chartMode = MutableStateFlow(ChartMode.DAILY)
-    private val _datePreset = MutableStateFlow(DatePreset.CUSTOM)
+    private val _datePreset = MutableStateFlow(DatePreset.ALL_TIME)
     private val _isConfigSheetOpen = MutableStateFlow(false)
 
     sealed class ChartEvent {
@@ -73,7 +73,8 @@ class ChartViewModel(
         if (measurements.isEmpty()) {
             return@combine ChartUiState(
                 isLoading = false,
-                bpLineData = null,
+                sysLineData = null,
+                diaLineData = null,
                 pulseLineData = null,
                 selectedSlots = config.slots,
                 selectedTypes = config.types,
@@ -98,7 +99,8 @@ class ChartViewModel(
         if (filtered.isEmpty()) {
              return@combine ChartUiState(
                 isLoading = false,
-                bpLineData = null,
+                sysLineData = null,
+                diaLineData = null,
                 pulseLineData = null,
                 selectedSlots = config.slots,
                 selectedTypes = config.types,
@@ -116,7 +118,8 @@ class ChartViewModel(
         val minDateStr = filtered.minBy { it.date }.date
         val minDate = LocalDate.parse(minDateStr, DATE_FORMATTER)
 
-        val bpDataSets = mutableListOf<LineDataSet>()
+        val sysDataSets = mutableListOf<LineDataSet>()
+        val diaDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
         val xLabels = mutableMapOf<Float, String>()
 
@@ -158,66 +161,69 @@ class ChartViewModel(
                                 mode = LineDataSet.Mode.LINEAR
                                 setDrawValues(false)
                             }
-                            if (type == MeasurementType.PULSE) {
-                                pulseDataSets.add(dataSet)
-                            } else {
-                                bpDataSets.add(dataSet)
+                            when (type) {
+                                MeasurementType.SYS -> sysDataSets.add(dataSet)
+                                MeasurementType.DIA -> diaDataSets.add(dataSet)
+                                MeasurementType.PULSE -> pulseDataSets.add(dataSet)
                             }
                         }
                     }
                 }
             }
         } else {
-            // Logic for SEQUENTIAL mode (Dense Indexing)
-            // 1. Sort all filtered measurements globally by date and slot
-            val sortedMeasurements = filtered.sortedWith(compareBy({ it.date }, { it.slotIndex }))
+            // Logic for SEQUENTIAL mode (One plot for all slots)
+            val sequentialMeasurements = filtered
+                .filter { config.slots.contains(it.slotIndex) }
+                .sortedWith(compareBy({ it.date }, { it.slotIndex }))
             
-            // Populate xLabels map for all unique points in the sequence
-            sortedMeasurements.forEachIndexed { index, m ->
+            sequentialMeasurements.forEachIndexed { index, m ->
                 val date = LocalDate.parse(m.date, DATE_FORMATTER)
                 val formattedDate = date.format(DateTimeFormatter.ofPattern("MMM dd"))
                 val slotTimeLabel = slotTimes.getOrElse(m.slotIndex) { "Slot ${m.slotIndex + 1}" }
                 xLabels[index.toFloat()] = "$formattedDate\n$slotTimeLabel"
             }
 
-            config.slots.forEach { slotIndex ->
-                val slotTimeLabel = slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
-                config.types.forEach { type ->
-                    val entries = mutableListOf<Entry>()
-                    
-                    sortedMeasurements.forEachIndexed { index, m ->
-                        if (m.slotIndex == slotIndex) {
-                            val value = when (type) {
-                                MeasurementType.SYS -> m.systolic.toFloat()
-                                MeasurementType.DIA -> m.diastolic.toFloat()
-                                MeasurementType.PULSE -> if (m.pulse > 0) m.pulse.toFloat() else null
-                            }
-                            
-                            value?.let { 
-                                entries.add(Entry(index.toFloat(), it))
-                            }
-                        }
+            config.types.forEach { type ->
+                val entries = mutableListOf<Entry>()
+                
+                sequentialMeasurements.forEachIndexed { index, m ->
+                    val value = when (type) {
+                        MeasurementType.SYS -> m.systolic.toFloat()
+                        MeasurementType.DIA -> m.diastolic.toFloat()
+                        MeasurementType.PULSE -> if (m.pulse > 0) m.pulse.toFloat() else null
                     }
+                    
+                    value?.let { 
+                        entries.add(Entry(index.toFloat(), it))
+                    }
+                }
 
-                    if (entries.isNotEmpty()) {
-                        val label = "$slotTimeLabel - ${type.name}"
-                        val dataSet = LineDataSet(entries, label).apply {
-                            val colorVal = SLOT_COLORS.getOrElse(slotIndex) { Color.BLACK }
-                            color = colorVal
-                            setCircleColor(colorVal)
-                            lineWidth = when (type) {
-                                MeasurementType.SYS -> 3f
-                                MeasurementType.DIA -> 1.5f
-                                MeasurementType.PULSE -> 3f
-                            }
-                            mode = LineDataSet.Mode.LINEAR
-                            setDrawValues(false)
-                        }
-                        if (type == MeasurementType.PULSE) {
-                            pulseDataSets.add(dataSet)
+                if (entries.isNotEmpty()) {
+                    val label = when(type) {
+                        MeasurementType.SYS -> "Systolic"
+                        MeasurementType.DIA -> "Diastolic"
+                        MeasurementType.PULSE -> "Pulse"
+                    }
+                    val dataSet = LineDataSet(entries, label).apply {
+                        // Use a single color for all points in sequential mode
+                        val colorVal = if (type == MeasurementType.DIA) {
+                            SLOT_COLORS[1] // Green for Diastolic
+                        } else if (type == MeasurementType.PULSE) {
+                            SLOT_COLORS[2] // Orange for Pulse
                         } else {
-                            bpDataSets.add(dataSet)
+                            SLOT_COLORS[0] // Blue for Systolic/Default
                         }
+                        
+                        color = colorVal
+                        setCircleColor(colorVal)
+                        lineWidth = 1.5f
+                        mode = LineDataSet.Mode.LINEAR
+                        setDrawValues(false)
+                    }
+                    when (type) {
+                        MeasurementType.SYS -> sysDataSets.add(dataSet)
+                        MeasurementType.DIA -> diaDataSets.add(dataSet)
+                        MeasurementType.PULSE -> pulseDataSets.add(dataSet)
                     }
                 }
             }
@@ -225,7 +231,8 @@ class ChartViewModel(
 
         ChartUiState(
             isLoading = false,
-            bpLineData = if (bpDataSets.isNotEmpty()) LineData(bpDataSets.toList()) else null,
+            sysLineData = if (sysDataSets.isNotEmpty()) LineData(sysDataSets.toList()) else null,
+            diaLineData = if (diaDataSets.isNotEmpty()) LineData(diaDataSets.toList()) else null,
             pulseLineData = if (pulseDataSets.isNotEmpty()) LineData(pulseDataSets.toList()) else null,
             startDate = minDate,
             selectedSlots = config.slots,
@@ -235,7 +242,7 @@ class ChartViewModel(
             chartMode = config.mode,
             selectedDatePreset = config.preset,
             isConfigSheetOpen = config.isOpen,
-            errorMessageResId = if (bpDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
+            errorMessageResId = if (sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
             slotTimes = slotTimes,
             xLabels = xLabels
         )
@@ -265,6 +272,22 @@ class ChartViewModel(
         val isOpen: Boolean
     )
 
+    fun toggleSlot(slotIndex: Int) {
+        _selectedSlots.value = if (_selectedSlots.value.contains(slotIndex)) {
+            _selectedSlots.value - slotIndex
+        } else {
+            _selectedSlots.value + slotIndex
+        }
+    }
+
+    fun toggleType(type: MeasurementType) {
+        _selectedTypes.value = if (_selectedTypes.value.contains(type)) {
+            _selectedTypes.value - type
+        } else {
+            _selectedTypes.value + type
+        }
+    }
+
     fun toggleConfigSheet(open: Boolean) {
         _isConfigSheetOpen.value = open
     }
@@ -277,12 +300,12 @@ class ChartViewModel(
         _datePreset.value = preset
         val today = LocalDate.now()
         when (preset) {
+            DatePreset.ALL_TIME -> {
+                _fromDate.value = null
+                _toDate.value = null
+            }
             DatePreset.LAST_7_DAYS -> {
                 _fromDate.value = today.minusDays(6)
-                _toDate.value = today
-            }
-            DatePreset.LAST_30_DAYS -> {
-                _fromDate.value = today.minusDays(29)
                 _toDate.value = today
             }
             DatePreset.THIS_MONTH -> {
@@ -295,18 +318,10 @@ class ChartViewModel(
         }
     }
 
-    fun updateConfiguration(
-        slots: Set<Int>,
-        types: Set<MeasurementType>,
-        from: LocalDate?,
-        to: LocalDate?
-    ) {
-        _selectedSlots.value = slots
-        _selectedTypes.value = types
+    fun setCustomDateRange(from: LocalDate?, to: LocalDate?) {
         _fromDate.value = from
         _toDate.value = to
         _datePreset.value = DatePreset.CUSTOM
-        _isConfigSheetOpen.value = false
     }
 
     fun onShareChart(bitmap: android.graphics.Bitmap) {
@@ -320,4 +335,3 @@ class ChartViewModel(
         }
     }
 }
-

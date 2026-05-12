@@ -136,6 +136,7 @@ fun BloodPressureChart(
                 }
             }
 
+            chart.data = null
             chart.data = lineData
             chart.invalidate()
         }
