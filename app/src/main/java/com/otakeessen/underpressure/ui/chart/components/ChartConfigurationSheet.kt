@@ -11,15 +11,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,9 +30,15 @@ import com.otakeessen.underpressure.ui.chart.MeasurementType
 fun ChartConfigurationSheet(
     selectedSlots: Set<Int>,
     selectedTypes: Set<MeasurementType>,
+    showRiskZones: Boolean,
+    showRollingAverage: Boolean,
+    showInteractiveLegend: Boolean,
     onDismiss: () -> Unit,
     onToggleSlot: (Int) -> Unit,
     onToggleType: (MeasurementType) -> Unit,
+    onToggleRiskZones: () -> Unit,
+    onToggleRollingAverage: () -> Unit,
+    onToggleInteractiveLegend: () -> Unit,
     sheetState: SheetState
 ) {
     ModalBottomSheet(
@@ -89,6 +92,45 @@ fun ChartConfigurationSheet(
                     }
                     Text(text = typeLabel)
                 }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = stringResource(R.string.label_visual_features), style = MaterialTheme.typography.titleMedium)
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = showRiskZones,
+                    onCheckedChange = { onToggleRiskZones() }
+                )
+                Text(text = stringResource(R.string.label_show_risk_zones))
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = showRollingAverage,
+                    onCheckedChange = { onToggleRollingAverage() }
+                )
+                Text(text = stringResource(R.string.label_show_rolling_average))
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = showInteractiveLegend,
+                    onCheckedChange = { onToggleInteractiveLegend() }
+                )
+                Text(text = stringResource(R.string.label_show_interactive_legend))
             }
 
             Spacer(modifier = Modifier.height(24.dp))

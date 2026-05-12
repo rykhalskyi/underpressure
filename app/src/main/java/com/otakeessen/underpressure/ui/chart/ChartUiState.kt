@@ -45,6 +45,9 @@ enum class DatePreset {
  * @property slotTimes Labels for the time slots.
  * @property chartMode The current display mode (Daily/Sequential).
  * @property xLabels Mapping of X-axis values to their formatted labels (e.g., "Oct 12").
+ * @property showRiskZones Whether to display risk zone background bands.
+ * @property showRollingAverage Whether to display 7-day rolling average lines.
+ * @property showInteractiveLegend Whether to display the interactive legend overlay.
  */
 data class ChartUiState(
     val isLoading: Boolean = true,
@@ -61,5 +64,8 @@ data class ChartUiState(
     val slotTimes: List<String> = emptyList(),
     val chartMode: ChartMode = ChartMode.DAILY,
     val xLabels: Map<Float, String> = emptyMap(),
-    val selectedDatePreset: DatePreset = DatePreset.ALL_TIME
+    val selectedDatePreset: DatePreset = DatePreset.ALL_TIME,
+    val showRiskZones: Boolean = false,
+    val showRollingAverage: Boolean = false,
+    val showInteractiveLegend: Boolean = false
 )

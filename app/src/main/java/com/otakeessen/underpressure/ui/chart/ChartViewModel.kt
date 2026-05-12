@@ -23,6 +23,8 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * ViewModel for the Blood Pressure Chart Screen.
@@ -41,6 +43,9 @@ class ChartViewModel(
     private val _chartMode = MutableStateFlow(ChartMode.DAILY)
     private val _datePreset = MutableStateFlow(DatePreset.ALL_TIME)
     private val _isConfigSheetOpen = MutableStateFlow(false)
+    private val _showRiskZones = MutableStateFlow(false)
+    private val _showRollingAverage = MutableStateFlow(false)
+    private val _showInteractiveLegend = MutableStateFlow(false)
 
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
@@ -51,15 +56,34 @@ class ChartViewModel(
     val events = _events.asSharedFlow()
 
     private val configFlow = combine(
-        _selectedSlots,
-        _selectedTypes,
-        _fromDate,
-        _toDate,
-        combine(_chartMode, _datePreset, _isConfigSheetOpen) { mode, preset, open -> 
-            Triple(mode, preset, open)
+        combine(
+            _selectedSlots,
+            _selectedTypes,
+            _fromDate,
+            _toDate
+        ) { slots, types, from, to ->
+            ConfigBase(slots, types, from, to)
+        },
+        combine(
+            _chartMode,
+            _datePreset,
+            _isConfigSheetOpen
+        ) { mode, preset, open ->
+            ConfigMode(mode, preset, open)
+        },
+        combine(
+            _showRiskZones,
+            _showRollingAverage,
+            _showInteractiveLegend
+        ) { riskZones, rolling, legend ->
+            ConfigVisuals(riskZones, rolling, legend)
         }
-    ) { slots, types, from, to, (mode, preset, open) ->
-        ConfigState(slots, types, from, to, mode, preset, open)
+    ) { base, mode, visuals ->
+        ConfigState(
+            base.slots, base.types, base.fromDate, base.toDate,
+            mode.chartMode, mode.datePreset, mode.isOpen,
+            visuals.showRiskZones, visuals.showRollingAverage, visuals.showInteractiveLegend
+        )
     }
 
     val uiState: StateFlow<ChartUiState> = combine(
@@ -84,7 +108,10 @@ class ChartViewModel(
                 selectedDatePreset = config.preset,
                 isConfigSheetOpen = config.isOpen,
                 errorMessageResId = R.string.error_no_data,
-                slotTimes = slotTimes
+                slotTimes = slotTimes,
+                showRiskZones = config.showRiskZones,
+                showRollingAverage = config.showRollingAverage,
+                showInteractiveLegend = config.showInteractiveLegend
             )
         }
 
@@ -110,7 +137,10 @@ class ChartViewModel(
                 selectedDatePreset = config.preset,
                 isConfigSheetOpen = config.isOpen,
                 errorMessageResId = R.string.error_no_data_in_range,
-                slotTimes = slotTimes
+                slotTimes = slotTimes,
+                showRiskZones = config.showRiskZones,
+                showRollingAverage = config.showRollingAverage,
+                showInteractiveLegend = config.showInteractiveLegend
             )
         }
 
@@ -122,6 +152,7 @@ class ChartViewModel(
         val diaDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
         val xLabels = mutableMapOf<Float, String>()
+        var sequentialMeasurements = emptyList<MeasurementEntity>()
 
         if (config.mode == ChartMode.DAILY) {
             // Logic for DAILY mode
@@ -172,7 +203,7 @@ class ChartViewModel(
             }
         } else {
             // Logic for SEQUENTIAL mode (One plot for all slots)
-            val sequentialMeasurements = filtered
+            sequentialMeasurements = filtered
                 .filter { config.slots.contains(it.slotIndex) }
                 .sortedWith(compareBy({ it.date }, { it.slotIndex }))
             
@@ -229,6 +260,38 @@ class ChartViewModel(
             }
         }
 
+        // 7-Day Rolling Average
+        if (config.showRollingAverage) {
+            val allForAverage = if (config.mode == ChartMode.DAILY) filtered else sequentialMeasurements
+            if (allForAverage.isNotEmpty()) {
+                config.types.forEach { type ->
+                    val avgEntries = calculateRollingAverage(allForAverage, minDate, type, config.mode)
+                    if (avgEntries.size >= 2) {
+                        val avgLabel = "${type.name} (7-day avg)"
+                        val avgDataSet = LineDataSet(avgEntries, avgLabel).apply {
+                            val baseColor = when (type) {
+                                MeasurementType.SYS -> SLOT_COLORS[0]
+                                MeasurementType.DIA -> SLOT_COLORS[1]
+                                MeasurementType.PULSE -> SLOT_COLORS[2]
+                            }
+                            color = Color.argb(180, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
+                            setCircleColor(Color.TRANSPARENT)
+                            setDrawCircles(false)
+                            lineWidth = 2f
+                            mode = LineDataSet.Mode.CUBIC_BEZIER
+                            enableDashedLine(10f, 10f, 0f)
+                            setDrawValues(false)
+                        }
+                        when (type) {
+                            MeasurementType.SYS -> sysDataSets.add(avgDataSet)
+                            MeasurementType.DIA -> diaDataSets.add(avgDataSet)
+                            MeasurementType.PULSE -> pulseDataSets.add(avgDataSet)
+                        }
+                    }
+                }
+            }
+        }
+
         ChartUiState(
             isLoading = false,
             sysLineData = if (sysDataSets.isNotEmpty()) LineData(sysDataSets.toList()) else null,
@@ -244,7 +307,10 @@ class ChartViewModel(
             isConfigSheetOpen = config.isOpen,
             errorMessageResId = if (sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
             slotTimes = slotTimes,
-            xLabels = xLabels
+            xLabels = xLabels,
+            showRiskZones = config.showRiskZones,
+            showRollingAverage = config.showRollingAverage,
+            showInteractiveLegend = config.showInteractiveLegend
         )
     }.stateIn(
         scope = viewModelScope,
@@ -262,6 +328,25 @@ class ChartViewModel(
         )
     }
 
+    private data class ConfigBase(
+        val slots: Set<Int>,
+        val types: Set<MeasurementType>,
+        val fromDate: LocalDate?,
+        val toDate: LocalDate?
+    )
+
+    private data class ConfigMode(
+        val chartMode: ChartMode,
+        val datePreset: DatePreset,
+        val isOpen: Boolean
+    )
+
+    private data class ConfigVisuals(
+        val showRiskZones: Boolean,
+        val showRollingAverage: Boolean,
+        val showInteractiveLegend: Boolean
+    )
+
     private data class ConfigState(
         val slots: Set<Int>,
         val types: Set<MeasurementType>,
@@ -269,8 +354,48 @@ class ChartViewModel(
         val toDate: LocalDate?,
         val mode: ChartMode,
         val preset: DatePreset,
-        val isOpen: Boolean
+        val isOpen: Boolean,
+        val showRiskZones: Boolean,
+        val showRollingAverage: Boolean,
+        val showInteractiveLegend: Boolean
     )
+
+    private fun calculateRollingAverage(
+        measurements: List<MeasurementEntity>,
+        minDate: LocalDate,
+        type: MeasurementType,
+        mode: ChartMode
+    ): List<Entry> {
+        val sorted = measurements
+            .filter { m ->
+                when (type) {
+                    MeasurementType.PULSE -> m.pulse > 0
+                    else -> true
+                }
+            }
+            .sortedBy { it.date }
+
+        if (sorted.isEmpty()) return emptyList()
+
+        return sorted.mapIndexed { index, m ->
+            val windowStart = max(0, index - 6)
+            val window = sorted.subList(windowStart, index + 1)
+            val avg = window.map { entity ->
+                when (type) {
+                    MeasurementType.SYS -> entity.systolic.toFloat()
+                    MeasurementType.DIA -> entity.diastolic.toFloat()
+                    MeasurementType.PULSE -> entity.pulse.toFloat()
+                }
+            }.average().toFloat()
+
+            val x = if (mode == ChartMode.DAILY) {
+                ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
+            } else {
+                index.toFloat()
+            }
+            Entry(x, avg)
+        }
+    }
 
     fun toggleSlot(slotIndex: Int) {
         _selectedSlots.value = if (_selectedSlots.value.contains(slotIndex)) {
@@ -290,6 +415,18 @@ class ChartViewModel(
 
     fun toggleConfigSheet(open: Boolean) {
         _isConfigSheetOpen.value = open
+    }
+
+    fun toggleRiskZones() {
+        _showRiskZones.value = !_showRiskZones.value
+    }
+
+    fun toggleRollingAverage() {
+        _showRollingAverage.value = !_showRollingAverage.value
+    }
+
+    fun toggleInteractiveLegend() {
+        _showInteractiveLegend.value = !_showInteractiveLegend.value
     }
 
     fun setChartMode(mode: ChartMode) {

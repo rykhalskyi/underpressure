@@ -112,6 +112,10 @@
     <string name="label_date_preset_month">This Month</string>
     <string name="label_date_preset_custom">Custom</string>
     <string name="label_all_time">All Time</string>
+    <string name="label_show_risk_zones">Show Risk Zones</string>
+    <string name="label_show_rolling_average">Show 7-Day Average</string>
+    <string name="label_show_interactive_legend">Show Interactive Legend</string>
+    <string name="label_visual_features">Visual Features</string>
     <string name="label_filter_summary">%1$s, %2$d slots</string>
     <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">About</string>
