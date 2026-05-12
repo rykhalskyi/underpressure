@@ -161,5 +161,5 @@
     <string name="guidance_title">Das scheint nicht deine Messzeit zu sein</string>
     <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
-    <string name="hint_cannot_create_slot">Slot kann jetzt nicht erstellt werden. Er muss mindestens 30 Minuten von benachbarten Slots entfernt sein. Nutze den nächsten Slot um %1$s.</string>
+    <string name="warning_large_date_range">Gro?er Datumsbereich ausgewahlt. Lesbarkeit und Leistung konnen beeintrachtigt sein.</string>
 </resources>

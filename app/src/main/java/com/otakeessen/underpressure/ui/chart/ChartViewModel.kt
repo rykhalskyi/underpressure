@@ -446,55 +446,88 @@ class ChartViewModel(
         if (mode == ChartMode.DAILY) {
             val result = mutableListOf<Entry>()
             val valueForDate = sorted.groupBy { it.date }
-            val sortedDates = valueForDate.keys.sorted()
+            val sortedDates = valueForDate.keys.sorted().map { LocalDate.parse(it, DATE_FORMATTER) }
 
-            for ((index, dateStr) in sortedDates.withIndex()) {
-                val currentDate = LocalDate.parse(dateStr, DATE_FORMATTER)
-                val windowStart = currentDate.minusDays(6)
+            var windowStartIdx = 0
+            var currentSum = 0f
+            var currentCount = 0
 
-                var sum = 0f
-                var count = 0
-                for (i in 0..index) {
-                    val d = LocalDate.parse(sortedDates[i], DATE_FORMATTER)
-                    if (!d.isBefore(windowStart)) {
-                        for (m in valueForDate[sortedDates[i]]!!) {
-                            val value = when (type) {
-                                MeasurementType.SYS -> m.systolic.toFloat()
-                                MeasurementType.DIA -> m.diastolic.toFloat()
-                                MeasurementType.PULSE -> m.pulse.toFloat()
-                            }
-                            sum += value
-                            count++
-                        }
+            for (currentDate in sortedDates) {
+                val windowStartLimit = currentDate.minusDays(6)
+
+                // Add values for the current date
+                val currentMeasurements = valueForDate[currentDate.format(DATE_FORMATTER)]!!
+                for (m in currentMeasurements) {
+                    currentSum += when (type) {
+                        MeasurementType.SYS -> m.systolic.toFloat()
+                        MeasurementType.DIA -> m.diastolic.toFloat()
+                        MeasurementType.PULSE -> m.pulse.toFloat()
                     }
+                    currentCount++
                 }
 
-                if (count > 0) {
+                // Remove values that are now outside the 7-day window
+                while (windowStartIdx < sortedDates.size && sortedDates[windowStartIdx].isBefore(windowStartLimit)) {
+                    val oldDate = sortedDates[windowStartIdx]
+                    val oldMeasurements = valueForDate[oldDate.format(DATE_FORMATTER)]!!
+                    for (m in oldMeasurements) {
+                        currentSum -= when (type) {
+                            MeasurementType.SYS -> m.systolic.toFloat()
+                            MeasurementType.DIA -> m.diastolic.toFloat()
+                            MeasurementType.PULSE -> m.pulse.toFloat()
+                        }
+                        currentCount--
+                    }
+                    windowStartIdx++
+                }
+
+                if (currentCount > 0) {
                     val x = ChronoUnit.DAYS.between(minDate, currentDate).toFloat()
-                    result.add(Entry(x, sum / count))
+                    result.add(Entry(x, currentSum / currentCount))
                 }
             }
             return result
         }
 
+        var windowStartIdx = 0
+        var currentSum = 0f
+
         return sorted.mapIndexed { index, m ->
-            val windowStart = max(0, index - 6)
-            val window = sorted.subList(windowStart, index + 1)
-            val avg = window.map { entity ->
-                when (type) {
-                    MeasurementType.SYS -> entity.systolic.toFloat()
-                    MeasurementType.DIA -> entity.diastolic.toFloat()
-                    MeasurementType.PULSE -> entity.pulse.toFloat()
+            currentSum += when (type) {
+                MeasurementType.SYS -> m.systolic.toFloat()
+                MeasurementType.DIA -> m.diastolic.toFloat()
+                MeasurementType.PULSE -> m.pulse.toFloat()
+            }
+
+            if (index >= 7) {
+                val oldM = sorted[windowStartIdx]
+                currentSum -= when (type) {
+                    MeasurementType.SYS -> oldM.systolic.toFloat()
+                    MeasurementType.DIA -> oldM.diastolic.toFloat()
+                    MeasurementType.PULSE -> oldM.pulse.toFloat()
                 }
-            }.average().toFloat()
-            Entry(index.toFloat(), avg)
+                windowStartIdx++
+            }
+
+            val count = index - windowStartIdx + 1
+            Entry(index.toFloat(), currentSum / count)
         }
     }
 
     fun toggleSlot(slotIndex: Int) {
         val current = _selectedSlots.value
-        _selectedSlots.value = if (current.contains(slotIndex)) {
-            if (current.size <= 1 && !_showRollingAverage.value) current else current - slotIndex
+        val isSelected = current.contains(slotIndex)
+        
+        val canToggleOff = if (_chartMode.value == ChartMode.DISTRIBUTION) {
+            current.size > 1
+        } else {
+            current.size > 1 || _showRollingAverage.value
+        }
+
+        if (isSelected && !canToggleOff) return
+
+        _selectedSlots.value = if (isSelected) {
+            current - slotIndex
         } else {
             current + slotIndex
         }
@@ -527,6 +560,12 @@ class ChartViewModel(
     }
 
     fun setChartMode(mode: ChartMode) {
+        if (mode == ChartMode.DISTRIBUTION) {
+            if (_selectedSlots.value.isEmpty()) {
+                _selectedSlots.value = setOf(0, 1, 2, 3)
+            }
+            _showRollingAverage.value = false
+        }
         _chartMode.value = mode
     }
 
@@ -556,6 +595,13 @@ class ChartViewModel(
         _fromDate.value = from
         _toDate.value = to
         _datePreset.value = DatePreset.CUSTOM
+        
+        // UX: Emit warning if range is too large (> 1 year)
+        if (from != null && to != null && ChronoUnit.DAYS.between(from, to) > 365) {
+            viewModelScope.launch {
+                _events.emit(ChartEvent.Error(R.string.warning_large_date_range))
+            }
+        }
     }
 
     fun onShareChart(bitmap: android.graphics.Bitmap) {

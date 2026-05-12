@@ -342,7 +342,18 @@ fun ChartScreen(
                     items(uiState.slotTimes.withIndex().toList()) { (index, label) ->
                         FilterChip(
                             selected = uiState.selectedSlots.contains(index),
-                            onClick = { viewModel.toggleSlot(index) },
+                            onClick = { 
+                                val canToggleOff = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                                    uiState.selectedSlots.size > 1
+                                } else {
+                                    uiState.selectedSlots.size > 1 || uiState.showRollingAverage
+                                }
+                                if (uiState.selectedSlots.contains(index) && !canToggleOff) {
+                                    // Do nothing if trying to toggle off last slot when rule forbids it
+                                } else {
+                                    viewModel.toggleSlot(index)
+                                }
+                            },
                             label = { Text(label) }
                         )
                     }
@@ -436,15 +447,38 @@ fun ChartScreen(
     }
 }
 
+private const val MAX_BITMAP_DIMENSION = 4096
+
 private fun combineBitmaps(bitmaps: List<Bitmap>): Bitmap {
-    val width = bitmaps.maxOf { it.width }
-    val height = bitmaps.sumOf { it.height }
-    val combined = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    if (bitmaps.isEmpty()) return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+
+    val totalHeight = bitmaps.sumOf { it.height }
+    val maxWidth = bitmaps.maxOf { it.width }
+
+    // Safety check for OOM: Downscale if total dimensions are too large
+    var scale = 1f
+    if (totalHeight > MAX_BITMAP_DIMENSION) {
+        scale = MAX_BITMAP_DIMENSION.toFloat() / totalHeight
+    }
+    if (maxWidth * scale > MAX_BITMAP_DIMENSION) {
+        scale = MAX_BITMAP_DIMENSION.toFloat() / maxWidth
+    }
+
+    val finalWidth = (maxWidth * scale).toInt().coerceAtLeast(1)
+    val finalHeight = (totalHeight * scale).toInt().coerceAtLeast(1)
+
+    val combined = Bitmap.createBitmap(finalWidth, finalHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(combined)
-    var y = 0f
+    val paint = android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
+
+    var currentY = 0f
     for (bitmap in bitmaps) {
-        canvas.drawBitmap(bitmap, 0f, y, null)
-        y += bitmap.height.toFloat()
+        val srcRect = android.graphics.Rect(0, 0, bitmap.width, bitmap.height)
+        val destHeight = bitmap.height * scale
+        val destWidth = bitmap.width * scale
+        val destRect = android.graphics.RectF(0f, currentY, destWidth, currentY + destHeight)
+        canvas.drawBitmap(bitmap, srcRect, destRect, paint)
+        currentY += destHeight
     }
     return combined
 }

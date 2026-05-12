@@ -120,6 +120,7 @@
     <string name="label_show_slot_chips">Show Slot Chips</string>
     <string name="label_visual_features">Visual Features</string>
     <string name="label_filter_summary">%1$s, %2$d slots</string>
+    <string name="warning_large_date_range">Large date range selected. Readability and performance may be affected.</string>
     <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">About</string>
     <string name="label_version">Version %1$s</string>
