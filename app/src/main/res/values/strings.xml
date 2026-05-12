@@ -107,6 +107,9 @@
     <string name="placeholder_date">YYYY-MM-DD</string>
     <string name="label_chart_mode_daily">Daily</string>
     <string name="label_chart_mode_sequential">Sequential</string>
+    <string name="label_chart_mode_distribution">Distribution</string>
+    <string name="label_distribution_bar_chart">Frequency (Bar)</string>
+    <string name="label_distribution_pie_chart">Frequency (Pie)</string>
     <string name="label_date_preset_7d">Last 7 Days</string>
     <string name="label_date_preset_30d">Last 30 Days</string>
     <string name="label_date_preset_month">This Month</string>

@@ -30,6 +30,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 import java.time.Month
 import kotlin.math.abs
+import kotlin.random.Random
 
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
@@ -579,6 +580,36 @@ class MeasurementTableViewModel(
             TextFieldValue(resultText, TextRange(resultText.length))
         } else {
             newInput
+        }
+    }
+
+    fun generateDebugData() {
+        viewModelScope.launch {
+            measurementRepository.getAllMeasurementsSync().forEach {
+                measurementRepository.deleteMeasurement(it)
+            }
+
+            val today = LocalDate.now(clock)
+            val daysToFill = (0 until 30).map { today.minusDays(it.toLong()) }
+
+            for (date in daysToFill) {
+                val dateStr = date.format(dateFormatter)
+                for (slotIndex in 0..3) {
+                    val systolic = Random.nextInt(110, 151)
+                    val diastolic = Random.nextInt(70, 96)
+                    val pulse = Random.nextInt(60, 101)
+                    measurementRepository.saveMeasurement(
+                        MeasurementEntity(
+                            date = dateStr,
+                            slotIndex = slotIndex,
+                            systolic = systolic,
+                            diastolic = diastolic,
+                            pulse = pulse
+                        )
+                    )
+                }
+            }
+            refresh()
         }
     }
 

@@ -1,6 +1,8 @@
 package com.otakeessen.underpressure.ui.chart
 
+import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.PieData
 import java.time.LocalDate
 
 /**
@@ -15,7 +17,12 @@ enum class ChartMode {
     /**
      * Continuous flow of measurements, X-axis represents measurement index.
      */
-    SEQUENTIAL
+    SEQUENTIAL,
+
+    /**
+     * Statistical distribution of blood pressure levels.
+     */
+    DISTRIBUTION
 }
 
 /**
@@ -35,6 +42,8 @@ enum class DatePreset {
  * @property sysLineData Line data for systolic.
  * @property diaLineData Line data for diastolic.
  * @property pulseLineData Line data for pulse.
+ * @property distributionBarData Bar data for blood pressure level distribution.
+ * @property distributionPieData Pie data for blood pressure level distribution.
  * @property startDate The reference start date for DAILY mode.
  * @property selectedSlots Indices of the slots selected for display (0-3).
  * @property selectedTypes Measurement types selected for display (SYS, DIA, PULSE).
@@ -43,7 +52,7 @@ enum class DatePreset {
  * @property isConfigSheetOpen Whether the configuration bottom sheet is open.
  * @property errorMessageResId String resource ID for the error message.
  * @property slotTimes Labels for the time slots.
- * @property chartMode The current display mode (Daily/Sequential).
+ * @property chartMode The current display mode (Daily/Sequential/Distribution).
  * @property xLabels Mapping of X-axis values to their formatted labels (e.g., "Oct 12").
  * @property showRiskZones Whether to display risk zone background bands.
  * @property showRollingAverage Whether to display 7-day rolling average lines.
@@ -54,6 +63,8 @@ data class ChartUiState(
     val sysLineData: LineData? = null,
     val diaLineData: LineData? = null,
     val pulseLineData: LineData? = null,
+    val distributionBarData: BarData? = null,
+    val distributionPieData: PieData? = null,
     val startDate: LocalDate? = null,
     val selectedSlots: Set<Int> = setOf(0, 1, 2, 3),
     val selectedTypes: Set<MeasurementType> = setOf(MeasurementType.SYS, MeasurementType.DIA),

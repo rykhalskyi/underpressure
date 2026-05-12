@@ -8,9 +8,18 @@ import com.otakeessen.underpressure.data.export.ChartExportManager
 import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
 import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -151,6 +160,8 @@ class ChartViewModel(
         val sysDataSets = mutableListOf<LineDataSet>()
         val diaDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
+        var barData: BarData? = null
+        var pieData: PieData? = null
         val xLabels = mutableMapOf<Float, String>()
         var sequentialMeasurements = emptyList<MeasurementEntity>()
 
@@ -201,7 +212,7 @@ class ChartViewModel(
                     }
                 }
             }
-        } else {
+        } else if (config.mode == ChartMode.SEQUENTIAL) {
             // Logic for SEQUENTIAL mode (One plot for all slots)
             sequentialMeasurements = filtered
                 .filter { config.slots.contains(it.slotIndex) }
@@ -258,10 +269,56 @@ class ChartViewModel(
                     }
                 }
             }
+        } else if (config.mode == ChartMode.DISTRIBUTION) {
+            // Logic for DISTRIBUTION mode
+            val distributionData = filtered
+                .filter { config.slots.contains(it.slotIndex) }
+            
+            val counts = mutableMapOf<BloodPressureLevel, Int>()
+            BloodPressureLevel.entries.forEach { counts[it] = 0 }
+            
+            distributionData.forEach { m ->
+                val result = BloodPressureClassifier.classify(m.systolic, m.diastolic, settings?.bpGuidelines ?: BpGuidelines.ESC_ESH)
+                counts[result.level] = counts.getOrDefault(result.level, 0) + 1
+            }
+
+            val total = distributionData.size.toFloat()
+            if (total > 0) {
+                // Filter only levels with values
+                val activeLevels = BloodPressureLevel.entries.filter { (counts[it] ?: 0) > 0 }
+                
+                // Bar Data
+                val barEntries = activeLevels.mapIndexed { index, level ->
+                    BarEntry(index.toFloat(), counts[level]?.toFloat() ?: 0f)
+                }
+                activeLevels.forEachIndexed { index, level ->
+                    xLabels[index.toFloat()] = level.name.replace("_", " ")
+                }
+                
+                val barDataSet = BarDataSet(barEntries, "Frequency").apply {
+                    colors = activeLevels.map { LEVEL_COLORS[it.ordinal] }
+                    valueTextSize = 12f
+                    setDrawValues(true)
+                }
+                barData = BarData(barDataSet)
+
+                // Pie Data
+                val pieEntries = activeLevels.map { level ->
+                    PieEntry(counts[level]?.toFloat() ?: 0f, level.name.replace("_", " "))
+                }
+                
+                val pieDataSet = PieDataSet(pieEntries, "Distribution").apply {
+                    colors = activeLevels.map { LEVEL_COLORS[it.ordinal] }
+                    valueTextSize = 12f
+                    sliceSpace = 3f
+                    setDrawValues(true)
+                }
+                pieData = PieData(pieDataSet)
+            }
         }
 
         // 7-Day Rolling Average
-        if (config.showRollingAverage) {
+        if (config.showRollingAverage && config.mode != ChartMode.DISTRIBUTION) {
             val allForAverage = if (config.mode == ChartMode.DAILY) filtered else sequentialMeasurements
             if (allForAverage.isNotEmpty()) {
                 config.types.forEach { type ->
@@ -297,6 +354,8 @@ class ChartViewModel(
             sysLineData = if (sysDataSets.isNotEmpty()) LineData(sysDataSets.toList()) else null,
             diaLineData = if (diaDataSets.isNotEmpty()) LineData(diaDataSets.toList()) else null,
             pulseLineData = if (pulseDataSets.isNotEmpty()) LineData(pulseDataSets.toList()) else null,
+            distributionBarData = barData,
+            distributionPieData = pieData,
             startDate = minDate,
             selectedSlots = config.slots,
             selectedTypes = config.types,
@@ -305,7 +364,7 @@ class ChartViewModel(
             chartMode = config.mode,
             selectedDatePreset = config.preset,
             isConfigSheetOpen = config.isOpen,
-            errorMessageResId = if (sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
+            errorMessageResId = if (config.mode != ChartMode.DISTRIBUTION && sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
             slotTimes = slotTimes,
             xLabels = xLabels,
             showRiskZones = config.showRiskZones,
@@ -325,6 +384,13 @@ class ChartViewModel(
             Color.parseColor("#4CAF50"), // Green
             Color.parseColor("#FF9800"), // Orange
             Color.parseColor("#E91E63")  // Pink
+        )
+        private val LEVEL_COLORS = listOf(
+            Color.parseColor("#2E7D32"), // Normal - Green
+            Color.parseColor("#E6AC00"), // Elevated - Amber
+            Color.parseColor("#E67E22"), // Stage 1 - Orange
+            Color.parseColor("#C0392B"), // Stage 2 - Red
+            Color.parseColor("#8B0000")  // Crisis - Dark Red
         )
     }
 

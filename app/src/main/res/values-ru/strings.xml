@@ -94,6 +94,9 @@
     <string name="placeholder_date">ГГГГ-ММ-ДД</string>
     <string name="label_chart_mode_daily">Дневной</string>
     <string name="label_chart_mode_sequential">Последовательный</string>
+    <string name="label_chart_mode_distribution">Распределение</string>
+    <string name="label_distribution_bar_chart">Частота (Столбцы)</string>
+    <string name="label_distribution_pie_chart">Частота (Круговая)</string>
     <string name="label_date_preset_7d">Последние 7 дней</string>
     <string name="label_date_preset_30d">Последние 30 дней</string>
     <string name="label_date_preset_month">В этом месяце</string>

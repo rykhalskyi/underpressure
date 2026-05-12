@@ -94,6 +94,9 @@
     <string name="placeholder_date">JJJJ-MM-TT</string>
     <string name="label_chart_mode_daily">Täglich</string>
     <string name="label_chart_mode_sequential">Sequenziell</string>
+    <string name="label_chart_mode_distribution">Verteilung</string>
+    <string name="label_distribution_bar_chart">Häufigkeit (Balken)</string>
+    <string name="label_distribution_pie_chart">Häufigkeit (Kreis)</string>
     <string name="label_date_preset_7d">Letzte 7 Tage</string>
     <string name="label_date_preset_30d">Letzte 30 Tage</string>
     <string name="label_date_preset_month">Diesen Monat</string>

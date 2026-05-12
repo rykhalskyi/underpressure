@@ -56,7 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.ui.chart.components.BloodPressureBarChart
 import com.otakeessen.underpressure.ui.chart.components.BloodPressureChart
+import com.otakeessen.underpressure.ui.chart.components.BloodPressurePieChart
 import com.otakeessen.underpressure.ui.chart.components.ChartConfigurationSheet
 import kotlinx.coroutines.flow.collectLatest
 import java.time.Instant
@@ -79,6 +81,8 @@ fun ChartScreen(
     var captureSysBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var captureDiaBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var capturePulseBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var captureBarBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
+    var capturePieBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.events) {
@@ -128,10 +132,11 @@ fun ChartScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            val sysBitmap = captureSysBitmap?.invoke()
-                            val diaBitmap = captureDiaBitmap?.invoke()
-                            val pulseBitmap = capturePulseBitmap?.invoke()
-                            val bitmaps = listOfNotNull(sysBitmap, diaBitmap, pulseBitmap)
+                            val bitmaps = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                                listOfNotNull(captureBarBitmap?.invoke(), capturePieBitmap?.invoke())
+                            } else {
+                                listOfNotNull(captureSysBitmap?.invoke(), captureDiaBitmap?.invoke(), capturePulseBitmap?.invoke())
+                            }
                             
                             val finalBitmap = when {
                                 bitmaps.size >= 2 -> combineBitmaps(bitmaps)
@@ -141,7 +146,11 @@ fun ChartScreen(
                             
                             finalBitmap?.let { viewModel.onShareChart(it) }
                         },
-                        enabled = uiState.sysLineData != null || uiState.diaLineData != null || uiState.pulseLineData != null
+                        enabled = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                            uiState.distributionBarData != null
+                        } else {
+                            uiState.sysLineData != null || uiState.diaLineData != null || uiState.pulseLineData != null
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -169,7 +178,11 @@ fun ChartScreen(
                         onClick = { viewModel.setChartMode(mode) },
                         selected = uiState.chartMode == mode
                     ) {
-                        Text(stringResource(if (mode == ChartMode.DAILY) R.string.label_chart_mode_daily else R.string.label_chart_mode_sequential))
+                        Text(stringResource(when(mode) {
+                            ChartMode.DAILY -> R.string.label_chart_mode_daily
+                            ChartMode.SEQUENTIAL -> R.string.label_chart_mode_sequential
+                            ChartMode.DISTRIBUTION -> R.string.label_chart_mode_distribution
+                        }))
                     }
                 }
             }
@@ -184,7 +197,9 @@ fun ChartScreen(
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
-                } else if (uiState.errorMessageResId != null && uiState.sysLineData == null && uiState.diaLineData == null && uiState.pulseLineData == null) {
+                } else if (uiState.errorMessageResId != null && 
+                    uiState.sysLineData == null && uiState.diaLineData == null && uiState.pulseLineData == null &&
+                    uiState.distributionBarData == null) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
                             text = stringResource(uiState.errorMessageResId!!),
@@ -195,49 +210,84 @@ fun ChartScreen(
                 } else {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                         Column(modifier = Modifier.fillMaxSize()) {
-                            // Systolic Chart
-                            if (uiState.sysLineData != null) {
-                                BloodPressureChart(
-                                    lineData = uiState.sysLineData,
-                                    startDate = uiState.startDate,
-                                    xLabels = uiState.xLabels,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxWidth(),
-                                    showXAxisLabels = true,
-                                    onChartReady = { captureSysBitmap = it },
-                                    showRiskZones = uiState.showRiskZones
-                                )
-                            }
+                            if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                                // Bar Chart
+                                if (uiState.distributionBarData != null) {
+                                    Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.label_distribution_bar_chart),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                        )
+                                        BloodPressureBarChart(
+                                            barData = uiState.distributionBarData,
+                                            xLabels = uiState.xLabels,
+                                            modifier = Modifier.weight(1f).fillMaxWidth(),
+                                            onChartReady = { captureBarBitmap = it }
+                                        )
+                                    }
+                                }
 
-                            // Diastolic Chart
-                            if (uiState.diaLineData != null) {
-                                BloodPressureChart(
-                                    lineData = uiState.diaLineData,
-                                    startDate = uiState.startDate,
-                                    xLabels = uiState.xLabels,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxWidth(),
-                                    showXAxisLabels = true,
-                                    onChartReady = { captureDiaBitmap = it },
-                                    showRiskZones = uiState.showRiskZones
-                                )
-                            }
+                                // Pie Chart
+                                if (uiState.distributionPieData != null) {
+                                    Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.label_distribution_pie_chart),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                                        )
+                                        BloodPressurePieChart(
+                                            pieData = uiState.distributionPieData,
+                                            modifier = Modifier.weight(1f).fillMaxWidth(),
+                                            onChartReady = { capturePieBitmap = it }
+                                        )
+                                    }
+                                }
+                            } else {
+                                // Systolic Chart
+                                if (uiState.sysLineData != null) {
+                                    BloodPressureChart(
+                                        lineData = uiState.sysLineData,
+                                        startDate = uiState.startDate,
+                                        xLabels = uiState.xLabels,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxWidth(),
+                                        showXAxisLabels = true,
+                                        onChartReady = { captureSysBitmap = it },
+                                        showRiskZones = uiState.showRiskZones
+                                    )
+                                }
 
-                            // Pulse Chart
-                            if (uiState.pulseLineData != null) {
-                                BloodPressureChart(
-                                    lineData = uiState.pulseLineData,
-                                    startDate = uiState.startDate,
-                                    xLabels = uiState.xLabels,
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxWidth(),
-                                    showXAxisLabels = true,
-                                    onChartReady = { capturePulseBitmap = it },
-                                    showRiskZones = uiState.showRiskZones
-                                )
+                                // Diastolic Chart
+                                if (uiState.diaLineData != null) {
+                                    BloodPressureChart(
+                                        lineData = uiState.diaLineData,
+                                        startDate = uiState.startDate,
+                                        xLabels = uiState.xLabels,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxWidth(),
+                                        showXAxisLabels = true,
+                                        onChartReady = { captureDiaBitmap = it },
+                                        showRiskZones = uiState.showRiskZones
+                                    )
+                                }
+
+                                // Pulse Chart
+                                if (uiState.pulseLineData != null) {
+                                    BloodPressureChart(
+                                        lineData = uiState.pulseLineData,
+                                        startDate = uiState.startDate,
+                                        xLabels = uiState.xLabels,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxWidth(),
+                                        showXAxisLabels = true,
+                                        onChartReady = { capturePulseBitmap = it },
+                                        showRiskZones = uiState.showRiskZones
+                                    )
+                                }
                             }
                         }
                     }

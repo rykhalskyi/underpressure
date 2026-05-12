@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -236,6 +237,19 @@ fun MeasurementTableScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Generate Debug Data") },
+                            onClick = {
+                                showMenu = false
+                                viewModel.generateDebugData()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Build,
                                     contentDescription = null
                                 )
                             }
