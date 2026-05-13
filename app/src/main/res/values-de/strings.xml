@@ -104,6 +104,8 @@
     <string name="label_all_time">Gesamt</string>
     <string name="label_show_risk_zones">Risikozonen anzeigen</string>
     <string name="label_show_rolling_average">7-Tage-Durchschnitt anzeigen</string>
+    <string name="label_bar_frequency">Häufigkeit</string>
+    <string name="label_pie_distribution">Verteilung</string>
     <string name="label_show_slot_chips">Slot-Chips anzeigen</string>
     <string name="label_visual_features">Visuelle Funktionen</string>
     <string name="label_filter_summary">%1$s, %2$d Zeitfenster</string>

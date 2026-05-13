@@ -198,7 +198,7 @@ class ChartViewModelTest {
         val state = viewModel.uiState.filter { it.selectedTypes == setOf(MeasurementType.PULSE) }.first()
         val pulseDataSet = state.pulseLineData?.dataSets?.get(0) as com.github.mikephil.charting.data.LineDataSet
         
-        assertEquals(3f, pulseDataSet.lineWidth)
+        assertEquals(1.5f, pulseDataSet.lineWidth)
         assertTrue("Pulse line should be solid (no dash pattern)", pulseDataSet.dashPathEffect == null)
     }
 

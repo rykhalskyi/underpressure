@@ -203,11 +203,7 @@ class ChartViewModel(
                                 val colorVal = ChartColorUtil.getSlotColors().getOrElse(slotIndex) { Color.BLACK }
                                 color = colorVal
                                 setCircleColor(colorVal)
-                                lineWidth = when (type) {
-                                    MeasurementType.SYS -> 3f
-                                    MeasurementType.DIA -> 1.5f
-                                    MeasurementType.PULSE -> 3f
-                                }
+                                lineWidth = 1.5f
                                 mode = LineDataSet.Mode.LINEAR
                                 setDrawValues(false)
                             }
@@ -341,7 +337,7 @@ class ChartViewModel(
                             color = Color.argb(180, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
                             setCircleColor(Color.TRANSPARENT)
                             setDrawCircles(false)
-                            lineWidth = 2f
+                            lineWidth = 1.5f
                             mode = LineDataSet.Mode.CUBIC_BEZIER
                             enableDashedLine(10f, 10f, 0f)
                             setDrawValues(false)

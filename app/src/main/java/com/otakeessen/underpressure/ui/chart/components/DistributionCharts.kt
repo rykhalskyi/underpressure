@@ -1,5 +1,6 @@
 package com.otakeessen.underpressure.ui.chart.components
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color as AndroidColor
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
@@ -20,6 +22,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 
 @Composable
@@ -32,6 +35,10 @@ fun BloodPressureBarChart(
     val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val gridColor = MaterialTheme.colorScheme.outlineVariant.toArgb()
     val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
+    val context = LocalContext.current
+    val localizedLabels = remember(xLabels) {
+        buildLocalizedLabelMap(context, xLabels)
+    }
 
     Box(modifier = modifier) {
         AndroidView(
@@ -73,11 +80,12 @@ fun BloodPressureBarChart(
 
                 chart.xAxis.valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
-                        return xLabels[value] ?: value.toString()
+                        return localizedLabels[value] ?: xLabels[value] ?: value.toString()
                     }
                 }
                 
                 chart.data = barData
+                chart.data?.dataSets?.forEach { it.label = context.getString(R.string.label_bar_frequency) }
                 chart.invalidate()
             }
         )
@@ -92,6 +100,7 @@ fun BloodPressurePieChart(
 ) {
     val textColor = MaterialTheme.colorScheme.onSurface.toArgb()
     val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
+    val context = LocalContext.current
 
     Box(modifier = modifier) {
         AndroidView(
@@ -136,10 +145,37 @@ fun BloodPressurePieChart(
                 chart.setHoleColor(backgroundColor)
                 chart.setEntryLabelColor(textColor)
                 chart.legend.textColor = textColor
+
+                pieData?.dataSets?.forEach { ds ->
+                    val dataSet = ds as? com.github.mikephil.charting.data.PieDataSet
+                    dataSet?.values?.forEach { entry ->
+                        val localized = resolveLevelLabel(context, entry.label)
+                        entry.label = localized
+                    }
+                    ds.label = context.getString(R.string.label_pie_distribution)
+                }
                 
                 chart.data = pieData
                 chart.invalidate()
             }
         )
+    }
+}
+
+private fun resolveLevelLabel(context: Context, label: String): String {
+    val resId = when (label.replace(" ", "_")) {
+        "NORMAL" -> R.string.bp_level_normal
+        "ELEVATED" -> R.string.bp_level_elevated
+        "STAGE_1" -> R.string.bp_level_stage1
+        "STAGE_2" -> R.string.bp_level_stage2
+        "CRISIS" -> R.string.bp_level_crisis
+        else -> return label
+    }
+    return context.getString(resId)
+}
+
+private fun buildLocalizedLabelMap(context: Context, xLabels: Map<Float, String>): Map<Float, String> {
+    return xLabels.mapValues { (_, value) ->
+        resolveLevelLabel(context, value)
     }
 }

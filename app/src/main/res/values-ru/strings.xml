@@ -104,6 +104,8 @@
     <string name="label_all_time">За всё время</string>
     <string name="label_show_risk_zones">Показать зоны риска</string>
     <string name="label_show_rolling_average">Показать 7-дневное среднее</string>
+    <string name="label_bar_frequency">Частота</string>
+    <string name="label_pie_distribution">Распределение</string>
     <string name="label_show_slot_chips">Показать фишки слотов</string>
     <string name="label_visual_features">Визуальные функции</string>
     <string name="label_filter_summary">%1$s, %2$d слотов</string>
@@ -161,5 +163,5 @@
     <string name="guidance_title">Кажется, это не ваше время измерения</string>
     <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
-    <string name="warning_large_date_range">������ ������� �������� ���. ��� ����� �������� �� ���������� � ������������������.</string>
+    <string name="warning_large_date_range">Выбран большой диапазон дат. Читаемость и производительность могут быть затронуты.</string>
 </resources>
