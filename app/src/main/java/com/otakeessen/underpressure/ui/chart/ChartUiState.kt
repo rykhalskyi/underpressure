@@ -78,5 +78,7 @@ data class ChartUiState(
     val selectedDatePreset: DatePreset = DatePreset.ALL_TIME,
     val showRiskZones: Boolean = false,
     val showRollingAverage: Boolean = false,
-    val showInteractiveLegend: Boolean = false
+    val showInteractiveLegend: Boolean = false,
+    val slotColors: List<Int> = emptyList(),
+    val levelColors: List<Int> = emptyList()
 )

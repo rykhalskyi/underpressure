@@ -20,6 +20,8 @@ import com.github.mikephil.charting.data.PieEntry
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.ui.chart.util.ChartColorUtil
+import com.otakeessen.underpressure.ui.chart.util.ChartDataUtils
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,8 +34,6 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * ViewModel for the Blood Pressure Chart Screen.
@@ -55,6 +55,10 @@ class ChartViewModel(
     private val _showRiskZones = MutableStateFlow(true)
     private val _showRollingAverage = MutableStateFlow(false)
     private val _showInteractiveLegend = MutableStateFlow(true)
+    private val _slotColors = MutableStateFlow(listOf(Color.BLUE, Color.GREEN, Color.parseColor("#FF9800"), Color.parseColor("#E91E63")))
+    private val _levelColors = MutableStateFlow(listOf(Color.parseColor("#2E7D32"), Color.parseColor("#E6AC00"), Color.parseColor("#E67E22"), Color.parseColor("#C0392B"), Color.parseColor("#8B0000")))
+
+    // ... (rest of the file as before, but ensure configFlow and uiState use colors)
 
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
@@ -66,12 +70,11 @@ class ChartViewModel(
 
     private val configFlow = combine(
         combine(
-            _selectedSlots,
-            _selectedTypes,
-            _fromDate,
-            _toDate
-        ) { slots, types, from, to ->
-            ConfigBase(slots, types, from, to)
+            combine(_selectedSlots, _selectedTypes) { slots, types -> slots to types },
+            combine(_fromDate, _toDate, _slotColors) { from, to, sc -> Triple(from, to, sc) },
+            _levelColors
+        ) { (slots, types), (from, to, slotColors), levelColors ->
+            ConfigBase(slots, types, from, to, slotColors, levelColors)
         },
         combine(
             _chartMode,
@@ -91,7 +94,8 @@ class ChartViewModel(
         ConfigState(
             base.slots, base.types, base.fromDate, base.toDate,
             mode.chartMode, mode.datePreset, mode.isOpen,
-            visuals.showRiskZones, visuals.showRollingAverage, visuals.showInteractiveLegend
+            visuals.showRiskZones, visuals.showRollingAverage, visuals.showInteractiveLegend,
+            base.slotColors, base.levelColors
         )
     }
 
@@ -120,7 +124,9 @@ class ChartViewModel(
                 slotTimes = slotTimes,
                 showRiskZones = config.showRiskZones,
                 showRollingAverage = config.showRollingAverage,
-                showInteractiveLegend = config.showInteractiveLegend
+                showInteractiveLegend = config.showInteractiveLegend,
+                slotColors = config.slotColors,
+                levelColors = config.levelColors
             )
         }
 
@@ -149,7 +155,9 @@ class ChartViewModel(
                 slotTimes = slotTimes,
                 showRiskZones = config.showRiskZones,
                 showRollingAverage = config.showRollingAverage,
-                showInteractiveLegend = config.showInteractiveLegend
+                showInteractiveLegend = config.showInteractiveLegend,
+                slotColors = config.slotColors,
+                levelColors = config.levelColors
             )
         }
 
@@ -192,7 +200,7 @@ class ChartViewModel(
 
                             val label = "$slotTimeLabel - ${type.name}"
                             val dataSet = LineDataSet(entries, label).apply {
-                                val colorVal = SLOT_COLORS.getOrElse(slotIndex) { Color.BLACK }
+                                val colorVal = ChartColorUtil.getSlotColors().getOrElse(slotIndex) { Color.BLACK }
                                 color = colorVal
                                 setCircleColor(colorVal)
                                 lineWidth = when (type) {
@@ -248,11 +256,11 @@ class ChartViewModel(
                     val dataSet = LineDataSet(entries, label).apply {
                         // Use a single color for all points in sequential mode
                         val colorVal = if (type == MeasurementType.DIA) {
-                            SLOT_COLORS[1] // Green for Diastolic
+                            ChartColorUtil.getSlotColors()[1] // Green for Diastolic
                         } else if (type == MeasurementType.PULSE) {
-                            SLOT_COLORS[2] // Orange for Pulse
+                            ChartColorUtil.getSlotColors()[2] // Orange for Pulse
                         } else {
-                            SLOT_COLORS[0] // Blue for Systolic/Default
+                            ChartColorUtil.getSlotColors()[0] // Blue for Systolic/Default
                         }
                         
                         color = colorVal
@@ -295,7 +303,7 @@ class ChartViewModel(
                 }
                 
                 val barDataSet = BarDataSet(barEntries, "Frequency").apply {
-                    colors = activeLevels.map { LEVEL_COLORS[it.ordinal] }
+                    colors = activeLevels.map { ChartColorUtil.getLevelColors()[it.ordinal] }
                     valueTextSize = 12f
                     setDrawValues(true)
                 }
@@ -307,7 +315,7 @@ class ChartViewModel(
                 }
                 
                 val pieDataSet = PieDataSet(pieEntries, "Distribution").apply {
-                    colors = activeLevels.map { LEVEL_COLORS[it.ordinal] }
+                    colors = activeLevels.map { ChartColorUtil.getLevelColors()[it.ordinal] }
                     valueTextSize = 12f
                     sliceSpace = 3f
                     setDrawValues(true)
@@ -326,9 +334,9 @@ class ChartViewModel(
                         val avgLabel = "${type.name} (7-day avg)"
                         val avgDataSet = LineDataSet(avgEntries, avgLabel).apply {
                             val baseColor = when (type) {
-                                MeasurementType.SYS -> SLOT_COLORS[0]
-                                MeasurementType.DIA -> SLOT_COLORS[1]
-                                MeasurementType.PULSE -> SLOT_COLORS[2]
+                                MeasurementType.SYS -> ChartColorUtil.getSlotColors()[0]
+                                MeasurementType.DIA -> ChartColorUtil.getSlotColors()[1]
+                                MeasurementType.PULSE -> ChartColorUtil.getSlotColors()[2]
                             }
                             color = Color.argb(180, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
                             setCircleColor(Color.TRANSPARENT)
@@ -368,7 +376,9 @@ class ChartViewModel(
             xLabels = xLabels,
             showRiskZones = config.showRiskZones,
             showRollingAverage = config.showRollingAverage,
-            showInteractiveLegend = config.showInteractiveLegend
+            showInteractiveLegend = config.showInteractiveLegend,
+            slotColors = config.slotColors,
+            levelColors = config.levelColors
         )
     }.stateIn(
         scope = viewModelScope,
@@ -378,26 +388,15 @@ class ChartViewModel(
 
     companion object {
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        private val SLOT_COLORS = listOf(
-            Color.parseColor("#2196F3"), // Blue
-            Color.parseColor("#4CAF50"), // Green
-            Color.parseColor("#FF9800"), // Orange
-            Color.parseColor("#E91E63")  // Pink
-        )
-        private val LEVEL_COLORS = listOf(
-            Color.parseColor("#2E7D32"), // Normal - Green
-            Color.parseColor("#E6AC00"), // Elevated - Amber
-            Color.parseColor("#E67E22"), // Stage 1 - Orange
-            Color.parseColor("#C0392B"), // Stage 2 - Red
-            Color.parseColor("#8B0000")  // Crisis - Dark Red
-        )
     }
 
     private data class ConfigBase(
         val slots: Set<Int>,
         val types: Set<MeasurementType>,
         val fromDate: LocalDate?,
-        val toDate: LocalDate?
+        val toDate: LocalDate?,
+        val slotColors: List<Int>,
+        val levelColors: List<Int>
     )
 
     private data class ConfigMode(
@@ -422,7 +421,9 @@ class ChartViewModel(
         val isOpen: Boolean,
         val showRiskZones: Boolean,
         val showRollingAverage: Boolean,
-        val showInteractiveLegend: Boolean
+        val showInteractiveLegend: Boolean,
+        val slotColors: List<Int>,
+        val levelColors: List<Int>
     )
 
     private fun calculateRollingAverage(
@@ -431,40 +432,7 @@ class ChartViewModel(
         type: MeasurementType,
         mode: ChartMode
     ): List<Entry> {
-        val sorted = measurements
-            .filter { m ->
-                when (type) {
-                    MeasurementType.PULSE -> m.pulse > 0
-                    else -> true
-                }
-            }
-            .sortedBy { it.date }
-
-        if (sorted.isEmpty()) return emptyList()
-
-        if (mode == ChartMode.DAILY) {
-            val valueForDate = sorted.groupBy { LocalDate.parse(it.date, DATE_FORMATTER) }
-                .mapValues { entry ->
-                    entry.value.map { m ->
-                        when (type) {
-                            MeasurementType.SYS -> m.systolic.toFloat()
-                            MeasurementType.DIA -> m.diastolic.toFloat()
-                            MeasurementType.PULSE -> m.pulse.toFloat()
-                        }
-                    }
-                }
-            return ChartDataUtils.calculateDailyRollingAverage(valueForDate, minDate)
-        }
-
-        val entries = sorted.mapIndexed { index, m ->
-            val value = when (type) {
-                MeasurementType.SYS -> m.systolic.toFloat()
-                MeasurementType.DIA -> m.diastolic.toFloat()
-                MeasurementType.PULSE -> m.pulse.toFloat()
-            }
-            index.toFloat() to value
-        }
-        return ChartDataUtils.calculateSequentialRollingAverage(entries)
+        return ChartDataUtils.calculateRollingAverage(measurements, minDate, type, mode)
     }
 
     fun toggleSlot(slotIndex: Int) {

@@ -53,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -89,6 +90,20 @@ fun ChartScreen(
     var captureBarBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var capturePieBitmap by remember { mutableStateOf<(() -> Bitmap)?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
+
+    val slotColors = listOf(
+        MaterialTheme.colorScheme.primary.toArgb(),
+        MaterialTheme.colorScheme.secondary.toArgb(),
+        MaterialTheme.colorScheme.tertiary.toArgb(),
+        MaterialTheme.colorScheme.error.toArgb()
+    )
+    val levelColors = listOf(
+        MaterialTheme.colorScheme.primaryContainer.toArgb(),
+        MaterialTheme.colorScheme.secondaryContainer.toArgb(),
+        MaterialTheme.colorScheme.tertiaryContainer.toArgb(),
+        MaterialTheme.colorScheme.errorContainer.toArgb(),
+        MaterialTheme.colorScheme.onErrorContainer.toArgb()
+    )
 
     LaunchedEffect(viewModel.events) {
         viewModel.events.collectLatest { event ->
