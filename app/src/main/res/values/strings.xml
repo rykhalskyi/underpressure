@@ -32,9 +32,12 @@
     <string name="label_measurement_format">SYS/DIA @PULSE</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
+    <string name="error_syntax_format">Invalid format. Use: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Systolic must be higher than Diastolic</string>
+    <string name="error_range_out_of_human">Value outside human range (e.g., 40-300)</string>
     <string name="error_incorrect_measurements">Incorrect measurements</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
+    <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
     <string name="hypertension_warning">Hypertension Warning</string>
 
     <!-- BP Levels -->
@@ -177,6 +180,7 @@
 
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Anytime</string>
+    <string name="label_anytime_reading">Anytime Reading</string>
     <string name="label_anytime_count">%1$d anytime</string>
     <string name="hint_anytime_confirmation">It\'s close to %1$s. Add as anytime reading?</string>
     <string name="button_anytime_yes">Yes, Anytime</string>

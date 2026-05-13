@@ -32,9 +32,12 @@
     <string name="label_measurement_format">SYC/ROZ @TĘTNO</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Nieprawidłowy format. Użyj: SYC/ROZ @TĘTNO</string>
+    <string name="error_syntax_format">Nieprawidłowy format. Użyj: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Ciśnienie skurczowe musi być wyższe niż rozkurczowe</string>
+    <string name="error_range_out_of_human">Wartość spoza zakresu ludzkiego (np. 40-300)</string>
     <string name="error_incorrect_measurements">Nieprawidłowe wymiary</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Miejsce %2$d</string>
+    <string name="dialog_measurement_slot_info">Miejsce %1$d (%2$s)</string>
     <string name="hypertension_warning">Ostrzeżenie o nadciśnieniu</string>
 
     <!-- Search Dialog -->
@@ -176,6 +179,7 @@
 
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Dodatkowe</string>
+    <string name="label_anytime_reading">Pomiar dodatkowy</string>
     <string name="label_anytime_count">%1$d dodatkowych</string>
     <string name="hint_anytime_confirmation">Blisko %1$s. Dodać jako dodatkowy pomiar?</string>
     <string name="button_anytime_yes">Tak, dodatkowy</string>

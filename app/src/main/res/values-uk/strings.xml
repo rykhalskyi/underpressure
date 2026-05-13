@@ -32,9 +32,12 @@
     <string name="label_measurement_format">СИС/ДІА @ПУЛЬС</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
+    <string name="error_syntax_format">Невірний формат. Використовуйте: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Систолічний тиск має бути вищим за діастолічний</string>
+    <string name="error_range_out_of_human">Значення поза межами норми (наприклад, 40-300)</string>
     <string name="error_incorrect_measurements">Некоректні вимірювання</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
+    <string name="dialog_measurement_slot_info">Слот %1$d (%2$s)</string>
     <string name="hypertension_warning">Попередження про гіпертонію</string>
 
     <!-- Search Dialog -->
@@ -176,6 +179,7 @@
 
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Позапланові</string>
+    <string name="label_anytime_reading">Позапланове вимірювання</string>
     <string name="label_anytime_count">%1$d позапланових</string>
     <string name="hint_anytime_confirmation">Близько до %1$s. Додати як позапланове вимірювання?</string>
     <string name="button_anytime_yes">Так, позапланово</string>

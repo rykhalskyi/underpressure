@@ -32,9 +32,12 @@
     <string name="label_measurement_format">SYS/DIA @PULS</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Ungültiges Format. Verwenden Sie: SYS/DIA @PULS</string>
+    <string name="error_syntax_format">Ungültiges Format. Verwenden Sie: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Der systolische Wert muss höher als der diastolische sein</string>
+    <string name="error_range_out_of_human">Wert außerhalb des menschlichen Bereichs (z. B. 40-300)</string>
     <string name="error_incorrect_measurements">Fehlerhafte Messwerte</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
+    <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
     <string name="hypertension_warning">Bluthochdruck-Warnung</string>
 
     <!-- Search Dialog -->
@@ -176,6 +179,7 @@
 
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Unterwegs</string>
+    <string name="label_anytime_reading">Unterwegs-Messung</string>
     <string name="label_anytime_count">%1$d unterwegs</string>
     <string name="hint_anytime_confirmation">Nah an %1$s. Als unterwegs-Messung hinzufügen?</string>
     <string name="button_anytime_yes">Ja, unterwegs</string>

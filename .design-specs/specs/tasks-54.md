@@ -1,6 +1,6 @@
 # Atomic Tasks - Issue 54: Improve Measurement Entry Dialog UI/UX
 
-## Task 1. Update Domain Validation Logic
+## Task 1. Update Domain Validation Logic [DONE]
 - **File**: `app/src/main/java/com/otakeessen/underpressure/domain/validation/BloodPressureValidator.kt`
 - **Description**: Refactor `ValidationResult.Error` to include specific error types (`InvalidFormat`, `LogicalError`, `RangeError`) and update `BloodPressureValidator.validate()` to return them.
 - **Leverage**: `BloodPressureValidator.kt`
@@ -14,7 +14,7 @@
   Restrictions: Pure Kotlin, no Android dependencies.
   Success: `validate()` returns specific error types for different failure scenarios.
 
-## Task 2. Add Localized Strings
+## Task 2. Add Localized Strings [DONE]
 - **File**: `app/src/main/res/values/strings.xml`
 - **Description**: Add new strings for refined error messages and update the slot info string.
 - **Leverage**: `strings.xml`
@@ -27,7 +27,7 @@
   - Update `dialog_measurement_slot_info` to `%1$s - Slot %2$d (%3$s)` where %3$s is the time.
   Success: All required strings are present in `strings.xml`.
 
-## Task 3. Update Dialog State Management
+## Task 3. Update Dialog State Management [DONE]
 - **Files**: `app/src/main/java/com/otakeessen/underpressure/ui/table/TableUiState.kt`, `app/src/main/java/com/otakeessen/underpressure/ui/table/MeasurementTableViewModel.kt`
 - **Description**: Add `slotTime` to `MeasurementDialogState` and populate it in `MeasurementTableViewModel`.
 - **Leverage**: `TableUiState.kt`, `MeasurementTableViewModel.kt`
@@ -39,7 +39,7 @@
   3) Pass the fetched `slotTime` to `_dialogState.update`.
   Success: `MeasurementDialogState` contains the correct slot time when the dialog opens.
 
-## Task 4. Implement ClassificationStatusPill
+## Task 4. Implement ClassificationStatusPill [DONE]
 - **File**: `app/src/main/java/com/otakeessen/underpressure/ui/table/components/MeasurementEditDialog.kt`
 - **Description**: Create the `ClassificationStatusPill` component and integrate it into the dialog.
 - **Leverage**: `MeasurementEditDialog.kt`, `BloodPressureLevel.kt`
@@ -51,7 +51,7 @@
   3) Integrate this pill into the dialog layout, ensuring it updates as the user types a valid measurement.
   Success: A visual pill appears when the input is valid, reflecting the health classification.
 
-## Task 5. Redesign Dialog Layout and Spacing
+## Task 5. Redesign Dialog Layout and Spacing [DONE]
 - **File**: `app/src/main/java/com/otakeessen/underpressure/ui/table/components/MeasurementEditDialog.kt`
 - **Description**: Improve the visual hierarchy and spacing of the dialog as per requirements.
 - **Leverage**: `MeasurementEditDialog.kt`
@@ -64,7 +64,7 @@
   4) Update `OutlinedTextField`: remove classification-based border color; reserve Red for `isError`. Use the new localized error strings in `supportingText`.
   Success: Dialog has improved hierarchy, spacing, and clear error messaging.
 
-## Task 6. Update Unit Tests
+## Task 6. Update Unit Tests [DONE]
 - **File**: `app/src/test/java/com/otakeessen/underpressure/domain/validation/BloodPressureValidatorTest.kt`
 - **Description**: Verify the new specific error types in the validator.
 - **Leverage**: `BloodPressureValidatorTest.kt`

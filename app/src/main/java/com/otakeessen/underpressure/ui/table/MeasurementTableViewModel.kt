@@ -520,11 +520,19 @@ class MeasurementTableViewModel(
             else "${it.systolic}/${it.diastolic}"
         } ?: ""
 
+        val slotTime = if (isScheduled) {
+            val settings = settingsRepository.getSettingsSync()
+            settings?.slotTimes?.getOrNull(originalSlotIndex) ?: "??:??"
+        } else {
+            LocalTime.now(clock).format(timeFormatter)
+        }
+
         _dialogState.update {
             it.copy(
                 isOpen = true,
                 date = date,
                 slotIndex = if (isFlexibleMode) -1 else originalSlotIndex,
+                slotTime = slotTime,
                 initialValue = initialValue,
                 inputValue = TextFieldValue(initialValue, TextRange(initialValue.length)),
                 existingMeasurementId = existing?.id,

@@ -99,26 +99,38 @@ class BloodPressureValidatorTest {
     }
 
     @Test
-    fun `validate with sys less than dia returns IncorrectMeasurements Error`() {
+    fun `validate with sys less than dia returns LogicalError`() {
         val result = validator.validate("80/120")
-        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+        assertTrue(result is ValidationResult.Error.LogicalError)
     }
 
     @Test
-    fun `validate with sys out of range returns IncorrectMeasurements Error`() {
+    fun `validate with equal sys and dia returns LogicalError`() {
+        val result = validator.validate("120/120")
+        assertTrue(result is ValidationResult.Error.LogicalError)
+    }
+
+    @Test
+    fun `validate with sys out of range returns RangeError`() {
         val result = validator.validate("30/20")
-        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+        assertTrue(result is ValidationResult.Error.RangeError)
     }
 
     @Test
-    fun `validate with dia out of range returns IncorrectMeasurements Error`() {
+    fun `validate with dia out of range returns RangeError`() {
         val result = validator.validate("120/10")
-        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+        assertTrue(result is ValidationResult.Error.RangeError)
     }
 
     @Test
-    fun `validate with pulse out of range returns IncorrectMeasurements Error`() {
+    fun `validate with pulse out of range returns RangeError`() {
         val result = validator.validate("120/80 20")
-        assertTrue(result is ValidationResult.Error.IncorrectMeasurements)
+        assertTrue(result is ValidationResult.Error.RangeError)
+    }
+
+    @Test
+    fun `validate with high sys out of range returns RangeError`() {
+        val result = validator.validate("500/80")
+        assertTrue(result is ValidationResult.Error.RangeError)
     }
 }

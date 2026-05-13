@@ -11,6 +11,7 @@ data class MeasurementDialogState(
     val isOpen: Boolean = false,
     val date: String = "",
     val slotIndex: Int = 0,
+    val slotTime: String = "",
     val initialValue: String = "",
     val inputValue: TextFieldValue = TextFieldValue(""),
     val existingMeasurementId: Long? = null,
