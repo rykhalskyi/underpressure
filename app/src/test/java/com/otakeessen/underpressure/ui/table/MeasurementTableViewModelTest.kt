@@ -94,8 +94,8 @@ class MeasurementTableViewModelTest {
     }
 
     @Test
-    fun `FAB is always enabled and opens scheduled dialog when slot within 15 min`() = runTest {
-        // Current time is 12:00. Slot is at 12:10 (within +15 min).
+    fun `FAB shows hint when within 15 min and slot has existing reading`() = runTest {
+        // Current time is 12:00. Slot is at 12:10 (within +15 min), with existing data.
         val settings = AppSettingsEntity(
             slotTimes = listOf("12:10"),
             slotActiveFlags = listOf(true)
@@ -110,23 +110,60 @@ class MeasurementTableViewModelTest {
         
         val state = viewModel.uiState.first { !it.isLoading }
 
+        assertFalse(state.isFabEnabled)
+        assertNull(state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
+        assertEquals("edit_slot|1", state.fabHint)
+    }
+
+    @Test
+    fun `FAB opens direct anytime when more than 30 min BEFORE slot`() = runTest {
+        // Current time is 12:00. Slot is at 12:35 (35 min in future, >30 min BEFORE).
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("12:35"),
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
         assertTrue(state.isFabEnabled)
-        assertEquals(0, state.fabTargetSlotIndex)
+        assertEquals(-1, state.fabTargetSlotIndex)
         assertFalse(state.isGuidanceRequired)
     }
 
     @Test
-    fun `FAB shows anytime confirmation when between 15-30 min from nearest slot`() = runTest {
-        // it is 10.10. Nearest slot is 09:50 (20 min diff, within ±30 min).
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
+    fun `FAB opens direct anytime when more than 15 min AFTER slot`() = runTest {
+        // Current time is 12:20. Slot is at 12:00 (20 min past, >15 min AFTER).
+        val clock1220 = Clock.fixed(Instant.parse("2023-10-27T12:20:00Z"), ZoneId.of("UTC"))
         val settings = AppSettingsEntity(
-            slotTimes = listOf("09:50", "15:00", "18:00", "22:00"),
+            slotTimes = listOf("12:00", "18:00", "22:00"),
             slotActiveFlags = listOf(true, false, false, false)
         )
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1220, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        assertTrue(state.isFabEnabled)
+        assertEquals(-1, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
+    }
+
+    @Test
+    fun `FAB shows anytime confirmation when between 15-30 min BEFORE slot`() = runTest {
+        // Current time is 12:00. Slot is at 12:20 (20 min in the future, within 15-30 min BEFORE).
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("12:20"),
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         val state = viewModel.uiState.first { !it.isLoading }
         assertTrue(state.isFabEnabled)

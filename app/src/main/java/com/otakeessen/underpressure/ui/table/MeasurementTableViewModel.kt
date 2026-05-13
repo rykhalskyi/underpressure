@@ -249,16 +249,28 @@ class MeasurementTableViewModel(
             when {
                 absDiff <= SLOT_WINDOW_MINUTES -> {
                     // ±15 min: Scheduled mode for this slot
-                    fabTargetSlotIndex = originalIndex
+                    // If slot already has a reading, show edit hint instead
+                    val hasExistingReading = scheduledMeasurements.any {
+                        it.date == todayStr && it.slotIndex == originalIndex
+                    }
+                    if (hasExistingReading) {
+                        fabHint = "edit_slot|${originalIndex + 1}"
+                    } else {
+                        fabTargetSlotIndex = originalIndex
+                    }
                 }
-                absDiff <= SLOT_WINDOW_MINUTES * 2 -> {
-                    // ±30 min: Ask user for anytime confirmation
+                diffMinutes > SLOT_WINDOW_MINUTES -> {
+                    // More than 15 min AFTER slot: Direct anytime mode
+                    fabTargetSlotIndex = -1
+                }
+                diffMinutes < 0 && absDiff <= SLOT_WINDOW_MINUTES * 2 -> {
+                    // 15-30 min BEFORE slot: Show confirmation dialog
                     fabTargetSlotIndex = originalIndex
                     isGuidanceRequired = true
                 }
                 else -> {
-                    // > ±30 min: Direct anytime mode
-                    fabTargetSlotIndex = -1 // sentinel for anytime
+                    // >30 min before or any other: Direct anytime mode
+                    fabTargetSlotIndex = -1
                 }
             }
         } else {
