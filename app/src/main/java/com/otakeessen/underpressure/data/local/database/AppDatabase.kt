@@ -93,6 +93,7 @@ abstract class AppDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE measurements ADD COLUMN isFlexible INTEGER NOT NULL DEFAULT 0")
                 db.execSQL("ALTER TABLE measurements ADD COLUMN timestamp INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("UPDATE measurements SET timestamp = createdAt")
             }
         }
 

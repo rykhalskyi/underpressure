@@ -228,7 +228,7 @@ class ChartViewModel(
             // Logic for SEQUENTIAL mode (One plot for all slots, including anytime readings)
             sequentialMeasurements = filtered
                 .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
-                .sortedWith(compareBy({ it.date }, { it.slotIndex }))
+                .sortedWith(compareBy({ it.date }, { it.timestamp }))
             
             sequentialMeasurements.forEachIndexed { index, m ->
                 val date = LocalDate.parse(m.date, DATE_FORMATTER)
