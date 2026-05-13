@@ -92,6 +92,23 @@
     <string name="error_invalid_date_format">Ungültiges Datumsformat</string>
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
     <string name="placeholder_date">JJJJ-MM-TT</string>
+    <string name="label_chart_mode_daily">Täglich</string>
+    <string name="label_chart_mode_sequential">Sequenziell</string>
+    <string name="label_chart_mode_distribution">Verteilung</string>
+    <string name="label_distribution_bar_chart">Häufigkeit (Balken)</string>
+    <string name="label_distribution_pie_chart">Häufigkeit (Kreis)</string>
+    <string name="label_date_preset_7d">Letzte 7 Tage</string>
+    <string name="label_date_preset_30d">Letzte 30 Tage</string>
+    <string name="label_date_preset_month">Diesen Monat</string>
+    <string name="label_date_preset_custom">Benutzerdefiniert</string>
+    <string name="label_all_time">Gesamt</string>
+    <string name="label_show_risk_zones">Risikozonen anzeigen</string>
+    <string name="label_show_rolling_average">7-Tage-Durchschnitt anzeigen</string>
+    <string name="label_bar_frequency">Häufigkeit</string>
+    <string name="label_pie_distribution">Verteilung</string>
+    <string name="label_show_slot_chips">Slot-Chips anzeigen</string>
+    <string name="label_visual_features">Visuelle Funktionen</string>
+    <string name="label_filter_summary">%1$s, %2$d Zeitfenster</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Version: %1$s</string>
     <string name="header_about">Über</string>
@@ -146,5 +163,5 @@
     <string name="guidance_title">Das scheint nicht deine Messzeit zu sein</string>
     <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
-    <string name="hint_cannot_create_slot">Slot kann jetzt nicht erstellt werden. Er muss mindestens 30 Minuten von benachbarten Slots entfernt sein. Nutze den nächsten Slot um %1$s.</string>
+    <string name="warning_large_date_range">Gro?er Datumsbereich ausgewahlt. Lesbarkeit und Leistung konnen beeintrachtigt sein.</string>
 </resources>

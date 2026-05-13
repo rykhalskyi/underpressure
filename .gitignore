@@ -42,3 +42,5 @@ replay_pid*
 local.properties
 
 .gemini/settings.json
+.idea/
+app/release/

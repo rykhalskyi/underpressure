@@ -92,6 +92,23 @@
     <string name="error_invalid_date_format">Неверный формат даты</string>
     <string name="error_from_after_to">Дата «С» не может быть позже даты «По»</string>
     <string name="placeholder_date">ГГГГ-ММ-ДД</string>
+    <string name="label_chart_mode_daily">Дневной</string>
+    <string name="label_chart_mode_sequential">Последовательный</string>
+    <string name="label_chart_mode_distribution">Распределение</string>
+    <string name="label_distribution_bar_chart">Частота (Столбцы)</string>
+    <string name="label_distribution_pie_chart">Частота (Круговая)</string>
+    <string name="label_date_preset_7d">Последние 7 дней</string>
+    <string name="label_date_preset_30d">Последние 30 дней</string>
+    <string name="label_date_preset_month">В этом месяце</string>
+    <string name="label_date_preset_custom">Пользовательский</string>
+    <string name="label_all_time">За всё время</string>
+    <string name="label_show_risk_zones">Показать зоны риска</string>
+    <string name="label_show_rolling_average">Показать 7-дневное среднее</string>
+    <string name="label_bar_frequency">Частота</string>
+    <string name="label_pie_distribution">Распределение</string>
+    <string name="label_show_slot_chips">Показать фишки слотов</string>
+    <string name="label_visual_features">Визуальные функции</string>
+    <string name="label_filter_summary">%1$s, %2$d слотов</string>
     <!-- About Section -->
     <string name="onboarding_version_label">Версия: %1$s</string>
     <string name="header_about">О приложении</string>
@@ -146,5 +163,5 @@
     <string name="guidance_title">Кажется, это не ваше время измерения</string>
     <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
-    <string name="hint_cannot_create_slot">Не удается создать слот сейчас. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
+    <string name="warning_large_date_range">Выбран большой диапазон дат. Читаемость и производительность могут быть затронуты.</string>
 </resources>

@@ -13,7 +13,8 @@ import java.time.format.DateTimeFormatter
 
 class BloodPressureMarkerView(
     private val chart: Chart<*>,
-    private val startDate: LocalDate?
+    private val startDate: LocalDate?,
+    private val xLabels: Map<Float, String> = emptyMap()
 ) : MarkerView(chart.context, R.layout.chart_marker_view) {
 
     private val tvDate: TextView = findViewById(R.id.tv_date)
@@ -21,20 +22,25 @@ class BloodPressureMarkerView(
     private val dateFormatter = DateTimeFormatter.ofPattern("MMM dd")
 
     override fun refreshContent(e: Entry, highlight: Highlight) {
-        val dateText = startDate?.plusDays(e.x.toLong())?.format(dateFormatter) ?: e.x.toString()
+        val dateText = xLabels[e.x]?.replace("\n", " ")
+            ?: startDate?.plusDays(e.x.toLong())?.format(dateFormatter) 
+            ?: e.x.toString()
         
         val sb = StringBuilder()
         val data = chart.data
         if (data != null) {
             val selectedDataSet = data.getDataSetByIndex(highlight.dataSetIndex)
             val selectedLabel = selectedDataSet.label ?: ""
-            // Extract slot time from label "HH:mm - TYPE"
-            val slotTime = selectedLabel.split(" - ").firstOrNull() ?: ""
+            
+            // In sequential mode, we don't have slot prefixes in labels, 
+            // and each X is a unique measurement point.
+            val isSequential = xLabels.isNotEmpty()
+            val slotTime = if (isSequential) null else selectedLabel.split(" - ").firstOrNull() ?: ""
             
             for (i in 0 until data.dataSetCount) {
                 val dataSet = data.getDataSetByIndex(i)
                 val label = dataSet.label ?: ""
-                if (label.startsWith(slotTime)) {
+                if (slotTime == null || label.startsWith(slotTime)) {
                     val entryAtX = dataSet.getEntryForXValue(e.x, Float.NaN)
                     if (entryAtX != null && entryAtX.x == e.x) {
                         if (sb.isNotEmpty()) sb.append("\n")
@@ -45,7 +51,7 @@ class BloodPressureMarkerView(
                 }
             }
             
-            tvDate.text = "$dateText $slotTime"
+            tvDate.text = if (isSequential) dateText else "$dateText $slotTime"
         } else {
             tvDate.text = dateText
         }
@@ -59,4 +65,3 @@ class BloodPressureMarkerView(
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())
     }
 }
-
