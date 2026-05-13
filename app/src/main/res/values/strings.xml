@@ -150,8 +150,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">UnderPressure tracker</string>
     <string name="onboarding_slide1_description">Underpressure is a simple and private blood pressure and pulse tracker that keeps all your data only on your phone. No servers, no data collection, no ads, no payments.</string>
-    <string name="onboarding_slide2_caption">Up to 4 slots each day</string>
-    <string name="onboarding_slide2_description">You can add up to 4 time slots for measurement. Data input is possible within +/- 15 minutes from each. You can setup slots in the Settings or by simply tapping on the time in the table header.</string>
+    <string name="onboarding_slide2_caption">Scheduled &amp; Anytime Readings</string>
+    <string name="onboarding_slide2_description">Set up to 4 time slots for scheduled readings, or log readings anytime using the + button. Switch between Scheduled and All views to see your data.</string>
     <string name="onboarding_slide3_caption">Measurements Chart</string>
     <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
     <string name="onboarding_slide4_caption">Share Data</string>
@@ -165,4 +165,19 @@
     <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?\n\nYou can always change the slot time in Settings or by simply tapping on the time in the table header.</string>
     <string name="hint_edit_slot">You can change value of slot %1$d by tapping on it.</string>
     <string name="hint_cannot_create_slot">Cannot create slot now. It must be at least 30 minutes away from neighbor slots. Use the next slot at %1$s.</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Scheduled</string>
+    <string name="view_all">All</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Systolic</string>
+    <string name="chart_legend_diastolic">Diastolic</string>
+    <string name="chart_legend_pulse">Pulse</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Anytime</string>
+    <string name="label_anytime_count">%1$d anytime</string>
+    <string name="hint_anytime_confirmation">It\'s close to %1$s. Add as anytime reading?</string>
+    <string name="button_anytime_yes">Yes, Anytime</string>
 </resources>

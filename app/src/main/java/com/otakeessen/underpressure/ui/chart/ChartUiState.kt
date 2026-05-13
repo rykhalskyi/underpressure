@@ -80,5 +80,6 @@ data class ChartUiState(
     val showRollingAverage: Boolean = false,
     val showInteractiveLegend: Boolean = false,
     val slotColors: List<Int> = emptyList(),
-    val levelColors: List<Int> = emptyList()
+    val levelColors: List<Int> = emptyList(),
+    val typeLabelResIds: Map<MeasurementType, Int> = emptyMap()
 )

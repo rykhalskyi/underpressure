@@ -57,41 +57,10 @@ fun MeasurementEditDialog(
     guidelines: BpGuidelines,
     onValueChange: (TextFieldValue) -> Unit,
     onSave: (String) -> Unit,
-    onAcceptGuidance: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (!state.isOpen) return
-
-    if (state.isGuidanceVisible) {
-        AlertDialog(
-            modifier = modifier,
-            onDismissRequest = onDismiss,
-            title = {
-                Text(text = stringResource(R.string.guidance_title))
-            },
-            text = {
-                Text(
-                    text = stringResource(
-                        R.string.guidance_message,
-                        state.slotIndex + 1,
-                        state.suggestedSlotTime
-                    )
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = onAcceptGuidance) {
-                    Text(stringResource(R.string.button_ok))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.button_cancel))
-                }
-            }
-        )
-        return
-    }
 
     val textFieldValue = state.inputValue
     val textValue = textFieldValue.text
@@ -151,8 +120,15 @@ fun MeasurementEditDialog(
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = stringResource(R.string.dialog_measurement_slot_info, state.date, state.slotIndex + 1),
+                    text = if (state.isFlexibleMode) {
+                        val nowFormatted = java.time.LocalTime.now()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
+                        "Anytime Reading — $nowFormatted"
+                    } else {
+                        stringResource(R.string.dialog_measurement_slot_info, state.date, state.slotIndex + 1)
+                    },
                     style = MaterialTheme.typography.bodySmall,
+                    fontWeight = if (state.isFlexibleMode) FontWeight.Bold else FontWeight.Normal,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
 

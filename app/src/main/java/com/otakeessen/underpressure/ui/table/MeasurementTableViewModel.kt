@@ -57,6 +57,7 @@ class MeasurementTableViewModel(
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
     private val _isSummaryVisible = MutableStateFlow(true)
+    private val _isAllView = MutableStateFlow(false)
     private val _manualError = MutableStateFlow<String?>(null)
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
@@ -98,6 +99,7 @@ class MeasurementTableViewModel(
         settingsRepository.getSettings(),
         _dialogState,
         _isSummaryVisible,
+        _isAllView,
         _expandedYears,
         _expandedMonths,
         _manualError,
@@ -108,9 +110,10 @@ class MeasurementTableViewModel(
         val settings = args[1] as AppSettingsEntity?
         val dialogState = args[2] as MeasurementDialogState
         val isSummaryVisible = args[3] as Boolean
-        val expandedYears = args[4] as Set<Int>
-        val expandedMonths = args[5] as Set<String>
-        val manualError = args[6] as String?
+        val isAllView = args[4] as Boolean
+        val expandedYears = args[5] as Set<Int>
+        val expandedMonths = args[6] as Set<String>
+        val manualError = args[7] as String?
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
@@ -123,7 +126,10 @@ class MeasurementTableViewModel(
         val headers = allTimesStr.filterIndexed { index, _ -> activeFlags.getOrElse(index) { false } }
         val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
         
-        val summarizedItems = measurements
+        // Separate scheduled (slot-bound) and flexible (anytime) measurements
+        val (scheduledMeasurements, flexibleMeasurements) = measurements.partition { !it.isFlexible }
+
+        val summarizedItems = scheduledMeasurements
             .groupBy { it.date }
             .map { (date, dailyMeasurements) ->
                 val activeSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
@@ -155,6 +161,26 @@ class MeasurementTableViewModel(
                 )
             }
             .sortedByDescending { it.date }
+
+        // Group flexible measurements by date for anytime sections
+        val flexibleByDate = flexibleMeasurements
+            .groupBy { it.date }
+            .mapValues { (_, readings) ->
+                readings.sortedBy { it.timestamp }.map { entity ->
+                    val timeFormatted = if (entity.timestamp > 0) {
+                        val localTime = java.time.Instant.ofEpochMilli(entity.timestamp)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalTime()
+                        localTime.format(timeFormatter)
+                    } else "??:??"
+                    AnytimeReadingData(
+                        timeStr = timeFormatted,
+                        systolic = entity.systolic,
+                        diastolic = entity.diastolic,
+                        pulse = entity.pulse
+                    )
+                }
+            }
 
         val displayItems = mutableListOf<TableItem>()
         val groupedByYear = summarizedItems.groupBy { LocalDate.parse(it.date, dateFormatter).year }
@@ -188,84 +214,56 @@ class MeasurementTableViewModel(
                     if (isMonthExpanded) {
                         monthMeasurements.forEach { summaryItem ->
                             displayItems.add(TableItem.DayRow(summaryItem))
+                            // Add anytime section for this date if in All view and any flexible readings exist
+                            if (isAllView) {
+                                val anytimeReadings = flexibleByDate[summaryItem.date]
+                                if (!anytimeReadings.isNullOrEmpty()) {
+                                    displayItems.add(TableItem.AnytimeSection(summaryItem.date, anytimeReadings))
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        // FAB & Guidance Logic
-        val todayMeasurements = measurements.filter { it.date == todayStr }
-        val modifiedFlags = settings?.slotModifiedFlags ?: listOf(false, false, false, false)
-        val hasUnmodifiedSlot = modifiedFlags.any { !it }
-        
-        // 1. Check for slot within +/- 15 minutes
-        val slotWindows = activeIndices.map { originalIndex ->
+        // New FAB Logic: determine nearest slot and decide mode
+        val slotDistances = activeIndices.map { originalIndex ->
             val slotTime = LocalTime.parse(allTimesStr[originalIndex], timeFormatter)
             val diffMinutes = Duration.between(slotTime, now).toMinutes().toDouble()
-            val alreadyExists = todayMeasurements.any { it.slotIndex == originalIndex }
-            Triple(originalIndex, diffMinutes, alreadyExists)
+            originalIndex to diffMinutes
         }
 
-        val closestInWindow = slotWindows
-            .filter { abs(it.second) <= SLOT_WINDOW_MINUTES }
-            .sortedBy { 
-                // Prefer past/exact, then closest
-                if (it.second >= 0) it.second else 100.0 + abs(it.second) 
-            }
+        val nearestSlot = slotDistances
+            .sortedBy { abs(it.second) }
             .firstOrNull()
 
         var fabTargetSlotIndex: Int? = null
         var isGuidanceRequired = false
         var fabHint: String? = null
-        var suggestedSlotTime = ""
 
-        if (closestInWindow != null) {
-            val (originalIndex, _, alreadyExists) = closestInWindow
-            if (!alreadyExists) {
-                // Rule 1: Empty slot +/- 15 minutes -> Add
-                fabTargetSlotIndex = originalIndex
-            } else {
-                // Rule 2: Set slot +/- 15 minutes -> Hint
-                fabHint = "edit_slot|${originalIndex + 1}"
-            }
-        } else if (hasUnmodifiedSlot) {
-            // Rule 3: No slot +/- 15 mins but unmodified exists -> Guidance
-            val firstUnmodified = modifiedFlags.indexOfFirst { !it }
-            
-            // Calculate suggested time with 30-min buffer from active neighbors
-            val activeTimes = activeIndices.map { LocalTime.parse(allTimesStr[it], timeFormatter) }
-            val sortedActive = activeTimes.sorted()
-            val before = sortedActive.filter { it <= now }.lastOrNull()
-            val after = sortedActive.filter { it > now }.firstOrNull()
-            
-            var suggested = now
-            var conflictNeighbor: LocalTime? = null
-            
-            if (before != null && Duration.between(before, suggested).toMinutes() < MIN_SLOT_DIFFERENCE_MINUTES) {
-                suggested = before.plusMinutes(MIN_SLOT_DIFFERENCE_MINUTES.toLong())
-            }
-            
-            if (after != null && Duration.between(suggested, after).toMinutes() < MIN_SLOT_DIFFERENCE_MINUTES) {
-                val newSuggested = after.minusMinutes(MIN_SLOT_DIFFERENCE_MINUTES.toLong())
-                // Verify it doesn't conflict with 'before' now
-                if (before != null && Duration.between(before, newSuggested).toMinutes() < MIN_SLOT_DIFFERENCE_MINUTES) {
-                    conflictNeighbor = after
-                } else {
-                    suggested = newSuggested
+        if (nearestSlot != null) {
+            val (originalIndex, diffMinutes) = nearestSlot
+            val absDiff = abs(diffMinutes)
+
+            when {
+                absDiff <= SLOT_WINDOW_MINUTES -> {
+                    // ±15 min: Scheduled mode for this slot
+                    fabTargetSlotIndex = originalIndex
+                }
+                absDiff <= SLOT_WINDOW_MINUTES * 2 -> {
+                    // ±30 min: Ask user for anytime confirmation
+                    fabTargetSlotIndex = originalIndex
+                    isGuidanceRequired = true
+                }
+                else -> {
+                    // > ±30 min: Direct anytime mode
+                    fabTargetSlotIndex = -1 // sentinel for anytime
                 }
             }
-            
-            if (conflictNeighbor != null) {
-                fabHint = "cannot_create|${conflictNeighbor.format(timeFormatter)}"
-            } else {
-                fabTargetSlotIndex = firstUnmodified
-                isGuidanceRequired = true
-                suggestedSlotTime = suggested.format(timeFormatter)
-            }
         } else {
-            // Rule 4: All modified -> Existing hint
-            fabHint = "all_modified"
+            // No active slots at all: direct anytime mode
+            fabTargetSlotIndex = -1
         }
 
         // Calculate stats
@@ -281,13 +279,14 @@ class MeasurementTableViewModel(
             displayItems = displayItems,
             expandedYears = expandedYears,
             expandedMonths = expandedMonths,
-            dialogState = dialogState.copy(suggestedSlotTime = suggestedSlotTime),
+            dialogState = dialogState,
             isFabEnabled = fabTargetSlotIndex != null,
             fabTargetSlotIndex = fabTargetSlotIndex,
             isGuidanceRequired = isGuidanceRequired,
             fabHint = fabHint,
             isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false,
             isSummaryVisible = isSummaryVisible,
+            isAllView = isAllView,
             activeGuidelines = guidelines,
             error = manualError,
             classificationStats = stats
@@ -303,6 +302,13 @@ class MeasurementTableViewModel(
      */
     fun toggleSummaryVisibility() {
         _isSummaryVisible.update { !it }
+    }
+
+    /**
+     * Toggles between Scheduled and All view modes.
+     */
+    fun toggleViewMode() {
+        _isAllView.update { !it }
     }
 
     /**
@@ -445,17 +451,29 @@ class MeasurementTableViewModel(
         val targetIndex = state.fabTargetSlotIndex ?: return
         val todayStr = LocalDate.now(clock).format(dateFormatter)
 
-        if (state.isGuidanceRequired) {
-            _dialogState.update { 
-                it.copy(
-                    isOpen = true, 
-                    isGuidanceVisible = true, 
-                    slotIndex = targetIndex,
-                    date = todayStr,
-                    suggestedSlotTime = state.dialogState.suggestedSlotTime
-                ) 
+        if (targetIndex == -1) {
+            // Direct anytime mode (> ±30 min from any slot)
+            viewModelScope.launch {
+                openDialog(todayStr, -1, isFlexibleMode = true)
+            }
+        } else if (state.isGuidanceRequired) {
+            // ±30 min: show anytime confirmation dialog
+            viewModelScope.launch {
+                val settings = settingsRepository.getSettingsSync()
+                val slotTime = settings?.slotTimes?.getOrNull(targetIndex) ?: "??:??"
+                val slotLabel = "Slot ${targetIndex + 1} ($slotTime)"
+                _dialogState.update {
+                    it.copy(
+                        isOpen = true,
+                        isAnytimeConfirmationVisible = true,
+                        slotIndex = targetIndex,
+                        date = todayStr,
+                        nearestSlotLabel = slotLabel
+                    )
+                }
             }
         } else {
+            // ±15 min: scheduled mode
             viewModelScope.launch {
                 openDialog(todayStr, targetIndex)
             }
@@ -463,38 +481,27 @@ class MeasurementTableViewModel(
     }
 
     /**
-     * Called when the user accepts the guidance to reconfigure a slot.
+     * Called when user confirms adding an anytime reading near a slot.
      */
-    fun onAcceptGuidance() {
+    fun onConfirmAnytime() {
         val currentState = _dialogState.value
-        val suggestedTime = currentState.suggestedSlotTime
-        
+        _dialogState.update { it.copy(isAnytimeConfirmationVisible = false) }
         viewModelScope.launch {
-            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
-            val newTimes = settings.slotTimes.toMutableList().apply {
-                this[currentState.slotIndex] = suggestedTime
-            }
-            val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
-                this[currentState.slotIndex] = true
-            }
-            
-            val updatedSettings = settings.copy(
-                slotTimes = newTimes,
-                slotActiveFlags = newActiveFlags
-            )
-            settingsRepository.saveSettings(updatedSettings)
-            alarmScheduler.updateAlarms(updatedSettings)
-            
-            // Now open the actual edit dialog
-            _dialogState.update { it.copy(isGuidanceVisible = false) }
-            openDialog(currentState.date, currentState.slotIndex)
+            openDialog(currentState.date, currentState.slotIndex, isFlexibleMode = true)
         }
     }
 
-    private suspend fun openDialog(date: String, originalSlotIndex: Int) {
-        // Find existing measurement if any
-        val existing = measurementRepository.getMeasurementsByDateSync(date)
-            .find { it.slotIndex == originalSlotIndex }
+    private suspend fun openDialog(
+        date: String,
+        originalSlotIndex: Int,
+        isFlexibleMode: Boolean = false
+    ) {
+        val isScheduled = !isFlexibleMode && originalSlotIndex >= 0
+
+        val existing = if (isScheduled) {
+            measurementRepository.getMeasurementsByDateSync(date)
+                .find { it.slotIndex == originalSlotIndex && !it.isFlexible }
+        } else null
 
         val initialValue = existing?.let { 
             if (it.pulse > 0) "${it.systolic}/${it.diastolic} @${it.pulse}" 
@@ -505,20 +512,29 @@ class MeasurementTableViewModel(
             it.copy(
                 isOpen = true,
                 date = date,
-                slotIndex = originalSlotIndex,
+                slotIndex = if (isFlexibleMode) -1 else originalSlotIndex,
                 initialValue = initialValue,
                 inputValue = TextFieldValue(initialValue, TextRange(initialValue.length)),
                 existingMeasurementId = existing?.id,
-                isGuidanceVisible = false
+                isGuidanceVisible = false,
+                isAnytimeConfirmationVisible = false,
+                isFlexibleMode = isFlexibleMode
             )
         }
     }
 
     /**
-     * Dismisses the edit dialog.
+     * Dismisses the edit or confirmation dialog.
      */
     fun onDialogDismiss() {
         _dialogState.update { MeasurementDialogState() }
+    }
+
+    /**
+     * Dismisses the anytime confirmation dialog.
+     */
+    fun onDismissAnytimeConfirmation() {
+        _dialogState.update { it.copy(isOpen = false, isAnytimeConfirmationVisible = false) }
     }
 
     /**
@@ -587,43 +603,52 @@ class MeasurementTableViewModel(
      */
     fun onSaveMeasurement(input: String) {
         val currentState = _dialogState.value
+        val isFlexible = currentState.isFlexibleMode
         // Trim trailing delimiters (e.g., "120/80 @" -> "120/80") for easier saving without pulse
         val trimmedInput = input.trim().removeSuffix("@").removeSuffix("/").trim()
         val validationResult = validator.validate(trimmedInput)
 
         if (validationResult is ValidationResult.Success) {
             viewModelScope.launch {
+                val now = System.currentTimeMillis()
                 val entity = MeasurementEntity(
                     id = currentState.existingMeasurementId ?: 0,
                     date = currentState.date,
-                    slotIndex = currentState.slotIndex,
+                    slotIndex = if (isFlexible) -1 else currentState.slotIndex,
                     systolic = validationResult.systolic,
                     diastolic = validationResult.diastolic,
                     pulse = validationResult.pulse,
-                    updatedAt = System.currentTimeMillis()
+                    isFlexible = isFlexible,
+                    timestamp = now,
+                    updatedAt = now
                 )
 
                 if (currentState.existingMeasurementId == null) {
                     measurementRepository.saveMeasurement(entity)
-                    // Mark slot as modified and active
-                    val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
-                    val isModified = settings.slotModifiedFlags.getOrElse(currentState.slotIndex) { false }
-                    val isActive = settings.slotActiveFlags.getOrElse(currentState.slotIndex) { false }
-                    
-                    if (!isModified || !isActive) {
-                        val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
-                            if (size > currentState.slotIndex) this[currentState.slotIndex] = true
+                    if (!isFlexible) {
+                        // Mark slot as modified and active
+                        val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+                        val isModified = settings.slotModifiedFlags.getOrElse(currentState.slotIndex) { false }
+                        val isActive = settings.slotActiveFlags.getOrElse(currentState.slotIndex) { false }
+                        
+                        if (!isModified || !isActive) {
+                            val newModifiedFlags = settings.slotModifiedFlags.toMutableList().apply {
+                                if (size > currentState.slotIndex) this[currentState.slotIndex] = true
+                            }
+                            val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
+                                if (size > currentState.slotIndex) this[currentState.slotIndex] = true
+                            }
+                            settingsRepository.saveSettings(settings.copy(
+                                slotModifiedFlags = newModifiedFlags,
+                                slotActiveFlags = newActiveFlags
+                            ))
                         }
-                        val newActiveFlags = settings.slotActiveFlags.toMutableList().apply {
-                            if (size > currentState.slotIndex) this[currentState.slotIndex] = true
-                        }
-                        settingsRepository.saveSettings(settings.copy(
-                            slotModifiedFlags = newModifiedFlags,
-                            slotActiveFlags = newActiveFlags
-                        ))
+                        // Dismiss notification if it was already showing for this slot
+                        alarmScheduler.dismissNotification(currentState.slotIndex)
+                    } else {
+                        // Auto-switch to All view when first anytime reading is added
+                        _isAllView.update { true }
                     }
-                    // Dismiss notification if it was already showing for this slot
-                    alarmScheduler.dismissNotification(currentState.slotIndex)
                 } else {
                     measurementRepository.updateMeasurement(entity)
                 }

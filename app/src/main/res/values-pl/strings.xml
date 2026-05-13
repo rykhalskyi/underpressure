@@ -149,8 +149,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">Licznik UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia krwi i tętna, który przechowuje wszystkie dane wyłącznie na telefonie. Bez serwerów, bez zbierania danych, bez reklam, bez opłat.</string>
-    <string name="onboarding_slide2_caption">Do 4 miejsc każdego dnia</string>
-    <string name="onboarding_slide2_description">Możesz dodać do 4 przedziałów czasowych na pomiar. Wprowadzanie danych jest możliwe w ciągu +/- 15 minut od każdego z nich. Przedziały czasowe możesz skonfigurować w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
+    <string name="onboarding_slide2_caption">Zaplanowane i dowolne pomiary</string>
+    <string name="onboarding_slide2_description">Skonfiguruj do 4 przedziałów czasowych dla zaplanowanych pomiarów lub dodawaj pomiary w dowolnym momencie za pomocą przycisku +. Przełączaj się między widokami Zaplanowane i Wszystkie, aby zobaczyć swoje dane.</string>
     <string name="onboarding_slide3_caption">Wykres pomiarów</string>
     <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
@@ -164,4 +164,19 @@
     <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?\n\nZawsze możesz zmienić czas slotu w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
     <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
     <string name="warning_large_date_range">Wybrano duzy zakres dat. Moze to wplynac na czytelnosc i wydajnosc.</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Skurczowe</string>
+    <string name="chart_legend_diastolic">Rozkurczowe</string>
+    <string name="chart_legend_pulse">Tętno</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Zaplanowane</string>
+    <string name="view_all">Wszystkie</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Dodatkowe</string>
+    <string name="label_anytime_count">%1$d dodatkowych</string>
+    <string name="hint_anytime_confirmation">Blisko %1$s. Dodać jako dodatkowy pomiar?</string>
+    <string name="button_anytime_yes">Tak, dodatkowy</string>
 </resources>

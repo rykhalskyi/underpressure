@@ -107,6 +107,12 @@ class ChartViewModel(
         
         val slotTimes = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
 
+        val typeLabelResIds = mapOf(
+            MeasurementType.SYS to R.string.chart_legend_systolic,
+            MeasurementType.DIA to R.string.chart_legend_diastolic,
+            MeasurementType.PULSE to R.string.chart_legend_pulse
+        )
+
         if (measurements.isEmpty()) {
             return@combine ChartUiState(
                 isLoading = false,
@@ -126,7 +132,8 @@ class ChartViewModel(
                 showRollingAverage = config.showRollingAverage,
                 showInteractiveLegend = config.showInteractiveLegend,
                 slotColors = config.slotColors,
-                levelColors = config.levelColors
+                levelColors = config.levelColors,
+                typeLabelResIds = typeLabelResIds
             )
         }
 
@@ -157,7 +164,8 @@ class ChartViewModel(
                 showRollingAverage = config.showRollingAverage,
                 showInteractiveLegend = config.showInteractiveLegend,
                 slotColors = config.slotColors,
-                levelColors = config.levelColors
+                levelColors = config.levelColors,
+                typeLabelResIds = typeLabelResIds
             )
         }
 
@@ -217,9 +225,9 @@ class ChartViewModel(
                 }
             }
         } else if (config.mode == ChartMode.SEQUENTIAL) {
-            // Logic for SEQUENTIAL mode (One plot for all slots)
+            // Logic for SEQUENTIAL mode (One plot for all slots, including anytime readings)
             sequentialMeasurements = filtered
-                .filter { config.slots.contains(it.slotIndex) }
+                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
                 .sortedWith(compareBy({ it.date }, { it.slotIndex }))
             
             sequentialMeasurements.forEachIndexed { index, m ->
@@ -374,7 +382,8 @@ class ChartViewModel(
             showRollingAverage = config.showRollingAverage,
             showInteractiveLegend = config.showInteractiveLegend,
             slotColors = config.slotColors,
-            levelColors = config.levelColors
+            levelColors = config.levelColors,
+            typeLabelResIds = typeLabelResIds
         )
     }.stateIn(
         scope = viewModelScope,

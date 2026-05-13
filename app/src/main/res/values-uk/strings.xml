@@ -149,8 +149,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — це простий і приватний трекер артеріального тиску та пульсу, який зберігає всі ваші дані лише на вашому телефоні. Жодних серверів, збору даних, реклами чи платежів.</string>
-    <string name="onboarding_slide2_caption">До 4 слотів щодня</string>
-    <string name="onboarding_slide2_description">Ви можете додати до 4 часових слотів для вимірювання. Введення даних можливе в межах +/- 15 хвилин від кожного. Налаштувати слоти можна в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
+    <string name="onboarding_slide2_caption">Заплановані та довільні вимірювання</string>
+    <string name="onboarding_slide2_description">Налаштуйте до 4 часових слотів для запланованих вимірювань або додавайте вимірювання в будь-який час за допомогою кнопки +. Перемикайтеся між переглядами «Заплановані» та «Всі», щоб переглянути дані.</string>
     <string name="onboarding_slide3_caption">Графік вимірювань</string>
     <string name="onboarding_slide3_description">Ви можете переглядати та ділитися графіками вимірювань. Налаштуйте графіки для потрібних слотів і даних.</string>
     <string name="onboarding_slide4_caption">Поділитися даними</string>
@@ -164,4 +164,19 @@
     <string name="guidance_message">Схоже, ви намагаєтесь додати вимірювання не в той час. UnderPressure працює за фіксованими часовими слотами, щоб вимірювання були точнішими та регулярними. Хочете встановити час для Слот %1$d на %2$s і додати вимірювання зараз?\n\nВи завжди можете змінити час слота в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
     <string name="hint_edit_slot">Ви можете змінити значення слота %1$d, натиснувши на нього.</string>
     <string name="warning_large_date_range">Вибрано великий діапазон дат. Читабельність та продуктивність можуть постраждати.</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Систолічний</string>
+    <string name="chart_legend_diastolic">Діастолічний</string>
+    <string name="chart_legend_pulse">Пульс</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Заплановані</string>
+    <string name="view_all">Всі</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Позапланові</string>
+    <string name="label_anytime_count">%1$d позапланових</string>
+    <string name="hint_anytime_confirmation">Близько до %1$s. Додати як позапланове вимірювання?</string>
+    <string name="button_anytime_yes">Так, позапланово</string>
 </resources>

@@ -15,7 +15,10 @@ data class MeasurementDialogState(
     val inputValue: TextFieldValue = TextFieldValue(""),
     val existingMeasurementId: Long? = null,
     val isGuidanceVisible: Boolean = false,
-    val suggestedSlotTime: String = ""
+    val suggestedSlotTime: String = "",
+    val isFlexibleMode: Boolean = false,
+    val isAnytimeConfirmationVisible: Boolean = false,
+    val nearestSlotLabel: String = ""
 )
 
 /**
@@ -33,6 +36,7 @@ data class MeasurementDialogState(
  * @property isGuidanceRequired True if clicking the FAB should show guidance instead of the edit dialog.
  * @property fabHint Optional hint message to show when FAB is clicked (or if disabled).
  * @property isMasterAlarmEnabled True if the global alarm reminder switch is ON.
+ * @property isAllView True to show anytime readings alongside scheduled slots in the table.
  * @property error Error message if data load fails.
  */
 data class TableUiState(
@@ -43,12 +47,13 @@ data class TableUiState(
     val expandedYears: Set<Int> = emptySet(),
     val expandedMonths: Set<String> = emptySet(),
     val dialogState: MeasurementDialogState = MeasurementDialogState(),
-    val isFabEnabled: Boolean = false,
+    val isFabEnabled: Boolean = true,
     val fabTargetSlotIndex: Int? = null,
     val isGuidanceRequired: Boolean = false,
     val fabHint: String? = null,
     val isMasterAlarmEnabled: Boolean = false,
     val isSummaryVisible: Boolean = true,
+    val isAllView: Boolean = false,
     val activeGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
     val error: String? = null,
     val classificationStats: Map<BloodPressureLevel, Int> = emptyMap()
@@ -78,5 +83,13 @@ sealed class TableItem {
      * Row for a specific day's measurements.
      */
     data class DayRow(val summary: DayMeasurementSummary) : TableItem()
+
+    /**
+     * Section listing anytime (flexible) readings for a given date.
+     */
+    data class AnytimeSection(
+        val date: String,
+        val readings: List<AnytimeReadingData>
+    ) : TableItem()
 }
 

@@ -94,8 +94,8 @@ class MeasurementTableViewModelTest {
     }
 
     @Test
-    fun `FAB is disabled and shows edit hint when slot in window is already filled`() = runTest {
-        // Current time is 12:00. Slot is at 12:10.
+    fun `FAB is always enabled and opens scheduled dialog when slot within 15 min`() = runTest {
+        // Current time is 12:00. Slot is at 12:10 (within +15 min).
         val settings = AppSettingsEntity(
             slotTimes = listOf("12:10"),
             slotActiveFlags = listOf(true)
@@ -110,18 +110,18 @@ class MeasurementTableViewModelTest {
         
         val state = viewModel.uiState.first { !it.isLoading }
 
-        assertFalse(state.isFabEnabled)
-        assertEquals("edit_slot|1", state.fabHint)
+        assertTrue(state.isFabEnabled)
+        assertEquals(0, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
     }
 
     @Test
-    fun `Example 1 - suggested time 30 mins from neighbor before`() = runTest {
-        // it is 10.10. there's a slot 1 09.50. Suggest slot 2 with time 10.20.
+    fun `FAB shows anytime confirmation when between 15-30 min from nearest slot`() = runTest {
+        // it is 10.10. Nearest slot is 09:50 (20 min diff, within ±30 min).
         val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
         val settings = AppSettingsEntity(
             slotTimes = listOf("09:50", "15:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, false, false, false),
-            slotModifiedFlags = listOf(true, false, false, false)
+            slotActiveFlags = listOf(true, false, false, false)
         )
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
@@ -130,55 +130,17 @@ class MeasurementTableViewModelTest {
         
         val state = viewModel.uiState.first { !it.isLoading }
         assertTrue(state.isFabEnabled)
+        assertEquals(0, state.fabTargetSlotIndex)
         assertTrue(state.isGuidanceRequired)
-        assertEquals("10:20", state.dialogState.suggestedSlotTime)
     }
 
     @Test
-    fun `Example 2 - suggested time 30 mins from neighbor after`() = runTest {
-        // it is 10.10 there's a slot 10.30. Suggest time 10.00
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
-        val settings = AppSettingsEntity(
-            slotTimes = listOf("10:30", "15:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, false, false, false),
-            slotModifiedFlags = listOf(true, false, false, false)
-        )
-        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
-        every { settingsRepository.getSettings() } returns flowOf(settings)
-        
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
-        
-        val state = viewModel.uiState.first { !it.isLoading }
-        assertEquals("10:00", state.dialogState.suggestedSlotTime)
-    }
-
-    @Test
-    fun `Example 3 - conflict hint when squeezed between slots`() = runTest {
-        // it is 10.10 There're both slots 09.50 and 10.30
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
-        val settings = AppSettingsEntity(
-            slotTimes = listOf("09:50", "10:30", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, true, false, false),
-            slotModifiedFlags = listOf(true, true, false, false)
-        )
-        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
-        every { settingsRepository.getSettings() } returns flowOf(settings)
-        
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
-        
-        val state = viewModel.uiState.first { !it.isLoading }
-        assertFalse(state.isFabEnabled)
-        assertEquals("cannot_create|10:30", state.fabHint)
-    }
-
-    @Test
-    fun `Rule 4 - all slots modified and outside window shows standard hint`() = runTest {
-        // Current time is 14:00. Closest slot is 12:00 (too far).
+    fun `FAB opens anytime dialog when over 30 min from nearest slot`() = runTest {
+        // Current time is 14:00. Closest slot is 12:00 (120 min diff).
         val clock1400 = Clock.fixed(Instant.parse("2023-10-27T14:00:00Z"), ZoneId.of("UTC"))
         val settings = AppSettingsEntity(
             slotTimes = listOf("08:00", "12:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, true, true, true),
-            slotModifiedFlags = listOf(true, true, true, true)
+            slotActiveFlags = listOf(true, true, true, true)
         )
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
@@ -186,8 +148,9 @@ class MeasurementTableViewModelTest {
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1400, alarmScheduler)
         
         val state = viewModel.uiState.first { !it.isLoading }
-        assertFalse(state.isFabEnabled)
-        assertEquals("all_modified", state.fabHint)
+        assertTrue(state.isFabEnabled)
+        assertEquals(-1, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
     }
 
     @Test

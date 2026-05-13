@@ -149,8 +149,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">UnderPressure Tracker</string>
     <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Blutdruck- und Pulstracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>
-    <string name="onboarding_slide2_caption">Bis zu 4 Zeitfenster täglich</string>
-    <string name="onboarding_slide2_description">Sie können bis zu 4 Zeitfenster für die Messung hinzufügen. Die Dateneingabe ist innerhalb von +/- 15 Minuten möglich. Sie können die Zeitfenster in den Einstellungen oder durch einfaches Tippen auf die Zeit in der Tabellenüberschrift konfigurieren.</string>
+    <string name="onboarding_slide2_caption">Geplante &amp; flexible Messungen</string>
+    <string name="onboarding_slide2_description">Richten Sie bis zu 4 Zeitfenster für geplante Messungen ein oder erfassen Sie jederzeit Messwerte über die +-Taste. Wechseln Sie zwischen den Ansichten Geplant und Alle, um Ihre Daten anzuzeigen.</string>
     <string name="onboarding_slide3_caption">Messwertdiagramm</string>
     <string name="onboarding_slide3_description">Sie können Messwertdiagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
     <string name="onboarding_slide4_caption">Daten teilen</string>
@@ -164,4 +164,19 @@
     <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
     <string name="warning_large_date_range">Gro?er Datumsbereich ausgewahlt. Lesbarkeit und Leistung konnen beeintrachtigt sein.</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Systolisch</string>
+    <string name="chart_legend_diastolic">Diastolisch</string>
+    <string name="chart_legend_pulse">Puls</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Geplant</string>
+    <string name="view_all">Alle</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Unterwegs</string>
+    <string name="label_anytime_count">%1$d unterwegs</string>
+    <string name="hint_anytime_confirmation">Nah an %1$s. Als unterwegs-Messung hinzufügen?</string>
+    <string name="button_anytime_yes">Ja, unterwegs</string>
 </resources>

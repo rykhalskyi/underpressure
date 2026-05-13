@@ -268,6 +268,34 @@ fun ChartScreen(
                                     }
                                 }
                             } else {
+                                val sysLabel = stringResource(uiState.typeLabelResIds[MeasurementType.SYS] ?: R.string.chart_legend_systolic)
+                                val diaLabel = stringResource(uiState.typeLabelResIds[MeasurementType.DIA] ?: R.string.chart_legend_diastolic)
+                                val pulseLabel = stringResource(uiState.typeLabelResIds[MeasurementType.PULSE] ?: R.string.chart_legend_pulse)
+                                val localize: (String, String, String, String) -> String = { label, sys, dia, pulse ->
+                                    when {
+                                        label.endsWith(" - SYS") -> label.replace("SYS", sys)
+                                        label.endsWith(" - DIA") -> label.replace("DIA", dia)
+                                        label.endsWith(" - PULSE") -> label.replace("PULSE", pulse)
+                                        label == "Systolic" -> sys
+                                        label == "Diastolic" -> dia
+                                        label == "Pulse" -> pulse
+                                        label == "SYS (7-day avg)" -> "$sys (7-day avg)"
+                                        label == "DIA (7-day avg)" -> "$dia (7-day avg)"
+                                        label == "PULSE (7-day avg)" -> "$pulse (7-day avg)"
+                                        else -> label
+                                    }
+                                }
+
+                                uiState.sysLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+                                uiState.diaLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+                                uiState.pulseLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+
                                 // Systolic Chart
                                 if (uiState.sysLineData != null) {
                                     BloodPressureChart(
