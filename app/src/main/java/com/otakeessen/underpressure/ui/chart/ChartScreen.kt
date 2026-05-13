@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +18,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDialog
@@ -52,6 +56,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -178,11 +183,15 @@ fun ChartScreen(
                         onClick = { viewModel.setChartMode(mode) },
                         selected = uiState.chartMode == mode
                     ) {
-                        Text(stringResource(when(mode) {
-                            ChartMode.DAILY -> R.string.label_chart_mode_daily
-                            ChartMode.SEQUENTIAL -> R.string.label_chart_mode_sequential
-                            ChartMode.DISTRIBUTION -> R.string.label_chart_mode_distribution
-                        }))
+                        Text(
+                            text = stringResource(when(mode) {
+                                ChartMode.DAILY -> R.string.label_chart_mode_daily
+                                ChartMode.SEQUENTIAL -> R.string.label_chart_mode_sequential
+                                ChartMode.DISTRIBUTION -> R.string.label_chart_mode_distribution
+                            }),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
             }

@@ -220,9 +220,8 @@ class ChartViewModel(
             
             sequentialMeasurements.forEachIndexed { index, m ->
                 val date = LocalDate.parse(m.date, DATE_FORMATTER)
-                val formattedDate = date.format(DateTimeFormatter.ofPattern("MMM dd"))
-                val slotTimeLabel = slotTimes.getOrElse(m.slotIndex) { "Slot ${m.slotIndex + 1}" }
-                xLabels[index.toFloat()] = "$formattedDate\n$slotTimeLabel"
+                val formattedDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
+                xLabels[index.toFloat()] = formattedDate
             }
 
             config.types.forEach { type ->
