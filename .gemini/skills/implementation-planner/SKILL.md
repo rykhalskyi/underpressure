@@ -20,7 +20,8 @@ This skill guides a structured process to analyze GitHub issues and generate a t
       - **Steering**: Key alignments with tech/style/structure.
       - **Impact**: Files to create/modify, data/API changes.
       - **Strategy**: Step-by-step logic and patterns.
-      - **Verification**: Testing strategy (Unit/E2E).
+5. **Exit form plan mode** and save the plan in `.design-specs/specs/plan-{issue_number}.md`
+6. **DO NOT EXECUTE PLAN**
 
 ## PHASE 2: Atomic Task Generation
 1.  **Generate Tasks**: Immediately following the plan (while context is fresh), generate atomic tasks in `.design-specs/specs/tasks-{issue_number}.md`. **Do not re-read the plan file if already in context.**
@@ -33,7 +34,6 @@ This skill guides a structured process to analyze GitHub issues and generate a t
       - `_Leverage_`: Existing files/patterns to use.
       - `_Prompt_`: A self-contained, high-signal instruction for an agent (Role, Task, Restrictions, Success Criteria).
 3.  **State Management**: If the session is interrupted, check for existing `plan-{issue_number}.md` or `tasks-{issue_number}.md` before restarting from Phase 1.
-4.  **Cleanup**: Exit Plan Mode and notify the user of the generated files.
 
 ## Token Efficiency Tips
 - **Consolidate Turns**: Perform research and planning in one continuous flow.
