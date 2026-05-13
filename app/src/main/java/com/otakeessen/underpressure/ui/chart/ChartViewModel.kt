@@ -443,74 +443,28 @@ class ChartViewModel(
         if (sorted.isEmpty()) return emptyList()
 
         if (mode == ChartMode.DAILY) {
-            val result = mutableListOf<Entry>()
-            val valueForDate = sorted.groupBy { it.date }
-            val sortedDates = valueForDate.keys.sorted().map { LocalDate.parse(it, DATE_FORMATTER) }
-
-            var windowStartIdx = 0
-            var currentSum = 0f
-            var currentCount = 0
-
-            for (currentDate in sortedDates) {
-                val windowStartLimit = currentDate.minusDays(6)
-
-                // Add values for the current date
-                val currentMeasurements = valueForDate[currentDate.format(DATE_FORMATTER)]!!
-                for (m in currentMeasurements) {
-                    currentSum += when (type) {
-                        MeasurementType.SYS -> m.systolic.toFloat()
-                        MeasurementType.DIA -> m.diastolic.toFloat()
-                        MeasurementType.PULSE -> m.pulse.toFloat()
-                    }
-                    currentCount++
-                }
-
-                // Remove values that are now outside the 7-day window
-                while (windowStartIdx < sortedDates.size && sortedDates[windowStartIdx].isBefore(windowStartLimit)) {
-                    val oldDate = sortedDates[windowStartIdx]
-                    val oldMeasurements = valueForDate[oldDate.format(DATE_FORMATTER)]!!
-                    for (m in oldMeasurements) {
-                        currentSum -= when (type) {
+            val valueForDate = sorted.groupBy { LocalDate.parse(it.date, DATE_FORMATTER) }
+                .mapValues { entry ->
+                    entry.value.map { m ->
+                        when (type) {
                             MeasurementType.SYS -> m.systolic.toFloat()
                             MeasurementType.DIA -> m.diastolic.toFloat()
                             MeasurementType.PULSE -> m.pulse.toFloat()
                         }
-                        currentCount--
                     }
-                    windowStartIdx++
                 }
-
-                if (currentCount > 0) {
-                    val x = ChronoUnit.DAYS.between(minDate, currentDate).toFloat()
-                    result.add(Entry(x, currentSum / currentCount))
-                }
-            }
-            return result
+            return ChartDataUtils.calculateDailyRollingAverage(valueForDate, minDate)
         }
 
-        var windowStartIdx = 0
-        var currentSum = 0f
-
-        return sorted.mapIndexed { index, m ->
-            currentSum += when (type) {
+        val entries = sorted.mapIndexed { index, m ->
+            val value = when (type) {
                 MeasurementType.SYS -> m.systolic.toFloat()
                 MeasurementType.DIA -> m.diastolic.toFloat()
                 MeasurementType.PULSE -> m.pulse.toFloat()
             }
-
-            if (index >= 7) {
-                val oldM = sorted[windowStartIdx]
-                currentSum -= when (type) {
-                    MeasurementType.SYS -> oldM.systolic.toFloat()
-                    MeasurementType.DIA -> oldM.diastolic.toFloat()
-                    MeasurementType.PULSE -> oldM.pulse.toFloat()
-                }
-                windowStartIdx++
-            }
-
-            val count = index - windowStartIdx + 1
-            Entry(index.toFloat(), currentSum / count)
+            index.toFloat() to value
         }
+        return ChartDataUtils.calculateSequentialRollingAverage(entries)
     }
 
     fun toggleSlot(slotIndex: Int) {
