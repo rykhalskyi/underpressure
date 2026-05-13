@@ -1,10 +1,12 @@
 package com.otakeessen.underpressure.ui.table.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -141,28 +143,23 @@ fun MeasurementEditDialog(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(32.dp),
+                    contentAlignment = Alignment.CenterStart
                 ) {
-                    Text(
-                        text = "SYS / DIA @ PULSE",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (classification != null) {
+                        ClassificationStatusPill(
+                            classification = classification,
+                            text = bpLevelText ?: ""
+                        )
+                    }
                 }
 
-                if (classification != null) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    ClassificationStatusPill(
-                        classification = classification,
-                        text = bpLevelText ?: ""
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 OutlinedTextField(
                     value = textFieldValue,
@@ -170,11 +167,7 @@ fun MeasurementEditDialog(
                     label = { Text(stringResource(R.string.label_measurement_format)) },
                     placeholder = { Text(stringResource(R.string.placeholder_measurement)) },
                     isError = isError,
-                    supportingText = {
-                        if (isError) {
-                            Text(text = errorMessage)
-                        }
-                    },
+                    // supportingText is removed to prevent automatic height expansion
                     trailingIcon = {
                         if (textValue.isNotEmpty()) {
                             IconButton(onClick = { onValueChange(TextFieldValue("")) }) {
@@ -201,6 +194,23 @@ fun MeasurementEditDialog(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 40.dp) // Minimum height to support ~2 lines
+                ) {
+                    if (isError) {
+                        Text(
+                            text = errorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
