@@ -135,12 +135,14 @@ class TableExportManager(
                 .map { reading ->
                     val bp = if (reading.pulse > 0) "${reading.systolic}/${reading.diastolic}@${reading.pulse}"
                              else "${reading.systolic}/${reading.diastolic}"
-                    val time = if (reading.timestamp > 0) {
-                        val localTime = java.time.Instant.ofEpochMilli(reading.timestamp)
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalTime()
-                        " (${localTime.format(timeFormatter)})"
-                    } else ""
+                    
+                    // Time is now mandatory for Anytime readings. Use timestamp if > 0, else fallback to createdAt.
+                    val effectiveTimestamp = if (reading.timestamp > 0) reading.timestamp else reading.createdAt
+                    val localTime = java.time.Instant.ofEpochMilli(effectiveTimestamp)
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toLocalTime()
+                    val time = " (${localTime.format(timeFormatter)})"
+                    
                     "$bp$time"
                 }
             rowValues.add(anytimeReadings.joinToString("; "))

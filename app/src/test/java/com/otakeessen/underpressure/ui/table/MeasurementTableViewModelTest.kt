@@ -256,6 +256,62 @@ class MeasurementTableViewModelTest {
     }
 
     @Test
+    fun `toggleViewMode saves setting to repository`() = runTest {
+        val settings = AppSettingsEntity(tableIsAllView = false)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        viewModel.toggleViewMode()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { settingsRepository.saveSettings(match { it.tableIsAllView }) }
+    }
+
+    @Test
+    fun `toggleSummaryVisibility saves setting to repository`() = runTest {
+        val settings = AppSettingsEntity(tableIsSummaryVisible = true)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        viewModel.toggleSummaryVisibility()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { settingsRepository.saveSettings(match { !it.tableIsSummaryVisible }) }
+    }
+
+    @Test
+    fun `onSaveMeasurement auto-switches to All view when first anytime reading is added`() = runTest {
+        val settings = AppSettingsEntity(tableIsAllView = false, slotTimes = listOf("01:00"))
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+        coEvery { measurementRepository.saveMeasurement(any()) } returns 1L
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        // Wait for UI state to reflect farSettings
+        viewModel.uiState.first { !it.isLoading }
+
+        // Open dialog in anytime mode
+        viewModel.onFabClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        assertTrue("Dialog should be in flexible mode", viewModel.uiState.value.dialogState.isFlexibleMode)
+        
+        viewModel.onSaveMeasurement("120/80")
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        coVerify { settingsRepository.saveSettings(match { it.tableIsAllView }) }
+    }
+
+    @Test
     fun `onCellClicked does not open dialog for future empty slot`() = runTest {
         // Current time is 12:00. Slot is at 20:00
         val settings = AppSettingsEntity(

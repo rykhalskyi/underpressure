@@ -79,7 +79,7 @@ class TableImportManagerTest {
     }
 
     @Test
-    fun `importCsv handles Anytime column without timestamps`() = runTest {
+    fun `importCsv skips Anytime readings without timestamps`() = runTest {
         val csvContent = """
             Date,07:00,Anytime
             2026-05-15,120/80,130/85
@@ -95,11 +95,14 @@ class TableImportManagerTest {
 
         val result = importManager.importCsv(uri, TableImportManager.ImportStrategy.Skip)
 
-        assertEquals(2, result.successCount)
+        // Only the scheduled reading (120/80) should be imported. The Anytime one (130/85) is skipped.
+        assertEquals(1, result.successCount)
+        assertEquals(1, result.totalCount)
         
+        coVerify(exactly = 1) { measurementRepository.saveMeasurement(any()) }
         coVerify { 
             measurementRepository.saveMeasurement(match { 
-                it.date == "2026-05-15" && it.slotIndex == -1 && it.systolic == 130 && it.timestamp == 0L
+                it.date == "2026-05-15" && it.slotIndex == 0 && it.systolic == 120
             }) 
         }
     }
@@ -109,7 +112,7 @@ class TableImportManagerTest {
         // App has "08:00" as Slot 1, but CSV says "Slot 1" (which might have been "07:00" before)
         val csvContent = """
             Date,Slot 1,Anytime
-            2026-05-15,120/80,130/85
+            2026-05-15,120/80,130/85 (14:30)
         """.trimIndent()
         
         val inputStream = ByteArrayInputStream(csvContent.toByteArray())
@@ -127,6 +130,12 @@ class TableImportManagerTest {
         coVerify { 
             measurementRepository.saveMeasurement(match { 
                 it.date == "2026-05-15" && it.slotIndex == 0 && it.systolic == 120
+            }) 
+        }
+        
+        coVerify { 
+            measurementRepository.saveMeasurement(match { 
+                it.date == "2026-05-15" && it.slotIndex == -1 && it.systolic == 130
             }) 
         }
     }

@@ -143,45 +143,46 @@ class TableImportManager(
                                 readings.forEach { reading ->
                                     val trimmedReading = reading.trim()
                                     if (trimmedReading.isNotBlank()) {
-                                        totalProcessed++
                                         val parseResult = parseAnytimeValue(trimmedReading)
-                                        val systolic = parseResult.systolic
-                                        val diastolic = parseResult.diastolic
-                                        val pulse = parseResult.pulse
                                         val timeStr = parseResult.timeStr
                                         
-                                        val timestamp = if (timeStr != null) {
+                                        // Time is now mandatory for Anytime readings.
+                                        if (timeStr != null) {
+                                            totalProcessed++
+                                            val systolic = parseResult.systolic
+                                            val diastolic = parseResult.diastolic
+                                            val pulse = parseResult.pulse
+                                            
                                             val localTime = java.time.LocalTime.parse(timeStr, timeFormatter)
-                                            localDate.atTime(localTime)
+                                            val timestamp = localDate.atTime(localTime)
                                                 .atZone(java.time.ZoneId.systemDefault())
                                                 .toInstant()
                                                 .toEpochMilli()
-                                        } else 0L
 
-                                        // For anytime readings, we match by slotIndex == -1 AND timestamp (or just values if timestamp is 0)
-                                        val existing = existingMeasurements.find { 
-                                            it.slotIndex == -1 && 
-                                            (it.timestamp == timestamp || (it.timestamp == 0L && timestamp == 0L)) 
-                                        }
+                                            // For anytime readings, we match by slotIndex == -1 AND timestamp
+                                            val existing = existingMeasurements.find { 
+                                                it.slotIndex == -1 && it.timestamp == timestamp
+                                            }
 
-                                        val entity = MeasurementEntity(
-                                            id = existing?.id ?: 0,
-                                            date = dateStr,
-                                            slotIndex = -1,
-                                            systolic = systolic,
-                                            diastolic = diastolic,
-                                            pulse = pulse,
-                                            isFlexible = true,
-                                            timestamp = timestamp,
-                                            updatedAt = System.currentTimeMillis()
-                                        )
+                                            val entity = MeasurementEntity(
+                                                id = existing?.id ?: 0,
+                                                date = dateStr,
+                                                slotIndex = -1,
+                                                systolic = systolic,
+                                                diastolic = diastolic,
+                                                pulse = pulse,
+                                                isFlexible = true,
+                                                timestamp = timestamp,
+                                                updatedAt = System.currentTimeMillis()
+                                            )
 
-                                        if (existing == null) {
-                                            measurementRepository.saveMeasurement(entity)
-                                            successCount++
-                                        } else if (strategy == ImportStrategy.Overwrite) {
-                                            measurementRepository.updateMeasurement(entity)
-                                            successCount++
+                                            if (existing == null) {
+                                                measurementRepository.saveMeasurement(entity)
+                                                successCount++
+                                            } else if (strategy == ImportStrategy.Overwrite) {
+                                                measurementRepository.updateMeasurement(entity)
+                                                successCount++
+                                            }
                                         }
                                     }
                                 }
@@ -224,19 +225,23 @@ class TableImportManager(
     )
 
     private fun parseAnytimeValue(value: String): AnytimeParseResult {
-        // Formats: "120/80", "120/80@70", "120/80 (14:30)", "120/80@70 (14:30)"
+        // Formats: "120/80 (14:30)", "120/80@70 (14:30)"
+        // Time is now mandatory: readings like "120/80" without parentheses will result in timeStr = null
         return try {
             var workingValue = value
             var timeStr: String? = null
             
-            if (workingValue.contains("(")) {
+            if (workingValue.contains("(") && workingValue.contains(")")) {
                 val timePart = workingValue.substringAfter("(").substringBefore(")")
                 timeStr = timePart.trim()
                 workingValue = workingValue.substringBefore("(").trim()
+                
+                val (sys, dia, pulse) = parseMeasurementValue(workingValue)
+                AnytimeParseResult(sys, dia, pulse, timeStr)
+            } else {
+                // Return null timeStr if format is missing parentheses
+                AnytimeParseResult(0, 0, 0, null)
             }
-            
-            val (sys, dia, pulse) = parseMeasurementValue(workingValue)
-            AnytimeParseResult(sys, dia, pulse, timeStr)
         } catch (e: Exception) {
             AnytimeParseResult(0, 0, 0, null)
         }

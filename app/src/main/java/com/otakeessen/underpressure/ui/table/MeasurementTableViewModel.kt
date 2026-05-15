@@ -56,8 +56,6 @@ class MeasurementTableViewModel(
     private val validator = BloodPressureValidator()
 
     private val _dialogState = MutableStateFlow(MeasurementDialogState())
-    private val _isSummaryVisible = MutableStateFlow(true)
-    private val _isAllView = MutableStateFlow(false)
     private val _manualError = MutableStateFlow<String?>(null)
     private val manualRefreshTrigger = MutableStateFlow(System.currentTimeMillis())
     
@@ -98,8 +96,6 @@ class MeasurementTableViewModel(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
         _dialogState,
-        _isSummaryVisible,
-        _isAllView,
         _expandedYears,
         _expandedMonths,
         _manualError,
@@ -109,11 +105,12 @@ class MeasurementTableViewModel(
         val measurements = args[0] as List<MeasurementEntity>
         val settings = args[1] as AppSettingsEntity?
         val dialogState = args[2] as MeasurementDialogState
-        val isSummaryVisible = args[3] as Boolean
-        val isAllView = args[4] as Boolean
-        val expandedYears = args[5] as Set<Int>
-        val expandedMonths = args[6] as Set<String>
-        val manualError = args[7] as String?
+        val expandedYears = args[3] as Set<Int>
+        val expandedMonths = args[4] as Set<String>
+        val manualError = args[5] as String?
+
+        val isSummaryVisible = settings?.tableIsSummaryVisible ?: true
+        val isAllView = settings?.tableIsAllView ?: false
         
         val today = LocalDate.now(clock)
         val todayStr = today.format(dateFormatter)
@@ -315,14 +312,20 @@ class MeasurementTableViewModel(
      * Toggles visibility of the classification summary.
      */
     fun toggleSummaryVisibility() {
-        _isSummaryVisible.update { !it }
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(tableIsSummaryVisible = !settings.tableIsSummaryVisible))
+        }
     }
 
     /**
      * Toggles between Scheduled and All view modes.
      */
     fun toggleViewMode() {
-        _isAllView.update { !it }
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(tableIsAllView = !settings.tableIsAllView))
+        }
     }
 
     /**
@@ -669,7 +672,10 @@ class MeasurementTableViewModel(
                         alarmScheduler.dismissNotification(currentState.slotIndex)
                     } else {
                         // Auto-switch to All view when first anytime reading is added
-                        _isAllView.update { true }
+                        val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+                        if (!settings.tableIsAllView) {
+                            settingsRepository.saveSettings(settings.copy(tableIsAllView = true))
+                        }
                     }
                 } else {
                     measurementRepository.updateMeasurement(entity)
