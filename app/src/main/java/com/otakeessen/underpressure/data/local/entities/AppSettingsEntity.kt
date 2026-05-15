@@ -24,6 +24,15 @@ data class AppSettingsEntity(
     val slotActiveFlags: List<Boolean> = listOf(true, false, false, false),
     val slotModifiedFlags: List<Boolean> = listOf(false, false, false, false),
     val lastOnboardedVersion: String? = null,
-    val bpGuidelines: BpGuidelines = BpGuidelines.ESC_ESH
+    val bpGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
+    val chartSelectedSlots: List<Int> = listOf(0, 1, 2, 3, -1),
+    val chartSelectedTypes: List<String> = listOf("SYS", "DIA", "PULSE"),
+    val chartShowRiskZones: Boolean = true,
+    val chartShowRollingAverage: Boolean = false,
+    val chartShowInteractiveLegend: Boolean = true,
+    val chartMode: String = "TREND_BY_SLOT",
+    val chartDatePreset: String = "ALL_TIME",
+    val tableIsAllView: Boolean = false,
+    val tableIsSummaryVisible: Boolean = true
 )
 

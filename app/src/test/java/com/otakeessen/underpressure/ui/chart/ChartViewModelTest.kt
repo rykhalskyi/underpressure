@@ -107,9 +107,9 @@ class ChartViewModelTest {
         viewModel.uiState.filter { !it.isLoading }.first()
 
         // Switch to Sequential Mode
-        viewModel.setChartMode(ChartMode.SEQUENTIAL)
+        viewModel.setChartMode(ChartMode.CHRONOLOGICAL)
         
-        val state = viewModel.uiState.filter { it.chartMode == ChartMode.SEQUENTIAL }.first()
+        val state = viewModel.uiState.filter { it.chartMode == ChartMode.CHRONOLOGICAL }.first()
         assertNotNull("SYS LineData should not be null", state.sysLineData)
         
         // Should have data for Systolic
@@ -120,11 +120,10 @@ class ChartViewModelTest {
         assertEquals(1f, sysDataSet?.getEntryForIndex(1)?.x)
         assertEquals(2f, sysDataSet?.getEntryForIndex(2)?.x)
         
-        // Check labels map
-        val mar = LocalDate.of(2026, 3, 1).format(java.time.format.DateTimeFormatter.ofPattern("MMM"))
-        assertEquals("$mar 10\n07:00", state.xLabels[0f])
-        assertEquals("$mar 10\n12:00", state.xLabels[1f])
-        assertEquals("$mar 11\n07:00", state.xLabels[2f])
+        // Check labels map (sequential mode uses dd.MM format)
+        assertEquals("10.03", state.xLabels[0f])
+        assertEquals("10.03", state.xLabels[1f])
+        assertEquals("11.03", state.xLabels[2f])
     }
 
     @Test
@@ -139,7 +138,7 @@ class ChartViewModelTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         viewModel.uiState.filter { !it.isLoading }.first()
 
-        viewModel.setChartMode(ChartMode.SEQUENTIAL)
+        viewModel.setChartMode(ChartMode.CHRONOLOGICAL)
         // Only select slot 0 by toggling others off
         viewModel.toggleSlot(1)
         viewModel.toggleSlot(2)
@@ -151,7 +150,7 @@ class ChartViewModelTest {
         
         val state = viewModel.uiState.filter { 
             it.selectedSlots == setOf(0) && 
-            it.chartMode == ChartMode.SEQUENTIAL && 
+            it.chartMode == ChartMode.CHRONOLOGICAL && 
             !it.selectedTypes.contains(MeasurementType.DIA) &&
             !it.selectedTypes.contains(MeasurementType.PULSE)
         }.first()
@@ -161,9 +160,9 @@ class ChartViewModelTest {
         assertEquals(0f, sysDataSet?.getEntryForIndex(0)?.x)
         assertEquals(1f, sysDataSet?.getEntryForIndex(1)?.x) // Index 1 is the next selected measurement
         
-        val mar = LocalDate.of(2026, 3, 1).format(java.time.format.DateTimeFormatter.ofPattern("MMM"))
-        assertEquals("$mar 10\n07:00", state.xLabels[0f])
-        assertEquals("$mar 11\n07:00", state.xLabels[1f])
+        // Check labels map (sequential mode uses dd.MM format)
+        assertEquals("10.03", state.xLabels[0f])
+        assertEquals("11.03", state.xLabels[1f])
         assertTrue("XLabels should not contain excluded indices", !state.xLabels.containsKey(2f))
     }
 

@@ -32,12 +32,16 @@
     <string name="label_measurement_format">SYS/DIA @PULSE</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
+    <string name="error_syntax_format">Invalid format. Use: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Systolic must be higher than Diastolic</string>
+    <string name="error_range_out_of_human">Value outside human range (e.g., 40-300)</string>
     <string name="error_incorrect_measurements">Incorrect measurements</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Slot %2$d</string>
+    <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
     <string name="hypertension_warning">Hypertension Warning</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Hypotension</string>
     <string name="bp_level_normal">Normal</string>
     <string name="bp_level_elevated">Elevated</string>
     <string name="bp_level_high_normal">High Normal</string>
@@ -105,9 +109,9 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
-    <string name="label_chart_mode_daily">Daily</string>
-    <string name="label_chart_mode_sequential">Sequential</string>
-    <string name="label_chart_mode_distribution">Distribution</string>
+    <string name="label_chart_mode_trend_by_slot">By Slot</string>
+    <string name="label_chart_mode_chronological">Timeline</string>
+    <string name="label_chart_mode_summary">Summary</string>
     <string name="label_distribution_bar_chart">Frequency (Bar)</string>
     <string name="label_distribution_pie_chart">Frequency (Pie)</string>
     <string name="label_date_preset_7d">Last 7 Days</string>
@@ -150,8 +154,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">UnderPressure tracker</string>
     <string name="onboarding_slide1_description">Underpressure is a simple and private blood pressure and pulse tracker that keeps all your data only on your phone. No servers, no data collection, no ads, no payments.</string>
-    <string name="onboarding_slide2_caption">Up to 4 slots each day</string>
-    <string name="onboarding_slide2_description">You can add up to 4 time slots for measurement. Data input is possible within +/- 15 minutes from each. You can setup slots in the Settings or by simply tapping on the time in the table header.</string>
+    <string name="onboarding_slide2_caption">Scheduled &amp; Anytime Readings</string>
+    <string name="onboarding_slide2_description">Set up to 4 time slots for scheduled readings, or log readings anytime using the + button. Switch between Scheduled and All views to see your data.</string>
     <string name="onboarding_slide3_caption">Measurements Chart</string>
     <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
     <string name="onboarding_slide4_caption">Share Data</string>
@@ -165,4 +169,20 @@
     <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?\n\nYou can always change the slot time in Settings or by simply tapping on the time in the table header.</string>
     <string name="hint_edit_slot">You can change value of slot %1$d by tapping on it.</string>
     <string name="hint_cannot_create_slot">Cannot create slot now. It must be at least 30 minutes away from neighbor slots. Use the next slot at %1$s.</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Scheduled</string>
+    <string name="view_all">All</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Systolic</string>
+    <string name="chart_legend_diastolic">Diastolic</string>
+    <string name="chart_legend_pulse">Pulse</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Anytime</string>
+    <string name="label_anytime_reading">Anytime Reading</string>
+    <string name="label_anytime_count">%1$d anytime</string>
+    <string name="hint_anytime_confirmation">It\'s close to %1$s. Add as anytime reading?</string>
+    <string name="button_anytime_yes">Yes, Anytime</string>
 </resources>

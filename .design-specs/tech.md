@@ -34,6 +34,12 @@ This is a modern **Android mobile application** built for the Android platform.
 - **System Services**: AlarmManager for scheduling measurement reminders.
 - **Receivers**: BroadcastReceivers for alarm events and boot completion.
 
+## Monitoring & Dashboard Technologies (if applicable)
+- **Dashboard Framework**: [N/A - Mobile App]
+- **Real-time Communication**: [N/A - Mobile App]
+- **Visualization Libraries**: [e.g., MPAndroidChart or Compose Canvas]
+- **State Management**: [StateFlow within ViewModels]
+
 ## Development Environment
 
 ### Build & Development Tools

@@ -32,9 +32,12 @@
     <string name="label_measurement_format">СИС/ДИА @ПУЛЬС</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Неверный формат. Используйте: СИС/ДИА @ПУЛЬС</string>
+    <string name="error_syntax_format">Неверный формат. Используйте: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Систолическое давление должно быть выше диастолического</string>
+    <string name="error_range_out_of_human">Значение вне пределов нормы (например, 40-300)</string>
     <string name="error_incorrect_measurements">Некорректные измерения</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
+    <string name="dialog_measurement_slot_info">Слот %1$d (%2$s)</string>
     <string name="hypertension_warning">Предупреждение о гипертонии</string>
 
     <!-- Search Dialog -->
@@ -92,9 +95,9 @@
     <string name="error_invalid_date_format">Неверный формат даты</string>
     <string name="error_from_after_to">Дата «С» не может быть позже даты «По»</string>
     <string name="placeholder_date">ГГГГ-ММ-ДД</string>
-    <string name="label_chart_mode_daily">Дневной</string>
-    <string name="label_chart_mode_sequential">Последовательный</string>
-    <string name="label_chart_mode_distribution">Распределение</string>
+    <string name="label_chart_mode_trend_by_slot">По слотам</string>
+    <string name="label_chart_mode_chronological">Хронология</string>
+    <string name="label_chart_mode_summary">Сводка</string>
     <string name="label_distribution_bar_chart">Частота (Столбцы)</string>
     <string name="label_distribution_pie_chart">Частота (Круговая)</string>
     <string name="label_date_preset_7d">Последние 7 дней</string>
@@ -118,6 +121,7 @@
     <string name="button_show_onboarding">Показать знакомство</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Гипотония</string>
     <string name="bp_level_normal">Нормальное</string>
     <string name="bp_level_elevated">Повышенное</string>
     <string name="bp_level_high_normal">Высокое нормальное</string>
@@ -149,8 +153,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — это простой и приватный трекер артериального давления и пульса, который хранит все ваши данные только на вашем телефоне. Никаких серверов, сбора данных, рекламы или платежей.</string>
-    <string name="onboarding_slide2_caption">До 4 слотов ежедневно</string>
-    <string name="onboarding_slide2_description">Вы можете добавить до 4 временных слотов для измерения. Ввод данных возможен в пределах +/- 15 минут от каждого. Настроить слоты можно в Настройках или просто нажав на время в заголовке таблицы.</string>
+    <string name="onboarding_slide2_caption">Запланированные и произвольные измерения</string>
+    <string name="onboarding_slide2_description">Настройте до 4 временных слотов для запланированных измерений или добавляйте измерения в любое время с помощью кнопки +. Переключайтесь между просмотрами «Запланированные» и «Все», чтобы просмотреть данные.</string>
     <string name="onboarding_slide3_caption">График измерений</string>
     <string name="onboarding_slide3_description">Вы можете просматривать и делиться графиками измерений. Настройте графики для нужных слотов и данных.</string>
     <string name="onboarding_slide4_caption">Поделиться данными</string>
@@ -164,4 +168,20 @@
     <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
     <string name="warning_large_date_range">Выбран большой диапазон дат. Читаемость и производительность могут быть затронуты.</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Систолическое</string>
+    <string name="chart_legend_diastolic">Диастолическое</string>
+    <string name="chart_legend_pulse">Пульс</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Запланированные</string>
+    <string name="view_all">Все</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Внеплановые</string>
+    <string name="label_anytime_reading">Внеплановое измерение</string>
+    <string name="label_anytime_count">%1$d внеплановых</string>
+    <string name="hint_anytime_confirmation">Близко к %1$s. Добавить как внеплановое измерение?</string>
+    <string name="button_anytime_yes">Да, внепланово</string>
 </resources>

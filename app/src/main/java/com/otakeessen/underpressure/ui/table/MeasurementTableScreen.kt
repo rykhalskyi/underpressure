@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import android.content.Intent
+import androidx.compose.material.icons.filled.FormatLineSpacing
+import androidx.compose.material.icons.filled.List
 import androidx.core.content.FileProvider
 import com.otakeessen.underpressure.ui.table.ShareViewModel.ShareEvent
 import kotlinx.coroutines.flow.collectLatest
@@ -58,6 +62,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.TextButton
 import com.otakeessen.underpressure.ui.table.components.ClassificationSummary
 import com.otakeessen.underpressure.ui.table.components.ShareDialog
+import com.otakeessen.underpressure.ui.table.components.AnytimeSection
 import com.otakeessen.underpressure.ui.table.components.DayRow
 import com.otakeessen.underpressure.ui.table.components.MeasurementEditDialog
 import com.otakeessen.underpressure.ui.table.components.SearchDialog
@@ -151,6 +156,16 @@ fun MeasurementTableScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
+                    IconButton(onClick = { viewModel.toggleViewMode() }) {
+                        Icon(
+                            imageVector = Icons.Default.FormatLineSpacing,
+                            contentDescription = "Toggle View Mode",
+                            tint = if (uiState.isAllView) 
+                                MaterialTheme.colorScheme.primary 
+                            else 
+                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                     IconButton(onClick = { viewModel.toggleSummaryVisibility() }) {
                         Icon(
                             imageVector = Icons.Default.Analytics,
@@ -333,6 +348,7 @@ fun MeasurementTableScreen(
                                     is TableItem.YearHeader -> "year-${item.year}"
                                     is TableItem.MonthHeader -> "month-${item.yearMonth}"
                                     is TableItem.DayRow -> "day-${item.summary.date}"
+                                    is TableItem.AnytimeSection -> "anytime-${item.date}"
                                 }
                             }
                         ) { item ->
@@ -368,6 +384,18 @@ fun MeasurementTableScreen(
                                         color = MaterialTheme.colorScheme.outlineVariant
                                     )
                                 }
+                                is TableItem.AnytimeSection -> {
+                                    AnytimeSection(
+                                        readings = item.readings,
+                                        guidelines = uiState.activeGuidelines,
+                                        isSummaryVisible = uiState.isSummaryVisible
+                                    )
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        thickness = 0.5.dp,
+                                        color = MaterialTheme.colorScheme.outlineVariant
+                                    )
+                                }
                             }
                         }
                     }
@@ -375,13 +403,37 @@ fun MeasurementTableScreen(
             }
         }
 
-        if (uiState.dialogState.isOpen) {
+        if (uiState.dialogState.isOpen && uiState.dialogState.isAnytimeConfirmationVisible) {
+            AlertDialog(
+                onDismissRequest = { viewModel.onDismissAnytimeConfirmation() },
+                title = { Text(stringResource(R.string.dialog_title_add)) },
+                text = {
+                    Text(
+                        stringResource(
+                            R.string.hint_anytime_confirmation,
+                            uiState.dialogState.nearestSlotLabel
+                        )
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.onConfirmAnytime() }) {
+                        Text(stringResource(R.string.button_anytime_yes))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.onDismissAnytimeConfirmation() }) {
+                        Text(stringResource(R.string.button_cancel))
+                    }
+                }
+            )
+        }
+
+        if (uiState.dialogState.isOpen && !uiState.dialogState.isAnytimeConfirmationVisible) {
             MeasurementEditDialog(
                 state = uiState.dialogState,
                 guidelines = uiState.activeGuidelines,
                 onValueChange = { viewModel.onMeasurementInputChanged(it) },
                 onSave = { viewModel.onSaveMeasurement(it) },
-                onAcceptGuidance = { viewModel.onAcceptGuidance() },
                 onDismiss = { viewModel.onDialogDismiss() }
             )
         }

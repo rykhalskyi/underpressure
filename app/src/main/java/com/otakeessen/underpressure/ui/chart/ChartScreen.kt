@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +17,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDialog
@@ -56,7 +52,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -68,9 +63,7 @@ import com.otakeessen.underpressure.ui.chart.components.BloodPressurePieChart
 import com.otakeessen.underpressure.ui.chart.components.ChartConfigurationSheet
 import kotlinx.coroutines.flow.collectLatest
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,7 +145,7 @@ fun ChartScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            val bitmaps = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                            val bitmaps = if (uiState.chartMode == ChartMode.SUMMARY) {
                                 listOfNotNull(captureBarBitmap?.invoke(), capturePieBitmap?.invoke())
                             } else {
                                 listOfNotNull(captureSysBitmap?.invoke(), captureDiaBitmap?.invoke(), capturePulseBitmap?.invoke())
@@ -166,7 +159,7 @@ fun ChartScreen(
                             
                             finalBitmap?.let { viewModel.onShareChart(it) }
                         },
-                        enabled = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                        enabled = if (uiState.chartMode == ChartMode.SUMMARY) {
                             uiState.distributionBarData != null
                         } else {
                             uiState.sysLineData != null || uiState.diaLineData != null || uiState.pulseLineData != null
@@ -200,9 +193,9 @@ fun ChartScreen(
                     ) {
                         Text(
                             text = stringResource(when(mode) {
-                                ChartMode.DAILY -> R.string.label_chart_mode_daily
-                                ChartMode.SEQUENTIAL -> R.string.label_chart_mode_sequential
-                                ChartMode.DISTRIBUTION -> R.string.label_chart_mode_distribution
+                                ChartMode.TREND_BY_SLOT -> R.string.label_chart_mode_trend_by_slot
+                                ChartMode.CHRONOLOGICAL -> R.string.label_chart_mode_chronological
+                                ChartMode.SUMMARY -> R.string.label_chart_mode_summary
                             }),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -234,7 +227,7 @@ fun ChartScreen(
                 } else {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                         Column(modifier = Modifier.fillMaxSize()) {
-                            if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                            if (uiState.chartMode == ChartMode.SUMMARY) {
                                 // Bar Chart
                                 if (uiState.distributionBarData != null) {
                                     Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -267,7 +260,34 @@ fun ChartScreen(
                                         )
                                     }
                                 }
-                            } else {
+                            } else {                                val sysLabel = stringResource(uiState.typeLabelResIds[MeasurementType.SYS] ?: R.string.chart_legend_systolic)
+                                val diaLabel = stringResource(uiState.typeLabelResIds[MeasurementType.DIA] ?: R.string.chart_legend_diastolic)
+                                val pulseLabel = stringResource(uiState.typeLabelResIds[MeasurementType.PULSE] ?: R.string.chart_legend_pulse)
+                                val localize: (String, String, String, String) -> String = { label, sys, dia, pulse ->
+                                    when {
+                                        label.endsWith(" - SYS") -> label.replace("SYS", sys)
+                                        label.endsWith(" - DIA") -> label.replace("DIA", dia)
+                                        label.endsWith(" - PULSE") -> label.replace("PULSE", pulse)
+                                        label == "Systolic" -> sys
+                                        label == "Diastolic" -> dia
+                                        label == "Pulse" -> pulse
+                                        label == "SYS (7-day avg)" -> "$sys (7-day avg)"
+                                        label == "DIA (7-day avg)" -> "$dia (7-day avg)"
+                                        label == "PULSE (7-day avg)" -> "$pulse (7-day avg)"
+                                        else -> label
+                                    }
+                                }
+
+                                uiState.sysLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+                                uiState.diaLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+                                uiState.pulseLineData?.dataSets?.forEach { ds ->
+                                    ds.label = localize(ds.label ?: "", sysLabel, diaLabel, pulseLabel)
+                                }
+
                                 // Systolic Chart
                                 if (uiState.sysLineData != null) {
                                     BloodPressureChart(
@@ -367,7 +387,7 @@ fun ChartScreen(
                         FilterChip(
                             selected = uiState.selectedSlots.contains(index),
                             onClick = { 
-                                val canToggleOff = if (uiState.chartMode == ChartMode.DISTRIBUTION) {
+                                val canToggleOff = if (uiState.chartMode == ChartMode.SUMMARY) {
                                     uiState.selectedSlots.size > 1
                                 } else {
                                     uiState.selectedSlots.size > 1 || uiState.showRollingAverage
@@ -379,6 +399,24 @@ fun ChartScreen(
                                 }
                             },
                             label = { Text(label) }
+                        )
+                    }
+                    item {
+                        FilterChip(
+                            selected = uiState.selectedSlots.contains(-1),
+                            onClick = { 
+                                val canToggleOff = if (uiState.chartMode == ChartMode.SUMMARY) {
+                                    uiState.selectedSlots.size > 1
+                                } else {
+                                    uiState.selectedSlots.size > 1 || uiState.showRollingAverage
+                                }
+                                if (uiState.selectedSlots.contains(-1) && !canToggleOff) {
+                                    // Do nothing
+                                } else {
+                                    viewModel.toggleSlot(-1)
+                                }
+                            },
+                            label = { Text(stringResource(R.string.label_anytime_readings)) }
                         )
                     }
                     item {

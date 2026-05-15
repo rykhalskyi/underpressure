@@ -94,8 +94,8 @@ class MeasurementTableViewModelTest {
     }
 
     @Test
-    fun `FAB is disabled and shows edit hint when slot in window is already filled`() = runTest {
-        // Current time is 12:00. Slot is at 12:10.
+    fun `FAB shows hint when within 15 min and slot has existing reading`() = runTest {
+        // Current time is 12:00. Slot is at 12:10 (within +15 min), with existing data.
         val settings = AppSettingsEntity(
             slotTimes = listOf("12:10"),
             slotActiveFlags = listOf(true)
@@ -111,74 +111,73 @@ class MeasurementTableViewModelTest {
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertFalse(state.isFabEnabled)
+        assertNull(state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
         assertEquals("edit_slot|1", state.fabHint)
     }
 
     @Test
-    fun `Example 1 - suggested time 30 mins from neighbor before`() = runTest {
-        // it is 10.10. there's a slot 1 09.50. Suggest slot 2 with time 10.20.
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
+    fun `FAB opens direct anytime when more than 30 min BEFORE slot`() = runTest {
+        // Current time is 12:00. Slot is at 12:35 (35 min in future, >30 min BEFORE).
         val settings = AppSettingsEntity(
-            slotTimes = listOf("09:50", "15:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, false, false, false),
-            slotModifiedFlags = listOf(true, false, false, false)
+            slotTimes = listOf("12:35"),
+            slotActiveFlags = listOf(true)
         )
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
         
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
         
         val state = viewModel.uiState.first { !it.isLoading }
         assertTrue(state.isFabEnabled)
+        assertEquals(-1, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
+    }
+
+    @Test
+    fun `FAB opens direct anytime when more than 15 min AFTER slot`() = runTest {
+        // Current time is 12:20. Slot is at 12:00 (20 min past, >15 min AFTER).
+        val clock1220 = Clock.fixed(Instant.parse("2023-10-27T12:20:00Z"), ZoneId.of("UTC"))
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("12:00", "18:00", "22:00"),
+            slotActiveFlags = listOf(true, false, false, false)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1220, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        assertTrue(state.isFabEnabled)
+        assertEquals(-1, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
+    }
+
+    @Test
+    fun `FAB shows anytime confirmation when between 15-30 min BEFORE slot`() = runTest {
+        // Current time is 12:00. Slot is at 12:20 (20 min in the future, within 15-30 min BEFORE).
+        val settings = AppSettingsEntity(
+            slotTimes = listOf("12:20"),
+            slotActiveFlags = listOf(true)
+        )
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        val state = viewModel.uiState.first { !it.isLoading }
+        assertTrue(state.isFabEnabled)
+        assertEquals(0, state.fabTargetSlotIndex)
         assertTrue(state.isGuidanceRequired)
-        assertEquals("10:20", state.dialogState.suggestedSlotTime)
     }
 
     @Test
-    fun `Example 2 - suggested time 30 mins from neighbor after`() = runTest {
-        // it is 10.10 there's a slot 10.30. Suggest time 10.00
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
-        val settings = AppSettingsEntity(
-            slotTimes = listOf("10:30", "15:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, false, false, false),
-            slotModifiedFlags = listOf(true, false, false, false)
-        )
-        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
-        every { settingsRepository.getSettings() } returns flowOf(settings)
-        
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
-        
-        val state = viewModel.uiState.first { !it.isLoading }
-        assertEquals("10:00", state.dialogState.suggestedSlotTime)
-    }
-
-    @Test
-    fun `Example 3 - conflict hint when squeezed between slots`() = runTest {
-        // it is 10.10 There're both slots 09.50 and 10.30
-        val clock1010 = Clock.fixed(Instant.parse("2023-10-27T10:10:00Z"), ZoneId.of("UTC"))
-        val settings = AppSettingsEntity(
-            slotTimes = listOf("09:50", "10:30", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, true, false, false),
-            slotModifiedFlags = listOf(true, true, false, false)
-        )
-        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
-        every { settingsRepository.getSettings() } returns flowOf(settings)
-        
-        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1010, alarmScheduler)
-        
-        val state = viewModel.uiState.first { !it.isLoading }
-        assertFalse(state.isFabEnabled)
-        assertEquals("cannot_create|10:30", state.fabHint)
-    }
-
-    @Test
-    fun `Rule 4 - all slots modified and outside window shows standard hint`() = runTest {
-        // Current time is 14:00. Closest slot is 12:00 (too far).
+    fun `FAB opens anytime dialog when over 30 min from nearest slot`() = runTest {
+        // Current time is 14:00. Closest slot is 12:00 (120 min diff).
         val clock1400 = Clock.fixed(Instant.parse("2023-10-27T14:00:00Z"), ZoneId.of("UTC"))
         val settings = AppSettingsEntity(
             slotTimes = listOf("08:00", "12:00", "18:00", "22:00"),
-            slotActiveFlags = listOf(true, true, true, true),
-            slotModifiedFlags = listOf(true, true, true, true)
+            slotActiveFlags = listOf(true, true, true, true)
         )
         every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
         every { settingsRepository.getSettings() } returns flowOf(settings)
@@ -186,8 +185,9 @@ class MeasurementTableViewModelTest {
         viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, clock1400, alarmScheduler)
         
         val state = viewModel.uiState.first { !it.isLoading }
-        assertFalse(state.isFabEnabled)
-        assertEquals("all_modified", state.fabHint)
+        assertTrue(state.isFabEnabled)
+        assertEquals(-1, state.fabTargetSlotIndex)
+        assertFalse(state.isGuidanceRequired)
     }
 
     @Test
@@ -253,6 +253,62 @@ class MeasurementTableViewModelTest {
         val todayRow = state.items.find { it.date == today }
         
         assertTrue("Future filled slot SHOULD be clickable for editing", todayRow?.clickableSlots?.contains(0) == true)
+    }
+
+    @Test
+    fun `toggleViewMode saves setting to repository`() = runTest {
+        val settings = AppSettingsEntity(tableIsAllView = false)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        viewModel.toggleViewMode()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { settingsRepository.saveSettings(match { it.tableIsAllView }) }
+    }
+
+    @Test
+    fun `toggleSummaryVisibility saves setting to repository`() = runTest {
+        val settings = AppSettingsEntity(tableIsSummaryVisible = true)
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        viewModel.toggleSummaryVisibility()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify { settingsRepository.saveSettings(match { !it.tableIsSummaryVisible }) }
+    }
+
+    @Test
+    fun `onSaveMeasurement auto-switches to All view when first anytime reading is added`() = runTest {
+        val settings = AppSettingsEntity(tableIsAllView = false, slotTimes = listOf("01:00"))
+        every { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
+        every { settingsRepository.getSettings() } returns flowOf(settings)
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { settingsRepository.saveSettings(any()) } returns Unit
+        coEvery { measurementRepository.saveMeasurement(any()) } returns 1L
+
+        viewModel = MeasurementTableViewModel(measurementRepository, settingsRepository, fixedClock, alarmScheduler)
+        
+        // Wait for UI state to reflect farSettings
+        viewModel.uiState.first { !it.isLoading }
+
+        // Open dialog in anytime mode
+        viewModel.onFabClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        assertTrue("Dialog should be in flexible mode", viewModel.uiState.value.dialogState.isFlexibleMode)
+        
+        viewModel.onSaveMeasurement("120/80")
+        testDispatcher.scheduler.advanceUntilIdle()
+        
+        coVerify { settingsRepository.saveSettings(match { it.tableIsAllView }) }
     }
 
     @Test

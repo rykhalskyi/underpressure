@@ -1,23 +1,27 @@
 package com.otakeessen.underpressure.ui.table.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -43,83 +46,48 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.ClassificationResult
 import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
 
-/**
- * Dialog for entering or editing a blood pressure measurement.
- */
 @Composable
 fun MeasurementEditDialog(
     state: MeasurementDialogState,
     guidelines: BpGuidelines,
     onValueChange: (TextFieldValue) -> Unit,
     onSave: (String) -> Unit,
-    onAcceptGuidance: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (!state.isOpen) return
 
-    if (state.isGuidanceVisible) {
-        AlertDialog(
-            modifier = modifier,
-            onDismissRequest = onDismiss,
-            title = {
-                Text(text = stringResource(R.string.guidance_title))
-            },
-            text = {
-                Text(
-                    text = stringResource(
-                        R.string.guidance_message,
-                        state.slotIndex + 1,
-                        state.suggestedSlotTime
-                    )
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = onAcceptGuidance) {
-                    Text(stringResource(R.string.button_ok))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(R.string.button_cancel))
-                }
-            }
-        )
-        return
-    }
-
     val textFieldValue = state.inputValue
     val textValue = textFieldValue.text
     val validator = remember { BloodPressureValidator() }
-    
-    // Trim for validation to allow saving when pulse is omitted but delimiter is present
+
     val trimmedForValidation = textValue.trim().removeSuffix("@").removeSuffix("/").trim()
     val validationResult = validator.validate(trimmedForValidation)
-    
+
     val isError = textValue.isNotEmpty() && validationResult is ValidationResult.Error
-    
-    // Hypertension classification
+
     val classification = if (validationResult is ValidationResult.Success) {
         BloodPressureClassifier.classify(validationResult.systolic, validationResult.diastolic, guidelines)
     } else null
-    
-    val isHypertension = classification != null && classification.level >= BloodPressureLevel.STAGE_2
 
     val bpLevelText = classification?.let {
         stringResource(BpLevelMapper.getStringRes(it.level, guidelines))
     }
 
     val errorMessage = when (validationResult) {
-        is ValidationResult.Error.IncorrectMeasurements, 
-        is ValidationResult.Error.InvalidNumbers -> stringResource(R.string.error_incorrect_measurements)
-        else -> stringResource(R.string.error_invalid_format)
+        is ValidationResult.Error.EmptyInput -> ""
+        is ValidationResult.Error.InvalidFormat -> stringResource(R.string.error_syntax_format)
+        is ValidationResult.Error.LogicalError -> stringResource(R.string.error_logic_sys_dia)
+        is ValidationResult.Error.RangeError -> stringResource(R.string.error_range_out_of_human)
+        else -> ""
     }
-    
+
     val focusRequester = remember { FocusRequester() }
     val haptic = LocalHapticFeedback.current
     var lastLength by remember { mutableStateOf(textValue.length) }
@@ -130,7 +98,6 @@ fun MeasurementEditDialog(
         }
     }
 
-    // Trigger haptic feedback when a delimiter is added
     LaunchedEffect(textValue) {
         if (textValue.length > lastLength && (textValue.endsWith("/") || textValue.endsWith("@") || textValue.endsWith(" "))) {
             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
@@ -143,60 +110,64 @@ fun MeasurementEditDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = if (state.existingMeasurementId == null) 
-                    stringResource(R.string.dialog_title_add) 
+                text = if (state.existingMeasurementId == null)
+                    stringResource(R.string.dialog_title_add)
                 else stringResource(R.string.dialog_title_edit)
             )
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(R.string.dialog_measurement_slot_info, state.date, state.slotIndex + 1),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                // Format Legend
-                Row(
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                if (state.isFlexibleMode) {
+                    val nowFormatted = java.time.LocalTime.now()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
                     Text(
-                        text = "SYS / DIA @ PULSE",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        text = stringResource(R.string.label_anytime_reading) + " — $nowFormatted",
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
+                } else {
+                    Text(
+                        text = stringResource(
+                            R.string.dialog_measurement_slot_info,
+                            state.slotIndex + 1,
+                            state.slotTime
+                        ),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = state.date,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(32.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
                     if (classification != null) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        if (isHypertension) {
-                            Icon(
-                                imageVector = Icons.Default.Warning,
-                                contentDescription = null,
-                                tint = classification.textColor,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                        }
-                        Text(
-                            text = bpLevelText ?: "",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = classification.textColor
+                        ClassificationStatusPill(
+                            classification = classification,
+                            text = bpLevelText ?: ""
                         )
                     }
                 }
-                
+
+                Spacer(modifier = Modifier.height(6.dp))
+
                 OutlinedTextField(
                     value = textFieldValue,
                     onValueChange = onValueChange,
                     label = { Text(stringResource(R.string.label_measurement_format)) },
                     placeholder = { Text(stringResource(R.string.placeholder_measurement)) },
                     isError = isError,
-                    supportingText = {
-                        if (isError) {
-                            Text(text = errorMessage)
-                        }
-                    },
+                    // supportingText is removed to prevent automatic height expansion
                     trailingIcon = {
                         if (textValue.isNotEmpty()) {
                             IconButton(onClick = { onValueChange(TextFieldValue("")) }) {
@@ -207,14 +178,6 @@ fun MeasurementEditDialog(
                             }
                         }
                     },
-                    colors = if (classification != null && classification.level != BloodPressureLevel.NORMAL && !isError) {
-                        OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = classification.textColor,
-                            unfocusedBorderColor = classification.textColor.copy(alpha = 0.5f),
-                            focusedLabelColor = classification.textColor,
-                            cursorColor = classification.textColor
-                        )
-                    } else OutlinedTextFieldDefaults.colors(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -231,6 +194,23 @@ fun MeasurementEditDialog(
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 40.dp) // Minimum height to support ~2 lines
+                ) {
+                    if (isError) {
+                        Text(
+                            text = errorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
@@ -247,4 +227,23 @@ fun MeasurementEditDialog(
             }
         }
     )
+}
+
+@Composable
+private fun ClassificationStatusPill(
+    classification: ClassificationResult,
+    text: String
+) {
+    Surface(
+        shape = RoundedCornerShape(16.dp),
+        color = classification.backgroundColor
+    ) {
+        Text(
+            text = text,
+            color = classification.textColor,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+        )
+    }
 }

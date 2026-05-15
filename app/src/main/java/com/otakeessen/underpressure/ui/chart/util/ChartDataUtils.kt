@@ -87,7 +87,7 @@ object ChartDataUtils {
 
         if (sorted.isEmpty()) return emptyList()
 
-        return if (mode == ChartMode.DAILY) {
+        return if (mode == ChartMode.TREND_BY_SLOT) {
             val valuesByDate = sorted.groupBy { LocalDate.parse(it.date, DATE_FORMATTER) }
                 .mapValues { (_, ms) -> ms.map { m -> m.valueForType(type) } }
             calculateDailyRollingAverage(valuesByDate, minDate)

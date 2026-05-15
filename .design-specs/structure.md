@@ -103,6 +103,7 @@ UnderPressure/
 - **UI Layer**: Depends on ViewModels and Domain repositories. Does not touch the database directly.
 - **Domain Layer**: Contains pure business logic and repository interfaces. Does not depend on Android-specific frameworks.
 - **Data Layer**: Implements Domain repositories and manages Room database entities and DAOs.
+- **Alarm Layer**: Handles system-level alarm scheduling and notification orchestration.
 
 ## Code Size Guidelines
 - **File size**: Aim for < 300 lines; split into smaller files or modules if exceeded.

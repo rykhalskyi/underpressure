@@ -37,5 +37,15 @@ class Converters {
     fun toBooleanList(value: String): List<Boolean> {
         return if (value.isEmpty()) emptyList() else value.split(",").map { it.toBoolean() }
     }
+
+    @TypeConverter
+    fun fromIntList(value: List<Int>): String {
+        return value.joinToString(",") { it.toString() }
+    }
+
+    @TypeConverter
+    fun toIntList(value: String): List<Int> {
+        return if (value.isEmpty()) emptyList() else value.split(",").map { it.toInt() }
+    }
 }
 

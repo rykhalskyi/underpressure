@@ -10,6 +10,16 @@ data class SlotData(
 )
 
 /**
+ * Data model for an anytime (flexible) reading not tied to a specific slot.
+ */
+data class AnytimeReadingData(
+    val timeStr: String,
+    val systolic: Int,
+    val diastolic: Int,
+    val pulse: Int
+)
+
+/**
  * Data model representing a summarized measurement for a single day with multiple slots.
  *
  * @property date The date of the measurement in YYYY-MM-DD format.

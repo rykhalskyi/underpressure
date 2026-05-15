@@ -32,9 +32,12 @@
     <string name="label_measurement_format">СИС/ДІА @ПУЛЬС</string>
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
+    <string name="error_syntax_format">Невірний формат. Використовуйте: 120/80 @72</string>
+    <string name="error_logic_sys_dia">Систолічний тиск має бути вищим за діастолічний</string>
+    <string name="error_range_out_of_human">Значення поза межами норми (наприклад, 40-300)</string>
     <string name="error_incorrect_measurements">Некоректні вимірювання</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">%1$s - Слот %2$d</string>
+    <string name="dialog_measurement_slot_info">Слот %1$d (%2$s)</string>
     <string name="hypertension_warning">Попередження про гіпертонію</string>
 
     <!-- Search Dialog -->
@@ -92,9 +95,9 @@
     <string name="error_invalid_date_format">Невірний формат дати</string>
     <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
     <string name="placeholder_date">РРРР-ММ-ДД</string>
-    <string name="label_chart_mode_daily">Денний</string>
-    <string name="label_chart_mode_sequential">Послідовний</string>
-    <string name="label_chart_mode_distribution">Розподіл</string>
+    <string name="label_chart_mode_trend_by_slot">За слотами</string>
+    <string name="label_chart_mode_chronological">Хронологія</string>
+    <string name="label_chart_mode_summary">Зведення</string>
     <string name="label_distribution_bar_chart">Частота (Стовпці)</string>
     <string name="label_distribution_pie_chart">Частота (Кругова)</string>
     <string name="label_date_preset_7d">Останні 7 днів</string>
@@ -118,6 +121,7 @@
     <string name="button_show_onboarding">Показати знайомство</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Гіпотонія</string>
     <string name="bp_level_normal">Нормальний</string>
     <string name="bp_level_elevated">Підвищений</string>
     <string name="bp_level_high_normal">Високий нормальний</string>
@@ -149,8 +153,8 @@
     <!-- Onboarding -->
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — це простий і приватний трекер артеріального тиску та пульсу, який зберігає всі ваші дані лише на вашому телефоні. Жодних серверів, збору даних, реклами чи платежів.</string>
-    <string name="onboarding_slide2_caption">До 4 слотів щодня</string>
-    <string name="onboarding_slide2_description">Ви можете додати до 4 часових слотів для вимірювання. Введення даних можливе в межах +/- 15 хвилин від кожного. Налаштувати слоти можна в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
+    <string name="onboarding_slide2_caption">Заплановані та довільні вимірювання</string>
+    <string name="onboarding_slide2_description">Налаштуйте до 4 часових слотів для запланованих вимірювань або додавайте вимірювання в будь-який час за допомогою кнопки +. Перемикайтеся між переглядами «Заплановані» та «Всі», щоб переглянути дані.</string>
     <string name="onboarding_slide3_caption">Графік вимірювань</string>
     <string name="onboarding_slide3_description">Ви можете переглядати та ділитися графіками вимірювань. Налаштуйте графіки для потрібних слотів і даних.</string>
     <string name="onboarding_slide4_caption">Поділитися даними</string>
@@ -164,4 +168,20 @@
     <string name="guidance_message">Схоже, ви намагаєтесь додати вимірювання не в той час. UnderPressure працює за фіксованими часовими слотами, щоб вимірювання були точнішими та регулярними. Хочете встановити час для Слот %1$d на %2$s і додати вимірювання зараз?\n\nВи завжди можете змінити час слота в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
     <string name="hint_edit_slot">Ви можете змінити значення слота %1$d, натиснувши на нього.</string>
     <string name="warning_large_date_range">Вибрано великий діапазон дат. Читабельність та продуктивність можуть постраждати.</string>
+
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Систолічний</string>
+    <string name="chart_legend_diastolic">Діастолічний</string>
+    <string name="chart_legend_pulse">Пульс</string>
+
+    <!-- View Mode Toggle -->
+    <string name="view_scheduled">Заплановані</string>
+    <string name="view_all">Всі</string>
+
+    <!-- Anytime Readings -->
+    <string name="label_anytime_readings">Позапланові</string>
+    <string name="label_anytime_reading">Позапланове вимірювання</string>
+    <string name="label_anytime_count">%1$d позапланових</string>
+    <string name="hint_anytime_confirmation">Близько до %1$s. Додати як позапланове вимірювання?</string>
+    <string name="button_anytime_yes">Так, позапланово</string>
 </resources>

@@ -13,6 +13,7 @@ object BpLevelMapper {
      */
     fun getStringRes(level: BloodPressureLevel, guidelines: BpGuidelines): Int {
         return when (level) {
+            BloodPressureLevel.HYPOTENSION -> R.string.bp_level_hypotension
             BloodPressureLevel.NORMAL -> R.string.bp_level_normal
             BloodPressureLevel.ELEVATED -> if (guidelines == BpGuidelines.ESC_ESH) {
                 R.string.bp_level_high_normal

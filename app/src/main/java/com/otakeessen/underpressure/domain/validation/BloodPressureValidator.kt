@@ -11,10 +11,10 @@ sealed class ValidationResult {
     ) : ValidationResult()
 
     sealed class Error : ValidationResult() {
-        object EmptyInput : Error()
-        object InvalidFormat : Error()
-        object InvalidNumbers : Error()
-        object IncorrectMeasurements : Error()
+        data object EmptyInput : Error()
+        data object InvalidFormat : Error()
+        data object LogicalError : Error()
+        data object RangeError : Error()
     }
 }
 
@@ -47,15 +47,15 @@ class BloodPressureValidator {
 
             // Range checks
             if (sys < 40 || sys > 300 || dia < 20 || dia > 200) {
-                return ValidationResult.Error.IncorrectMeasurements
+                return ValidationResult.Error.RangeError
             }
             if (pulse != 0 && (pulse < 30 || pulse > 300)) {
-                return ValidationResult.Error.IncorrectMeasurements
+                return ValidationResult.Error.RangeError
             }
 
             // Logic check
             if (sys <= dia) {
-                return ValidationResult.Error.IncorrectMeasurements
+                return ValidationResult.Error.LogicalError
             }
 
             ValidationResult.Success(
@@ -64,7 +64,7 @@ class BloodPressureValidator {
                 pulse = pulse
             )
         } catch (e: Exception) {
-            ValidationResult.Error.InvalidNumbers
+            ValidationResult.Error.InvalidFormat
         }
     }
 }
