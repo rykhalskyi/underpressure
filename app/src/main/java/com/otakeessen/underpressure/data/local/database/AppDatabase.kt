@@ -21,7 +21,7 @@ import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
         MeasurementEntity::class,
         AppSettingsEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -97,6 +97,20 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartSelectedSlots TEXT NOT NULL DEFAULT '0,1,2,3,-1'")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartSelectedTypes TEXT NOT NULL DEFAULT 'SYS,DIA,PULSE'")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartShowRiskZones INTEGER NOT NULL DEFAULT 1")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartShowRollingAverage INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartShowInteractiveLegend INTEGER NOT NULL DEFAULT 1")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartMode TEXT NOT NULL DEFAULT 'TREND_BY_SLOT'")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN chartDatePreset TEXT NOT NULL DEFAULT 'ALL_TIME'")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN tableIsAllView INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE app_settings ADD COLUMN tableIsSummaryVisible INTEGER NOT NULL DEFAULT 1")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -104,7 +118,11 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "under_pressure_database"
                 )
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
+                .addMigrations(
+                    MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, 
+                    MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, 
+                    MIGRATION_7_8
+                )
                 .build()
                 INSTANCE = instance
                 instance

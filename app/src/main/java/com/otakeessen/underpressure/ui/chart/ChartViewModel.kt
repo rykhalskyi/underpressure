@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
@@ -45,16 +46,9 @@ class ChartViewModel(
     private val chartExportManager: ChartExportManager
 ) : ViewModel() {
 
-    private val _selectedSlots = MutableStateFlow(setOf(0, 1, 2, 3, -1))
-    private val _selectedTypes = MutableStateFlow(setOf(MeasurementType.SYS, MeasurementType.DIA, MeasurementType.PULSE))
     private val _fromDate = MutableStateFlow<LocalDate?>(null)
     private val _toDate = MutableStateFlow<LocalDate?>(null)
-    private val _chartMode = MutableStateFlow(ChartMode.TREND_BY_SLOT)
-    private val _datePreset = MutableStateFlow(DatePreset.ALL_TIME)
     private val _isConfigSheetOpen = MutableStateFlow(false)
-    private val _showRiskZones = MutableStateFlow(true)
-    private val _showRollingAverage = MutableStateFlow(false)
-    private val _showInteractiveLegend = MutableStateFlow(true)
     private val _slotColors = MutableStateFlow(ChartColorUtil.getSlotColors())
     private val _levelColors = MutableStateFlow(ChartColorUtil.getLevelColors())
 
@@ -70,31 +64,35 @@ class ChartViewModel(
 
     private val configFlow = combine(
         combine(
-            combine(_selectedSlots, _selectedTypes) { slots, types -> slots to types },
-            combine(_fromDate, _toDate, _slotColors) { from, to, sc -> Triple(from, to, sc) },
+            settingsRepository.getSettings(),
+            _fromDate,
+            _toDate,
+            _slotColors,
             _levelColors
-        ) { (slots, types), (from, to, slotColors), levelColors ->
-            ConfigBase(slots, types, from, to, slotColors, levelColors)
+        ) { settings, from, to, sc, lc ->
+            val slots = settings?.chartSelectedSlots?.toSet() ?: setOf(0, 1, 2, 3, -1)
+            val types = settings?.chartSelectedTypes?.mapNotNull { 
+                try { MeasurementType.valueOf(it) } catch (e: Exception) { null } 
+            }?.toSet() ?: setOf(MeasurementType.SYS, MeasurementType.DIA, MeasurementType.PULSE)
+            
+            ConfigBase(slots, types, from, to, sc, lc)
         },
         combine(
-            _chartMode,
-            _datePreset,
+            settingsRepository.getSettings(),
             _isConfigSheetOpen
-        ) { mode, preset, open ->
+        ) { settings, open ->
+            val mode = try { ChartMode.valueOf(settings?.chartMode ?: "TREND_BY_SLOT") } catch (e: Exception) { ChartMode.TREND_BY_SLOT }
+            val preset = try { DatePreset.valueOf(settings?.chartDatePreset ?: "ALL_TIME") } catch (e: Exception) { DatePreset.ALL_TIME }
             ConfigMode(mode, preset, open)
         },
-        combine(
-            _showRiskZones,
-            _showRollingAverage,
-            _showInteractiveLegend
-        ) { riskZones, rolling, legend ->
-            ConfigVisuals(riskZones, rolling, legend)
-        }
-    ) { base, mode, visuals ->
+        settingsRepository.getSettings()
+    ) { base, mode, settings ->
         ConfigState(
             base.slots, base.types, base.fromDate, base.toDate,
             mode.chartMode, mode.datePreset, mode.isOpen,
-            visuals.showRiskZones, visuals.showRollingAverage, visuals.showInteractiveLegend,
+            settings?.chartShowRiskZones ?: true,
+            settings?.chartShowRollingAverage ?: false,
+            settings?.chartShowInteractiveLegend ?: true,
             base.slotColors, base.levelColors
         )
     }
@@ -446,30 +444,37 @@ class ChartViewModel(
     }
 
     fun toggleSlot(slotIndex: Int) {
-        val current = _selectedSlots.value
-        val isSelected = current.contains(slotIndex)
-        
-        val canToggleOff = if (_chartMode.value == ChartMode.SUMMARY) {
-            current.size > 1
-        } else {
-            current.size > 1 || _showRollingAverage.value
-        }
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            val current = settings.chartSelectedSlots.toSet()
+            val isSelected = current.contains(slotIndex)
+            val chartMode = try { ChartMode.valueOf(settings.chartMode) } catch (e: Exception) { ChartMode.TREND_BY_SLOT }
+            
+            val canToggleOff = if (chartMode == ChartMode.SUMMARY) {
+                current.size > 1
+            } else {
+                current.size > 1 || settings.chartShowRollingAverage
+            }
 
-        if (isSelected && !canToggleOff) return
+            if (isSelected && !canToggleOff) return@launch
 
-        _selectedSlots.value = if (isSelected) {
-            current - slotIndex
-        } else {
-            current + slotIndex
+            val next = if (isSelected) current - slotIndex else current + slotIndex
+            settingsRepository.saveSettings(settings.copy(chartSelectedSlots = next.toList().sorted()))
         }
     }
 
     fun toggleType(type: MeasurementType) {
-        val current = _selectedTypes.value
-        _selectedTypes.value = if (current.contains(type)) {
-            if (current.size <= 1) current else current - type
-        } else {
-            current + type
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            val current = settings.chartSelectedTypes.toSet()
+            val typeStr = type.name
+            
+            val next = if (current.contains(typeStr)) {
+                if (current.size <= 1) current else current - typeStr
+            } else {
+                current + typeStr
+            }
+            settingsRepository.saveSettings(settings.copy(chartSelectedTypes = next.toList()))
         }
     }
 
@@ -478,46 +483,64 @@ class ChartViewModel(
     }
 
     fun toggleRiskZones() {
-        _showRiskZones.value = !_showRiskZones.value
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(chartShowRiskZones = !settings.chartShowRiskZones))
+        }
     }
 
     fun toggleRollingAverage() {
-        if (_showRollingAverage.value && _selectedSlots.value.isEmpty()) return
-        _showRollingAverage.value = !_showRollingAverage.value
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            if (settings.chartShowRollingAverage && settings.chartSelectedSlots.isEmpty()) return@launch
+            settingsRepository.saveSettings(settings.copy(chartShowRollingAverage = !settings.chartShowRollingAverage))
+        }
     }
 
     fun toggleInteractiveLegend() {
-        _showInteractiveLegend.value = !_showInteractiveLegend.value
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(chartShowInteractiveLegend = !settings.chartShowInteractiveLegend))
+        }
     }
 
     fun setChartMode(mode: ChartMode) {
-        if (mode == ChartMode.SUMMARY) {
-            if (_selectedSlots.value.isEmpty()) {
-                _selectedSlots.value = setOf(0, 1, 2, 3)
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            var updatedSettings = settings.copy(chartMode = mode.name)
+            
+            if (mode == ChartMode.SUMMARY) {
+                if (updatedSettings.chartSelectedSlots.isEmpty()) {
+                    updatedSettings = updatedSettings.copy(chartSelectedSlots = listOf(0, 1, 2, 3))
+                }
+                updatedSettings = updatedSettings.copy(chartShowRollingAverage = false)
             }
-            _showRollingAverage.value = false
+            settingsRepository.saveSettings(updatedSettings)
         }
-        _chartMode.value = mode
     }
 
     fun setDatePreset(preset: DatePreset) {
-        _datePreset.value = preset
-        val today = LocalDate.now()
-        when (preset) {
-            DatePreset.ALL_TIME -> {
-                _fromDate.value = null
-                _toDate.value = null
-            }
-            DatePreset.LAST_7_DAYS -> {
-                _fromDate.value = today.minusDays(6)
-                _toDate.value = today
-            }
-            DatePreset.THIS_MONTH -> {
-                _fromDate.value = today.withDayOfMonth(1)
-                _toDate.value = today.withDayOfMonth(today.lengthOfMonth())
-            }
-            DatePreset.CUSTOM -> {
-                // Keep current values or let user pick
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(chartDatePreset = preset.name))
+            
+            val today = LocalDate.now()
+            when (preset) {
+                DatePreset.ALL_TIME -> {
+                    _fromDate.value = null
+                    _toDate.value = null
+                }
+                DatePreset.LAST_7_DAYS -> {
+                    _fromDate.value = today.minusDays(6)
+                    _toDate.value = today
+                }
+                DatePreset.THIS_MONTH -> {
+                    _fromDate.value = today.withDayOfMonth(1)
+                    _toDate.value = today.withDayOfMonth(today.lengthOfMonth())
+                }
+                DatePreset.CUSTOM -> {
+                    // Keep current values or let user pick
+                }
             }
         }
     }
@@ -525,7 +548,11 @@ class ChartViewModel(
     fun setCustomDateRange(from: LocalDate?, to: LocalDate?) {
         _fromDate.value = from
         _toDate.value = to
-        _datePreset.value = DatePreset.CUSTOM
+        
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+            settingsRepository.saveSettings(settings.copy(chartDatePreset = DatePreset.CUSTOM.name))
+        }
         
         // UX: Emit warning if range is too large (> 1 year)
         if (from != null && to != null && ChronoUnit.DAYS.between(from, to) > 365) {
