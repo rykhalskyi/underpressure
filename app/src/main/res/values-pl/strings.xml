@@ -95,9 +95,9 @@
     <string name="error_invalid_date_format">Nieprawidłowy format daty</string>
     <string name="error_from_after_to">Data początkowa nie może być późniejsza niż końcowa</string>
     <string name="placeholder_date">RRRR-MM-DD</string>
-    <string name="label_chart_mode_daily">Dzienne</string>
-    <string name="label_chart_mode_sequential">Sekwencyjne</string>
-    <string name="label_chart_mode_distribution">Rozkład</string>
+    <string name="label_chart_mode_trend_by_slot">Wg slotu</string>
+    <string name="label_chart_mode_chronological">Oś czasu</string>
+    <string name="label_chart_mode_summary">Podsumowanie</string>
     <string name="label_distribution_bar_chart">Częstotliwość (Słupkowy)</string>
     <string name="label_distribution_pie_chart">Częstotliwość (Kołowy)</string>
     <string name="label_date_preset_7d">Ostatnie 7 dni</string>
@@ -121,6 +121,7 @@
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Niedociśnienie</string>
     <string name="bp_level_normal">Prawidłowe</string>
     <string name="bp_level_elevated">Podwyższone</string>
     <string name="bp_level_high_normal">Wysokie prawidłowe</string>

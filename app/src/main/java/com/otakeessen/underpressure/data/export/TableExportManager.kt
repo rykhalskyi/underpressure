@@ -103,14 +103,14 @@ class TableExportManager(
                 if (isActive) index to allTimes.getOrElse(index) { "" } else null
             }
 
-        val headers = listOf("Date") + activeSlotsMap.map { it.second }
+        val headers = listOf("Date") + activeSlotsMap.map { "Slot ${it.first + 1}" } + listOf("Anytime")
 
         // Group by date and build rows
         val groupedByDate = filteredMeasurements.groupBy { it.date }
 
-        // Sort dates descending (or ascending? usually logs are desc, but export might be asc.
-        // Requirements example shows 2026-03-10 then 11. Let's do Ascending for export.)
+        // Sort dates ascending for export
         val sortedDates = groupedByDate.keys.sorted()
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
         val rows = mutableListOf<List<String>>()
         sortedDates.forEach { date ->
@@ -119,6 +119,7 @@ class TableExportManager(
             val rowValues = mutableListOf<String>()
             rowValues.add(date)
 
+            // Scheduled slots
             activeSlotsMap.forEach { (originalIndex, _) ->
                 val measurement = dailyMeasurements.find { it.slotIndex == originalIndex }
                 val cellValue = measurement?.let {
@@ -127,6 +128,23 @@ class TableExportManager(
                 } ?: ""
                 rowValues.add(cellValue)
             }
+
+            // Anytime slots
+            val anytimeReadings = dailyMeasurements.filter { it.slotIndex == -1 }
+                .sortedBy { it.timestamp }
+                .map { reading ->
+                    val bp = if (reading.pulse > 0) "${reading.systolic}/${reading.diastolic}@${reading.pulse}"
+                             else "${reading.systolic}/${reading.diastolic}"
+                    val time = if (reading.timestamp > 0) {
+                        val localTime = java.time.Instant.ofEpochMilli(reading.timestamp)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalTime()
+                        " (${localTime.format(timeFormatter)})"
+                    } else ""
+                    "$bp$time"
+                }
+            rowValues.add(anytimeReadings.joinToString("; "))
+
             rows.add(rowValues)
         }
 

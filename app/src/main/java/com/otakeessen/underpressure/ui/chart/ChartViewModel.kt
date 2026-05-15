@@ -45,18 +45,18 @@ class ChartViewModel(
     private val chartExportManager: ChartExportManager
 ) : ViewModel() {
 
-    private val _selectedSlots = MutableStateFlow(setOf(0, 1, 2, 3))
+    private val _selectedSlots = MutableStateFlow(setOf(0, 1, 2, 3, -1))
     private val _selectedTypes = MutableStateFlow(setOf(MeasurementType.SYS, MeasurementType.DIA, MeasurementType.PULSE))
     private val _fromDate = MutableStateFlow<LocalDate?>(null)
     private val _toDate = MutableStateFlow<LocalDate?>(null)
-    private val _chartMode = MutableStateFlow(ChartMode.DAILY)
+    private val _chartMode = MutableStateFlow(ChartMode.TREND_BY_SLOT)
     private val _datePreset = MutableStateFlow(DatePreset.ALL_TIME)
     private val _isConfigSheetOpen = MutableStateFlow(false)
     private val _showRiskZones = MutableStateFlow(true)
     private val _showRollingAverage = MutableStateFlow(false)
     private val _showInteractiveLegend = MutableStateFlow(true)
-    private val _slotColors = MutableStateFlow(listOf(Color.BLUE, Color.GREEN, Color.parseColor("#FF9800"), Color.parseColor("#E91E63")))
-    private val _levelColors = MutableStateFlow(listOf(Color.parseColor("#2E7D32"), Color.parseColor("#E6AC00"), Color.parseColor("#E67E22"), Color.parseColor("#C0392B"), Color.parseColor("#8B0000")))
+    private val _slotColors = MutableStateFlow(ChartColorUtil.getSlotColors())
+    private val _levelColors = MutableStateFlow(ChartColorUtil.getLevelColors())
 
     // ... (rest of the file as before, but ensure configFlow and uiState use colors)
 
@@ -181,12 +181,16 @@ class ChartViewModel(
         val xLabels = mutableMapOf<Float, String>()
         var sequentialMeasurements = emptyList<MeasurementEntity>()
 
-        if (config.mode == ChartMode.DAILY) {
-            // Logic for DAILY mode
+        if (config.mode == ChartMode.TREND_BY_SLOT) {
+            // Logic for TREND_BY_SLOT mode
             config.slots.forEach { slotIndex ->
                 val slotMeasurements = filtered.filter { it.slotIndex == slotIndex }
                 if (slotMeasurements.isNotEmpty()) {
-                    val slotTimeLabel = slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
+                    val slotTimeLabel = if (slotIndex == -1) {
+                        "Anytime"
+                    } else {
+                        slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
+                    }
                     config.types.forEach { type ->
                         val filteredSlotMeasurements = if (type == MeasurementType.PULSE) {
                             slotMeasurements.filter { it.pulse > 0 }
@@ -208,7 +212,8 @@ class ChartViewModel(
 
                             val label = "$slotTimeLabel - ${type.name}"
                             val dataSet = LineDataSet(entries, label).apply {
-                                val colorVal = ChartColorUtil.getSlotColors().getOrElse(slotIndex) { Color.BLACK }
+                                val colorIndex = if (slotIndex == -1) 4 else slotIndex
+                                val colorVal = ChartColorUtil.getSlotColors().getOrElse(colorIndex) { Color.BLACK }
                                 color = colorVal
                                 setCircleColor(colorVal)
                                 lineWidth = 1.5f
@@ -224,8 +229,8 @@ class ChartViewModel(
                     }
                 }
             }
-        } else if (config.mode == ChartMode.SEQUENTIAL) {
-            // Logic for SEQUENTIAL mode (One plot for all slots, including anytime readings)
+        } else if (config.mode == ChartMode.CHRONOLOGICAL) {
+            // Logic for CHRONOLOGICAL mode (One plot for all slots, including anytime readings)
             sequentialMeasurements = filtered
                 .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
                 .sortedWith(compareBy({ it.date }, { it.timestamp }))
@@ -280,10 +285,10 @@ class ChartViewModel(
                     }
                 }
             }
-        } else if (config.mode == ChartMode.DISTRIBUTION) {
-            // Logic for DISTRIBUTION mode
+        } else if (config.mode == ChartMode.SUMMARY) {
+            // Logic for SUMMARY mode
             val distributionData = filtered
-                .filter { config.slots.contains(it.slotIndex) }
+                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
             
             val counts = mutableMapOf<BloodPressureLevel, Int>()
             BloodPressureLevel.entries.forEach { counts[it] = 0 }
@@ -329,8 +334,8 @@ class ChartViewModel(
         }
 
         // 7-Day Rolling Average
-        if (config.showRollingAverage && config.mode != ChartMode.DISTRIBUTION) {
-            val allForAverage = if (config.mode == ChartMode.DAILY) filtered else sequentialMeasurements
+        if (config.showRollingAverage && config.mode != ChartMode.SUMMARY) {
+            val allForAverage = if (config.mode == ChartMode.TREND_BY_SLOT) filtered else sequentialMeasurements
             if (allForAverage.isNotEmpty()) {
                 config.types.forEach { type ->
                     val avgEntries = calculateRollingAverage(allForAverage, minDate, type, config.mode)
@@ -375,7 +380,7 @@ class ChartViewModel(
             chartMode = config.mode,
             selectedDatePreset = config.preset,
             isConfigSheetOpen = config.isOpen,
-            errorMessageResId = if (config.mode != ChartMode.DISTRIBUTION && sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
+            errorMessageResId = if (config.mode != ChartMode.SUMMARY && sysDataSets.isEmpty() && diaDataSets.isEmpty() && pulseDataSets.isEmpty()) R.string.error_no_slots_selected else null,
             slotTimes = slotTimes,
             xLabels = xLabels,
             showRiskZones = config.showRiskZones,
@@ -444,7 +449,7 @@ class ChartViewModel(
         val current = _selectedSlots.value
         val isSelected = current.contains(slotIndex)
         
-        val canToggleOff = if (_chartMode.value == ChartMode.DISTRIBUTION) {
+        val canToggleOff = if (_chartMode.value == ChartMode.SUMMARY) {
             current.size > 1
         } else {
             current.size > 1 || _showRollingAverage.value
@@ -486,7 +491,7 @@ class ChartViewModel(
     }
 
     fun setChartMode(mode: ChartMode) {
-        if (mode == ChartMode.DISTRIBUTION) {
+        if (mode == ChartMode.SUMMARY) {
             if (_selectedSlots.value.isEmpty()) {
                 _selectedSlots.value = setOf(0, 1, 2, 3)
             }

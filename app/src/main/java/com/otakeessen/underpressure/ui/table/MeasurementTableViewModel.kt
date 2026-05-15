@@ -129,9 +129,11 @@ class MeasurementTableViewModel(
         // Separate scheduled (slot-bound) and flexible (anytime) measurements
         val (scheduledMeasurements, flexibleMeasurements) = measurements.partition { !it.isFlexible }
 
-        val summarizedItems = scheduledMeasurements
-            .groupBy { it.date }
-            .map { (date, dailyMeasurements) ->
+        val allDates = (scheduledMeasurements.map { it.date } + flexibleMeasurements.map { it.date }).distinct()
+
+        val summarizedItems = allDates
+            .map { date ->
+                val dailyMeasurements = scheduledMeasurements.filter { it.date == date }
                 val activeSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
                     dailyMeasurements.find { it.slotIndex == originalIndex }?.let { 
                         uiIndex to SlotData(it.systolic, it.diastolic, it.pulse)

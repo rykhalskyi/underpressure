@@ -10,19 +10,19 @@ import java.time.LocalDate
  */
 enum class ChartMode {
     /**
-     * Grouped by date, X-axis represents calendar days.
+     * Grouped by date, X-axis represents calendar days, grouped by slots.
      */
-    DAILY,
+    TREND_BY_SLOT,
 
     /**
-     * Continuous flow of measurements, X-axis represents measurement index.
+     * Continuous flow of all measurements, X-axis represents individual reading instances.
      */
-    SEQUENTIAL,
+    CHRONOLOGICAL,
 
     /**
-     * Statistical distribution of blood pressure levels.
+     * Statistical breakdown of blood pressure levels.
      */
-    DISTRIBUTION
+    SUMMARY
 }
 
 /**
@@ -73,7 +73,7 @@ data class ChartUiState(
     val isConfigSheetOpen: Boolean = false,
     val errorMessageResId: Int? = null,
     val slotTimes: List<String> = emptyList(),
-    val chartMode: ChartMode = ChartMode.DAILY,
+    val chartMode: ChartMode = ChartMode.TREND_BY_SLOT,
     val xLabels: Map<Float, String> = emptyMap(),
     val selectedDatePreset: DatePreset = DatePreset.ALL_TIME,
     val showRiskZones: Boolean = false,

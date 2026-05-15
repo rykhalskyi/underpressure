@@ -95,9 +95,9 @@
     <string name="error_invalid_date_format">Ungültiges Datumsformat</string>
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
     <string name="placeholder_date">JJJJ-MM-TT</string>
-    <string name="label_chart_mode_daily">Täglich</string>
-    <string name="label_chart_mode_sequential">Sequenziell</string>
-    <string name="label_chart_mode_distribution">Verteilung</string>
+    <string name="label_chart_mode_trend_by_slot">Slot-Trend</string>
+    <string name="label_chart_mode_chronological">Zeitstrahl</string>
+    <string name="label_chart_mode_summary">Zusammenfassung</string>
     <string name="label_distribution_bar_chart">Häufigkeit (Balken)</string>
     <string name="label_distribution_pie_chart">Häufigkeit (Kreis)</string>
     <string name="label_date_preset_7d">Letzte 7 Tage</string>
@@ -121,6 +121,7 @@
     <string name="button_show_onboarding">Einführung anzeigen</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Hypotonie</string>
     <string name="bp_level_normal">Normal</string>
     <string name="bp_level_elevated">Erhöht</string>
     <string name="bp_level_high_normal">Hoch Normal</string>

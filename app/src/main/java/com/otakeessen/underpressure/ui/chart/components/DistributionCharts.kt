@@ -145,10 +145,12 @@ fun BloodPressurePieChart(
                 chart.setHoleColor(backgroundColor)
                 chart.setEntryLabelColor(textColor)
                 chart.legend.textColor = textColor
+                chart.setDrawEntryLabels(false) // Hide labels on the chart slices
 
                 pieData?.dataSets?.forEach { ds ->
                     val dataSet = ds as? com.github.mikephil.charting.data.PieDataSet
                     dataSet?.values?.forEach { entry ->
+                        // Labels remain on entries so they appear in the legend
                         val localized = resolveLevelLabel(context, entry.label)
                         entry.label = localized
                     }
@@ -164,6 +166,7 @@ fun BloodPressurePieChart(
 
 private fun resolveLevelLabel(context: Context, label: String): String {
     val resId = when (label.replace(" ", "_")) {
+        "HYPOTENSION" -> R.string.bp_level_hypotension
         "NORMAL" -> R.string.bp_level_normal
         "ELEVATED" -> R.string.bp_level_elevated
         "STAGE_1" -> R.string.bp_level_stage1

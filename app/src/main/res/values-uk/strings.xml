@@ -95,9 +95,9 @@
     <string name="error_invalid_date_format">Невірний формат дати</string>
     <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
     <string name="placeholder_date">РРРР-ММ-ДД</string>
-    <string name="label_chart_mode_daily">Денний</string>
-    <string name="label_chart_mode_sequential">Послідовний</string>
-    <string name="label_chart_mode_distribution">Розподіл</string>
+    <string name="label_chart_mode_trend_by_slot">За слотами</string>
+    <string name="label_chart_mode_chronological">Хронологія</string>
+    <string name="label_chart_mode_summary">Зведення</string>
     <string name="label_distribution_bar_chart">Частота (Стовпці)</string>
     <string name="label_distribution_pie_chart">Частота (Кругова)</string>
     <string name="label_date_preset_7d">Останні 7 днів</string>
@@ -121,6 +121,7 @@
     <string name="button_show_onboarding">Показати знайомство</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Гіпотонія</string>
     <string name="bp_level_normal">Нормальний</string>
     <string name="bp_level_elevated">Підвищений</string>
     <string name="bp_level_high_normal">Високий нормальний</string>

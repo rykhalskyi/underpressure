@@ -107,9 +107,9 @@ class ChartViewModelTest {
         viewModel.uiState.filter { !it.isLoading }.first()
 
         // Switch to Sequential Mode
-        viewModel.setChartMode(ChartMode.SEQUENTIAL)
+        viewModel.setChartMode(ChartMode.CHRONOLOGICAL)
         
-        val state = viewModel.uiState.filter { it.chartMode == ChartMode.SEQUENTIAL }.first()
+        val state = viewModel.uiState.filter { it.chartMode == ChartMode.CHRONOLOGICAL }.first()
         assertNotNull("SYS LineData should not be null", state.sysLineData)
         
         // Should have data for Systolic
@@ -138,7 +138,7 @@ class ChartViewModelTest {
         viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
         viewModel.uiState.filter { !it.isLoading }.first()
 
-        viewModel.setChartMode(ChartMode.SEQUENTIAL)
+        viewModel.setChartMode(ChartMode.CHRONOLOGICAL)
         // Only select slot 0 by toggling others off
         viewModel.toggleSlot(1)
         viewModel.toggleSlot(2)
@@ -150,7 +150,7 @@ class ChartViewModelTest {
         
         val state = viewModel.uiState.filter { 
             it.selectedSlots == setOf(0) && 
-            it.chartMode == ChartMode.SEQUENTIAL && 
+            it.chartMode == ChartMode.CHRONOLOGICAL && 
             !it.selectedTypes.contains(MeasurementType.DIA) &&
             !it.selectedTypes.contains(MeasurementType.PULSE)
         }.first()

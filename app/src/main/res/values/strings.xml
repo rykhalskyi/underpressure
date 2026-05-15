@@ -41,6 +41,7 @@
     <string name="hypertension_warning">Hypertension Warning</string>
 
     <!-- BP Levels -->
+    <string name="bp_level_hypotension">Hypotension</string>
     <string name="bp_level_normal">Normal</string>
     <string name="bp_level_elevated">Elevated</string>
     <string name="bp_level_high_normal">High Normal</string>
@@ -108,9 +109,9 @@
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
     <string name="placeholder_date">YYYY-MM-DD</string>
-    <string name="label_chart_mode_daily">Daily</string>
-    <string name="label_chart_mode_sequential">Sequential</string>
-    <string name="label_chart_mode_distribution">Distribution</string>
+    <string name="label_chart_mode_trend_by_slot">By Slot</string>
+    <string name="label_chart_mode_chronological">Timeline</string>
+    <string name="label_chart_mode_summary">Summary</string>
     <string name="label_distribution_bar_chart">Frequency (Bar)</string>
     <string name="label_distribution_pie_chart">Frequency (Pie)</string>
     <string name="label_date_preset_7d">Last 7 Days</string>

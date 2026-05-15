@@ -72,6 +72,16 @@ fun ChartConfigurationSheet(
                     Text(text = stringResource(R.string.label_slot_number, index + 1))
                 }
             }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(
+                    checked = selectedSlots.contains(-1),
+                    onCheckedChange = { onToggleSlot(-1) }
+                )
+                Text(text = stringResource(R.string.label_anytime_readings))
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

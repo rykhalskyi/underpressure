@@ -44,6 +44,22 @@ class TableFormatterTest {
     }
 
     @Test
+    fun `formatAsciiTable handles Anytime column`() {
+        val headers = listOf("Date", "07:00", "Anytime")
+        val rows = listOf(
+            listOf("2026-03-11", "120/80", "121/81@60 (14:30); 122/82 (19:00)"),
+            listOf("2026-03-12", "118/78", "—")
+        )
+        val dateRange = "2026-03-11 → 2026-03-12"
+
+        val result = formatter.formatAsciiTable(headers, rows, dateRange)
+
+        assertTrue(result.contains("Anytime"))
+        assertTrue(result.contains("121/81@60 (14:30)"))
+        assertTrue(result.contains("122/82 (19:00)"))
+    }
+
+    @Test
     fun `formatCsv produces correct layout`() {
         val headers = listOf("Date", "07:15", "12:00")
         val rows = listOf(
