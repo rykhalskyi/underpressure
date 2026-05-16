@@ -182,6 +182,6 @@
     <string name="label_anytime_readings">Позапланові</string>
     <string name="label_anytime_reading">Позапланове вимірювання</string>
     <string name="label_anytime_count">%1$d позапланових</string>
-    <string name="hint_anytime_confirmation">Близько до %1$s. Додати як позапланове вимірювання?</string>
+    <string name="hint_anytime_confirmation">Заплановане вимірювання зовсім близько о %1$s. Зачекаємо чи додати як позапланове?</string>
     <string name="button_anytime_yes">Так, позапланово</string>
 </resources>

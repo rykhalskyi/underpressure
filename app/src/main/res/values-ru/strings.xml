@@ -182,6 +182,6 @@
     <string name="label_anytime_readings">Внеплановые</string>
     <string name="label_anytime_reading">Внеплановое измерение</string>
     <string name="label_anytime_count">%1$d внеплановых</string>
-    <string name="hint_anytime_confirmation">Близко к %1$s. Добавить как внеплановое измерение?</string>
+    <string name="hint_anytime_confirmation">Запланированное измерение совсем скоро в %1$s. Подождем или добавить как внеплановое?</string>
     <string name="button_anytime_yes">Да, внепланово</string>
 </resources>

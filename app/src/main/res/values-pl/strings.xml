@@ -182,6 +182,6 @@
     <string name="label_anytime_readings">Dodatkowe</string>
     <string name="label_anytime_reading">Pomiar dodatkowy</string>
     <string name="label_anytime_count">%1$d dodatkowych</string>
-    <string name="hint_anytime_confirmation">Blisko %1$s. Dodać jako dodatkowy pomiar?</string>
+    <string name="hint_anytime_confirmation">Planowany pomiar jest bardzo blisko o %1$s. Zaczekać czy dodać jako dodatkowy pomiar?</string>
     <string name="button_anytime_yes">Tak, dodatkowy</string>
 </resources>

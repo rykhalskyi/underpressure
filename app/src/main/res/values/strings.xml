@@ -183,6 +183,6 @@
     <string name="label_anytime_readings">Anytime</string>
     <string name="label_anytime_reading">Anytime Reading</string>
     <string name="label_anytime_count">%1$d anytime</string>
-    <string name="hint_anytime_confirmation">It\'s close to %1$s. Add as anytime reading?</string>
+    <string name="hint_anytime_confirmation">The scheduled measurement is very close at %1$s. Should we wait or add as an anytime reading?</string>
     <string name="button_anytime_yes">Yes, Anytime</string>
 </resources>

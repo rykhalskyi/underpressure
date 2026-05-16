@@ -182,6 +182,6 @@
     <string name="label_anytime_readings">Unterwegs</string>
     <string name="label_anytime_reading">Unterwegs-Messung</string>
     <string name="label_anytime_count">%1$d unterwegs</string>
-    <string name="hint_anytime_confirmation">Nah an %1$s. Als unterwegs-Messung hinzufügen?</string>
+    <string name="hint_anytime_confirmation">Die geplante Messung ist bald um %1$s. Sollen wir warten oder als unterwegs-Messung hinzufügen?</string>
     <string name="button_anytime_yes">Ja, unterwegs</string>
 </resources>
