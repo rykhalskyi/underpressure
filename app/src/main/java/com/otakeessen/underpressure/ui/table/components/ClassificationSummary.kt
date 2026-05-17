@@ -71,31 +71,63 @@ fun ClassificationSummary(
             }
         }
 
-        // Legend with percentages
-        Column(modifier = Modifier.padding(top = 8.dp)) {
+        // Legend with percentages and ranges
+        Column(modifier = Modifier.padding(top = 12.dp)) {
             BloodPressureLevel.entries.forEach { level ->
                 val count = stats[level] ?: 0
                 if (count > 0) {
                     val percentage = (count / total * 100).toInt()
                     val labelRes = BpLevelMapper.getStringRes(level, guidelines)
+                    val rangeRes = BpLevelMapper.getRangeStringRes(level, guidelines)
+                    
                     Row(
-                        modifier = Modifier.padding(vertical = 2.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
                         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
                                 .padding(end = 8.dp)
-                                .size(12.dp) // use size for square
+                                .size(12.dp)
                                 .background(level.toColor(), RoundedCornerShape(2.dp))
                         )
+                        
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(labelRes),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = " (${stringResource(rangeRes)})",
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Light,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
                         Text(
-                            text = "${stringResource(labelRes)}: $percentage%",
+                            text = "${percentage}%",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
             }
         }
+
+        // Source Attribution
+        Text(
+            text = stringResource(BpLevelMapper.getSourceStringRes(guidelines)),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            modifier = Modifier.padding(top = 16.dp)
+        )
     }
 }
