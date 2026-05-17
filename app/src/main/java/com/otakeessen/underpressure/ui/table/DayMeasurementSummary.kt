@@ -13,6 +13,7 @@ data class SlotData(
  * Data model for an anytime (flexible) reading not tied to a specific slot.
  */
 data class AnytimeReadingData(
+    val id: Long,
     val timeStr: String,
     val systolic: Int,
     val diastolic: Int,

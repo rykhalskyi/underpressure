@@ -386,9 +386,11 @@ fun MeasurementTableScreen(
                                 }
                                 is TableItem.AnytimeSection -> {
                                     AnytimeSection(
+                                        date = item.date,
                                         readings = item.readings,
                                         guidelines = uiState.activeGuidelines,
-                                        isSummaryVisible = uiState.isSummaryVisible
+                                        isSummaryVisible = uiState.isSummaryVisible,
+                                        onReadingClick = viewModel::onAnytimeReadingClicked
                                     )
                                     HorizontalDivider(
                                         modifier = Modifier.padding(horizontal = 16.dp),
@@ -495,4 +497,3 @@ fun MeasurementTableScreen(
         }
     }
 }
-

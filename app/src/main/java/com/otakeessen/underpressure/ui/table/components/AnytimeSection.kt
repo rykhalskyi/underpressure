@@ -1,5 +1,6 @@
 package com.otakeessen.underpressure.ui.table.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,14 +22,20 @@ import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.ui.table.AnytimeReadingData
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
+import java.time.LocalDate
 
 @Composable
 fun AnytimeSection(
+    date: String,
     readings: List<AnytimeReadingData>,
     guidelines: BpGuidelines,
     isSummaryVisible: Boolean,
+    onReadingClick: (String, Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val todayStr = LocalDate.now().toString()
+    val isToday = date == todayStr
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -53,6 +60,10 @@ fun AnytimeSection(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .then(
+                        if (isToday) Modifier.clickable { onReadingClick(date, reading.id) }
+                        else Modifier
+                    )
                     .padding(vertical = 2.dp)
             ) {
                 Text(

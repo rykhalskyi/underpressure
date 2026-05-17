@@ -46,6 +46,11 @@ interface MeasurementRepository {
     suspend fun getAllMeasurementsSync(): List<MeasurementEntity>
 
     /**
+     * Retrieves a single measurement by its ID (one-shot).
+     */
+    suspend fun getMeasurementByIdSync(id: Long): MeasurementEntity?
+
+    /**
      * Searches for measurements by complex numeric criteria.
      */
     fun searchMeasurementsComplex(digits: List<String>): Flow<List<MeasurementEntity>>

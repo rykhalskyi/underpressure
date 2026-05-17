@@ -173,6 +173,7 @@ class MeasurementTableViewModel(
                         localTime.format(timeFormatter)
                     } else "??:??"
                     AnytimeReadingData(
+                        id = entity.id,
                         timeStr = timeFormatted,
                         systolic = entity.systolic,
                         diastolic = entity.diastolic,
@@ -461,6 +462,18 @@ class MeasurementTableViewModel(
     }
 
     /**
+     * Called when an anytime reading is clicked for editing.
+     */
+    fun onAnytimeReadingClicked(date: String, readingId: Long) {
+        val todayStr = LocalDate.now(clock).format(dateFormatter)
+        if (date != todayStr) return
+
+        viewModelScope.launch {
+            openDialog(date, -1, isFlexibleMode = true, existingId = readingId)
+        }
+    }
+
+    /**
      * Called when the main action button is clicked.
      */
     fun onFabClicked() {
@@ -511,11 +524,14 @@ class MeasurementTableViewModel(
     private suspend fun openDialog(
         date: String,
         originalSlotIndex: Int,
-        isFlexibleMode: Boolean = false
+        isFlexibleMode: Boolean = false,
+        existingId: Long? = null
     ) {
         val isScheduled = !isFlexibleMode && originalSlotIndex >= 0
 
-        val existing = if (isScheduled) {
+        val existing = if (existingId != null) {
+            measurementRepository.getMeasurementByIdSync(existingId)
+        } else if (isScheduled) {
             measurementRepository.getMeasurementsByDateSync(date)
                 .find { it.slotIndex == originalSlotIndex && !it.isFlexible }
         } else null
@@ -528,6 +544,11 @@ class MeasurementTableViewModel(
         val slotTime = if (isScheduled) {
             val settings = settingsRepository.getSettingsSync()
             settings?.slotTimes?.getOrNull(originalSlotIndex) ?: "??:??"
+        } else if (existing != null && existing.isFlexible) {
+             val localTime = java.time.Instant.ofEpochMilli(existing.timestamp)
+                .atZone(java.time.ZoneId.systemDefault())
+                .toLocalTime()
+            localTime.format(timeFormatter)
         } else {
             LocalTime.now(clock).format(timeFormatter)
         }
@@ -636,6 +657,10 @@ class MeasurementTableViewModel(
         if (validationResult is ValidationResult.Success) {
             viewModelScope.launch {
                 val now = System.currentTimeMillis()
+                val existingEntity = currentState.existingMeasurementId?.let {
+                    measurementRepository.getMeasurementByIdSync(it)
+                }
+
                 val entity = MeasurementEntity(
                     id = currentState.existingMeasurementId ?: 0,
                     date = currentState.date,
@@ -644,7 +669,8 @@ class MeasurementTableViewModel(
                     diastolic = validationResult.diastolic,
                     pulse = validationResult.pulse,
                     isFlexible = isFlexible,
-                    timestamp = now,
+                    timestamp = existingEntity?.timestamp ?: now,
+                    createdAt = existingEntity?.createdAt ?: now,
                     updatedAt = now
                 )
 
