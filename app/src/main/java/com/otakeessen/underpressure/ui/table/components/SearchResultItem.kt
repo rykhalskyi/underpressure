@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,11 +36,19 @@ fun SearchResultItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = measurement.date,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row {
+                Text(
+                    text = measurement.date,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = " (Slot ${measurement.slotIndex})",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
             val details = if (measurement.pulse > 0) {
                 stringResource(
                     R.string.label_measurement_details, 
@@ -64,6 +71,7 @@ fun SearchResultItem(
             Text(
                 text = details,
                 style = MaterialTheme.typography.bodySmall,
+                fontWeight = if (classification.isBold) FontWeight.Bold else FontWeight.Normal,
                 color = classification.textColor
             )
         }

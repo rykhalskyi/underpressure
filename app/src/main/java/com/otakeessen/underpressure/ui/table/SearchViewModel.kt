@@ -2,6 +2,10 @@ package com.otakeessen.underpressure.ui.table
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
+import com.otakeessen.underpressure.domain.BloodPressureLevel
+import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.repository.SettingsRepository
 import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -15,18 +19,21 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 import com.otakeessen.underpressure.R
+
+enum class SearchFilter {
+    NONE, HYPOTENSION, NORMAL, ELEVATED, STAGE_1, STAGE_2
+}
 
 /**
  * ViewModel for the Search Dialog.
  */
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel(
-    private val measurementRepository: MeasurementRepository
+    private val measurementRepository: MeasurementRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -34,39 +41,73 @@ class SearchViewModel(
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
+    private val _filter = MutableStateFlow(SearchFilter.NONE)
+    val filter = _filter.asStateFlow()
+
     private val _isLoading = MutableStateFlow(false)
 
-    val resultsState: StateFlow<SearchUiState> = _query
+    val resultsState: StateFlow<SearchUiState> = combine(_query, _filter, settingsRepository.getSettings()) { query, filter, settings ->
+        val guidelines = settings?.bpGuidelines ?: BpGuidelines.ESC_ESH
+        Triple(query, filter, guidelines)
+    }
         .debounce(300L)
         .distinctUntilChanged()
-        .flatMapLatest { query ->
-            if (query.isBlank()) {
+        .flatMapLatest { (query, filter, guidelines) ->
+            if (query.isBlank() && filter == SearchFilter.NONE) {
                 _isLoading.value = false
                 flowOf(SearchUiState())
             } else {
                 _isLoading.value = true
 
-                // Separate Date vs Numeric logic
-                // If it's a 4-digit number, treat it as a year (date search). 
-                // Otherwise check for hyphen or mixed digits/other chars to route correctly.
-                val isYearOnly = query.trim().matches(Regex("""^\d{4}$"""))
-                val containsHyphen = query.contains("-")
-                
-                if (isYearOnly || containsHyphen) {
-                    performDateSearch(query.trim())
+                val flow = if (query.isBlank()) {
+                    // Filter all measurements by level
+                    measurementRepository.getAllMeasurements()
+                        .flatMapLatest { results ->
+                            _isLoading.value = false
+                            flowOf(SearchUiState(query = query, results = results))
+                        }
                 } else {
-                    performNumericSearch(query.trim())
+                    // Separate Date vs Numeric logic
+                    val isYearOnly = query.trim().matches(Regex("""^\d{4}$"""))
+                    val containsHyphen = query.contains("-")
+
+                    if (isYearOnly || containsHyphen) {
+                        performDateSearch(query.trim())
+                    } else {
+                        performNumericSearch(query.trim())
+                    }
+                }
+
+                flow.flatMapLatest { state ->
+                    var results = state.results
+                    if (filter != SearchFilter.NONE) {
+                        val targetLevel = filter.toBloodPressureLevel()
+                        results = results.filter { 
+                            BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines).level == targetLevel
+                        }
+                    }
+                    flowOf(state.copy(results = results, isNoResults = results.isEmpty(), isLoading = false))
                 }
             }
-        }
-        .combine(_isLoading) { state, loading ->
-            state.copy(isLoading = loading)
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = SearchUiState()
         )
+
+    fun setFilter(filter: SearchFilter) {
+        _filter.value = if (_filter.value == filter) SearchFilter.NONE else filter
+    }
+
+    private fun SearchFilter.toBloodPressureLevel(): BloodPressureLevel? = when (this) {
+        SearchFilter.HYPOTENSION -> BloodPressureLevel.HYPOTENSION
+        SearchFilter.NORMAL -> BloodPressureLevel.NORMAL
+        SearchFilter.ELEVATED -> BloodPressureLevel.ELEVATED
+        SearchFilter.STAGE_1 -> BloodPressureLevel.STAGE_1
+        SearchFilter.STAGE_2 -> BloodPressureLevel.STAGE_2
+        SearchFilter.NONE -> null
+    }
 
     private fun performDateSearch(query: String) = run {
         val isValid = isValidDatePart(query)
@@ -133,5 +174,11 @@ class SearchViewModel(
 
     fun updateQuery(newQuery: String) {
         _query.value = newQuery
+        // If it's a numeric search (not date), clear filters
+        val isYearOnly = newQuery.trim().matches(Regex("""^\d{4}$"""))
+        val containsHyphen = newQuery.contains("-")
+        if (newQuery.isNotBlank() && !isYearOnly && !containsHyphen) {
+            _filter.value = SearchFilter.NONE
+        }
     }
-    }
+}
