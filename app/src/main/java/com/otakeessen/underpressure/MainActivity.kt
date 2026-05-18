@@ -58,9 +58,8 @@ class MainActivity : ComponentActivity() {
                         SettingsViewModel(settingsRepository, alarmScheduler, importManager) as T
                     }
                     modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
-                        SearchViewModel(measurementRepository) as T
-                    }
-                    modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
+                        SearchViewModel(measurementRepository, settingsRepository) as T
+                    }                    modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
                         val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository)
                         ShareViewModel(exportManager) as T
                     }

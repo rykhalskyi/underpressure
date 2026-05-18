@@ -42,6 +42,10 @@ class MeasurementRepositoryImpl(
         return measurementDao.getAllSync()
     }
 
+    override suspend fun getMeasurementByIdSync(id: Long): MeasurementEntity? {
+        return measurementDao.getByIdSync(id)
+    }
+
     override fun searchMeasurementsComplex(digits: List<String>): Flow<List<MeasurementEntity>> {
         val s = digits.getOrNull(0)?.let { "%$it%" } ?: "%"
         val d = digits.getOrNull(1)?.let { "%$it%" } ?: "%"

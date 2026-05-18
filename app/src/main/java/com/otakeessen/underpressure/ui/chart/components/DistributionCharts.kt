@@ -8,22 +8,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.renderer.PieChartRenderer
+import com.github.mikephil.charting.utils.ViewPortHandler
 import com.otakeessen.underpressure.R
-import com.otakeessen.underpressure.domain.BloodPressureLevel
 
 @Composable
 fun BloodPressureBarChart(
@@ -36,8 +36,16 @@ fun BloodPressureBarChart(
     val gridColor = MaterialTheme.colorScheme.outlineVariant.toArgb()
     val backgroundColor = MaterialTheme.colorScheme.surface.toArgb()
     val context = LocalContext.current
-    val localizedLabels = remember(xLabels) {
+    val localizedLabels = remember(xLabels, context) {
         buildLocalizedLabelMap(context, xLabels)
+    }
+    
+    val barValueFormatter = remember(localizedLabels, xLabels) {
+        object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return localizedLabels[value] ?: xLabels[value] ?: value.toString()
+            }
+        }
     }
 
     Box(modifier = modifier) {
@@ -77,18 +85,41 @@ fun BloodPressureBarChart(
                 chart.axisLeft.textColor = textColor
                 chart.axisLeft.gridColor = gridColor
                 chart.legend.textColor = textColor
-
-                chart.xAxis.valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return localizedLabels[value] ?: xLabels[value] ?: value.toString()
-                    }
-                }
+                chart.xAxis.valueFormatter = barValueFormatter
                 
                 chart.data = barData
                 chart.data?.dataSets?.forEach { it.label = context.getString(R.string.label_bar_frequency) }
                 chart.invalidate()
             }
         )
+    }
+}
+
+private class SafePieChartRenderer(
+    chart: PieChart,
+    animator: ChartAnimator,
+    viewPortHandler: ViewPortHandler
+) : PieChartRenderer(chart, animator, viewPortHandler) {
+    override fun drawExtras(c: Canvas) {
+        drawHole(c)
+        // Accessing protected mDrawBitmap from Java class. 
+        // mDrawBitmap can be null if drawData hasn't been called or if width/height are 0.
+        mDrawBitmap?.get()?.let { bitmap ->
+            c.drawBitmap(bitmap, 0f, 0f, null)
+        }
+        drawCenterText(c)
+    }
+}
+
+private class SafePieChart(context: Context) : PieChart(context) {
+    init {
+        // Use custom renderer that handles null bitmap cache to prevent NPE during transitions
+        renderer = SafePieChartRenderer(this, animator, viewPortHandler)
+    }
+
+    override fun onDetachedFromWindow() {
+        data = null
+        super.onDetachedFromWindow()
     }
 }
 
@@ -106,7 +137,7 @@ fun BloodPressurePieChart(
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { context ->
-                PieChart(context).apply {
+                SafePieChart(context).apply {
                     description.isEnabled = false
                     setUsePercentValues(true)
                     setExtraOffsets(5f, 10f, 5f, 5f)
@@ -116,7 +147,7 @@ fun BloodPressurePieChart(
                     setTransparentCircleAlpha(110)
                     holeRadius = 58f
                     transparentCircleRadius = 61f
-                    setDrawCenterText(true)
+                    setDrawCenterText(false)
                     rotationAngle = 0f
                     isRotationEnabled = true
                     isHighlightPerTapEnabled = true
@@ -148,15 +179,14 @@ fun BloodPressurePieChart(
                 chart.setDrawEntryLabels(false) // Hide labels on the chart slices
 
                 pieData?.dataSets?.forEach { ds ->
-                    val dataSet = ds as? com.github.mikephil.charting.data.PieDataSet
+                    val dataSet = ds as? PieDataSet
                     dataSet?.values?.forEach { entry ->
                         // Labels remain on entries so they appear in the legend
-                        val localized = resolveLevelLabel(context, entry.label)
-                        entry.label = localized
+                        entry.label = resolveLevelLabel(context, entry.label)
                     }
                     ds.label = context.getString(R.string.label_pie_distribution)
                 }
-                
+
                 chart.data = pieData
                 chart.invalidate()
             }
@@ -164,7 +194,8 @@ fun BloodPressurePieChart(
     }
 }
 
-private fun resolveLevelLabel(context: Context, label: String): String {
+private fun resolveLevelLabel(context: Context, label: String?): String {
+    if (label == null) return ""
     val resId = when (label.replace(" ", "_")) {
         "HYPOTENSION" -> R.string.bp_level_hypotension
         "NORMAL" -> R.string.bp_level_normal

@@ -120,6 +120,26 @@
     <string name="label_privacy_policy">Политика конфиденциальности</string>
     <string name="button_show_onboarding">Показать знакомство</string>
 
+    <!-- BP Ranges AHA -->
+    <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_aha_normal">&lt; 120 / &lt; 80</string>
+    <string name="bp_range_aha_elevated">120-129 / &lt; 80</string>
+    <string name="bp_range_aha_stage1">130-139 / 80-89</string>
+    <string name="bp_range_aha_stage2">≥ 140 / ≥ 90</string>
+    <string name="bp_range_aha_crisis">≥ 180 / ≥ 120</string>
+
+    <!-- BP Ranges ESC -->
+    <string name="bp_range_esc_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_esc_normal">&lt; 130 / &lt; 85</string>
+    <string name="bp_range_esc_elevated">130-139 / 85-89</string>
+    <string name="bp_range_esc_stage1">140-159 / 90-99</string>
+    <string name="bp_range_esc_stage2">160-179 / 100-109</string>
+    <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
+
+    <string name="label_source_aha">Источник: Рекомендации AHA/ACC 2017</string>
+    <string name="label_source_esc">Источник: Рекомендации ESC/ESH 2018</string>
+    <string name="label_classification_stats_format">%1$d измерений (%2$d%%)</string>
+
     <!-- BP Levels -->
     <string name="bp_level_hypotension">Гипотония</string>
     <string name="bp_level_normal">Нормальное</string>
@@ -182,6 +202,6 @@
     <string name="label_anytime_readings">Внеплановые</string>
     <string name="label_anytime_reading">Внеплановое измерение</string>
     <string name="label_anytime_count">%1$d внеплановых</string>
-    <string name="hint_anytime_confirmation">Близко к %1$s. Добавить как внеплановое измерение?</string>
+    <string name="hint_anytime_confirmation">Запланированное измерение совсем скоро в %1$s. Подождем или добавить как внеплановое?</string>
     <string name="button_anytime_yes">Да, внепланово</string>
 </resources>

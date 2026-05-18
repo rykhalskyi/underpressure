@@ -120,6 +120,26 @@
     <string name="label_privacy_policy">Polityka prywatności</string>
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
+    <!-- BP Ranges AHA -->
+    <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_aha_normal">&lt; 120 / &lt; 80</string>
+    <string name="bp_range_aha_elevated">120-129 / &lt; 80</string>
+    <string name="bp_range_aha_stage1">130-139 / 80-89</string>
+    <string name="bp_range_aha_stage2">≥ 140 / ≥ 90</string>
+    <string name="bp_range_aha_crisis">≥ 180 / ≥ 120</string>
+
+    <!-- BP Ranges ESC -->
+    <string name="bp_range_esc_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_esc_normal">&lt; 130 / &lt; 85</string>
+    <string name="bp_range_esc_elevated">130-139 / 85-89</string>
+    <string name="bp_range_esc_stage1">140-159 / 90-99</string>
+    <string name="bp_range_esc_stage2">160-179 / 100-109</string>
+    <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
+
+    <string name="label_source_aha">Źródło: Wytyczne AHA/ACC 2017</string>
+    <string name="label_source_esc">Źródło: Wytyczne ESC/ESH 2018</string>
+    <string name="label_classification_stats_format">%1$d pomiarów (%2$d%%)</string>
+
     <!-- BP Levels -->
     <string name="bp_level_hypotension">Niedociśnienie</string>
     <string name="bp_level_normal">Prawidłowe</string>
@@ -182,6 +202,6 @@
     <string name="label_anytime_readings">Dodatkowe</string>
     <string name="label_anytime_reading">Pomiar dodatkowy</string>
     <string name="label_anytime_count">%1$d dodatkowych</string>
-    <string name="hint_anytime_confirmation">Blisko %1$s. Dodać jako dodatkowy pomiar?</string>
+    <string name="hint_anytime_confirmation">Planowany pomiar jest bardzo blisko o %1$s. Zaczekać czy dodać jako dodatkowy pomiar?</string>
     <string name="button_anytime_yes">Tak, dodatkowy</string>
 </resources>
