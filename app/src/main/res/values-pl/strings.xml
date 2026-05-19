@@ -204,4 +204,30 @@
     <string name="label_anytime_count">%1$d dodatkowych</string>
     <string name="hint_anytime_confirmation">Planowany pomiar jest bardzo blisko o %1$s. Zaczekać czy dodać jako dodatkowy pomiar?</string>
     <string name="button_anytime_yes">Tak, dodatkowy</string>
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Informacje o ciśnieniu krwi</string>
+    <string name="bp_info_what_is_title">Czym jest ciśnienie krwi?</string>
+    <string name="bp_info_what_is_desc">Siła, z jaką krew napiera na ściany tętnic. Mierzy się je dwiema liczbami:</string>
+    <string name="bp_info_systolic_title">Skurczowe (Górna/Pierwsza)</string>
+    <string name="bp_info_systolic_desc">Ciśnienie, gdy serce bije.</string>
+    <string name="bp_info_diastolic_title">Rozkurczowe (Dolna/Druga)</string>
+    <string name="bp_info_diastolic_desc">Ciśnienie, gdy serce odpoczywa między uderzeniami.</string>
+    <string name="bp_info_why_matters_title">Dlaczego to ważne</string>
+    <string name="bp_info_why_matters_desc">Obie liczby są krytyczne. Konsekwentnie wysokie ciśnienie może z czasem uszkodzić tętnice, prowadząc do chorób serca lub udaru.</string>
+    <string name="bp_info_silent_killer_title">"Cichy zabójca"</string>
+    <string name="bp_info_silent_killer_desc">Nadciśnienie często nie daje objawów. Regularne śledzenie to jedyny sposób, aby dowiedzieć się, czy Twoje poziomy są zdrowe.</string>
+    <string name="bp_info_when_to_see_doctor_title">Kiedy udać się do lekarza</string>
+    <string name="bp_info_when_to_see_doctor_desc">Jeśli Twoje odczyty są stale powyżej zakresu docelowego (np. 130/80 lub 140/90).</string>
+    <string name="bp_info_emergency_title">Nagły wypadek</string>
+    <string name="bp_info_emergency_desc">Jeśli osiągniesz "Przełom nadciśnieniowy" (180/120 lub wyższy), odczekaj 5 minut i zmierz ponownie. Jeśli pozostanie wysoki, natychmiast skontaktuj się ze służbami medycznymi.</string>
+    <string name="cd_bp_info">Informacje o ciśnieniu krwi</string>
+    <string name="label_source_prefix">Źródło:</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Jeśli Twoje ciśnienie krwi jest stale tak wysokie lub wyższe:</string>
+    <string name="_1_pause_and_re_test">1. Odczekaj i powtórz badanie</string>
+    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Odczekaj 5 minut, usiądź spokojnie i powtórz badanie. Jeśli nadal będzie wysokie, skonsultuj się z lekarzem.</string>
+    <string name="_2_check_for_emergency_symptoms">2. Sprawdź, czy występują objawy alarmowe</string>
+    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Jeśli masz wysokie ciśnienie krwi oraz objawy takie jak ból w klatce piersiowej, duszność, drętwienie, dezorientacja lub silny ból głowy, natychmiast wezwij pomoc medyczną.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Silne podwyższenie ciśnienia krwi (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Silne podwyższenie ciśnienia krwi (≥ 180/110)</string>
+    <string name="hint_cannot_create_slot">Nie można teraz utworzyć miejsca. Musi ono być oddalone o co najmniej 30 minut od sąsiednich miejsc. Użyj następnego miejsca o %1$s.</string>
 </resources>

@@ -187,7 +187,7 @@
     <string name="guidance_title">Das scheint nicht deine Messzeit zu sein</string>
     <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
-    <string name="warning_large_date_range">Gro?er Datumsbereich ausgewahlt. Lesbarkeit und Leistung konnen beeintrachtigt sein.</string>
+    <string name="warning_large_date_range">Großer Datumsbereich ausgewählt. Lesbarkeit und Leistung können beeinträchtigt sein.</string>
 
     <!-- Chart Legend -->
     <string name="chart_legend_systolic">Systolisch</string>
@@ -204,4 +204,30 @@
     <string name="label_anytime_count">%1$d unterwegs</string>
     <string name="hint_anytime_confirmation">Die geplante Messung ist bald um %1$s. Sollen wir warten oder als unterwegs-Messung hinzufügen?</string>
     <string name="button_anytime_yes">Ja, unterwegs</string>
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Informationen zum Blutdruck</string>
+    <string name="bp_info_what_is_title">Was ist Blutdruck?</string>
+    <string name="bp_info_what_is_desc">Die Kraft, mit der das Blut gegen die Arterienwände drückt. Er wird mit zwei Zahlen gemessen:</string>
+    <string name="bp_info_systolic_title">Systolisch (Oben/Erste)</string>
+    <string name="bp_info_systolic_desc">Druck, wenn Ihr Herz schlägt.</string>
+    <string name="bp_info_diastolic_title">Diastolisch (Unten/Zweite)</string>
+    <string name="bp_info_diastolic_desc">Druck, wenn Ihr Herz zwischen den Schlägen ruht.</string>
+    <string name="bp_info_why_matters_title">Warum das wichtig ist</string>
+    <string name="bp_info_why_matters_desc">Beide Zahlen sind kritisch. Ein konstant hoher Druck kann die Arterien mit der Zeit schädigen und zu Herzkrankheiten oder Schlaganfällen führen.</string>
+    <string name="bp_info_silent_killer_title">Der "Stille Killer"</string>
+    <string name="bp_info_silent_killer_desc">Bluthochdruck hat oft keine Symptome. Regelmäßiges Messen ist der einzige Weg zu wissen, ob Ihre Werte gesund sind.</string>
+    <string name="bp_info_when_to_see_doctor_title">Wann Sie einen Arzt aufsuchen sollten</string>
+    <string name="bp_info_when_to_see_doctor_desc">Wenn Ihre Messwerte konstant über Ihrem Zielbereich liegen (z. B. 130/80 oder 140/90).</string>
+    <string name="bp_info_emergency_title">Notfall</string>
+    <string name="bp_info_emergency_desc">Wenn Sie eine "Hypertensive Krise" (180/120 oder höher) erreichen, warten Sie 5 Minuten und messen Sie erneut. Wenn er hoch bleibt, kontaktieren Sie sofort den medizinischen Notdienst.</string>
+    <string name="cd_bp_info">Informationen zum Blutdruck</string>
+    <string name="label_source_prefix">Quelle:</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Wenn Ihr Blutdruck dauerhaft so hoch oder höher ist:</string>
+    <string name="_1_pause_and_re_test">1. Pause machen und erneut testen</string>
+    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Warten Sie 5 Minuten, sitzen Sie ruhig und testen Sie erneut. Wenn er hoch bleibt, konsultieren Sie Ihren Arzt.</string>
+    <string name="_2_check_for_emergency_symptoms">2. Auf Notfallsymptome prüfen</string>
+    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Wenn Sie hohen Blutdruck und Symptome wie Brustschmerzen, Kurzatmigkeit, Taubheit, Verwirrung oder starke Kopfschmerzen haben, suchen Sie sofort medizinische Notfallhilfe auf.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Starke Blutdruckerhöhung (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Starke Blutdruckerhöhung (≥ 180/110)</string>
+    <string name="hint_cannot_create_slot">Zeitfenster kann jetzt nicht erstellt werden. Es muss mindestens 30 Minuten von benachbarten Zeitfenstern entfernt sein. Verwenden Sie das nächste Zeitfenster um %1$s.</string>
 </resources>

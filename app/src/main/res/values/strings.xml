@@ -67,6 +67,7 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
+    <string name="label_source_prefix">Source:</string>
     <string name="label_source_aha">Source: AHA/ACC 2017 Guidelines</string>
     <string name="label_source_esc">Source: ESC/ESH 2018 Guidelines</string>
     <string name="label_classification_stats_format">%1$d readings (%2$d%%)</string>
@@ -98,6 +99,24 @@
     <string name="header_measurement_slots">Measurement Slots</string>
     <string name="label_slot_number">Slot %1$d</string>
     <string name="label_global_alarm">Global Alarm Reminders</string>
+
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Blood Pressure Information</string>
+    <string name="bp_info_what_is_title">What is Blood Pressure?</string>
+    <string name="bp_info_what_is_desc">The force of blood pushing against artery walls. It is measured with two numbers:</string>
+    <string name="bp_info_systolic_title">Systolic (Top/First)</string>
+    <string name="bp_info_systolic_desc">Pressure when your heart beats.</string>
+    <string name="bp_info_diastolic_title">Diastolic (Bottom/Second)</string>
+    <string name="bp_info_diastolic_desc">Pressure when your heart rests between beats.</string>
+    <string name="bp_info_why_matters_title">Why it Matters</string>
+    <string name="bp_info_why_matters_desc">Both numbers are critical. Consistent high pressure can damage arteries over time, leading to heart disease or stroke.</string>
+    <string name="bp_info_silent_killer_title">The \"Silent Killer\"</string>
+    <string name="bp_info_silent_killer_desc">Hypertension often has no symptoms. Regular tracking is the only way to know if your levels are healthy.</string>
+    <string name="bp_info_when_to_see_doctor_title">When to see a Doctor</string>
+    <string name="bp_info_when_to_see_doctor_desc">If your readings are consistently above your target range (e.g., 130/80 or 140/90).</string>
+    <string name="bp_info_emergency_title">Emergency</string>
+    <string name="bp_info_emergency_desc">If you hit a \"Hypertensive Crisis\" (180/120 or higher), wait 5 minutes and re-test. If it stays high, contact medical services immediately.</string>
+    <string name="cd_bp_info">Blood Pressure Information</string>
     <string name="label_active">Active</string>
     <string name="label_alarm">Remind</string>
     <string name="dialog_title_select_time">Select Time</string>
@@ -198,11 +217,19 @@
     <string name="chart_legend_systolic">Systolic</string>
     <string name="chart_legend_diastolic">Diastolic</string>
     <string name="chart_legend_pulse">Pulse</string>
-
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Anytime</string>
     <string name="label_anytime_reading">Anytime Reading</string>
     <string name="label_anytime_count">%1$d anytime</string>
     <string name="hint_anytime_confirmation">The scheduled measurement is very close at %1$s. Should we wait or add as an anytime reading?</string>
     <string name="button_anytime_yes">Yes, Anytime</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">If your blood pressure is consistently this high or higher:</string>
+    <string name="_1_pause_and_re_test">1. Pause and re-test</string>
+    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Wait 5 minutes, sit quietly, and re-test. If it remains high, consult your doctor.</string>
+    <string name="_2_check_for_emergency_symptoms">2. Check for emergency symptoms</string>
+    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">If you have high BP and symptoms like chest pain, shortness of breath, numbness, confusion, or severe headache, seek emergency medical care immediately.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Severe Blood Pressure Elevation (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Severe Blood Pressure Elevation (≥ 180/110)</string>
+
 </resources>
+

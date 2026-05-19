@@ -204,4 +204,30 @@
     <string name="label_anytime_count">%1$d внеплановых</string>
     <string name="hint_anytime_confirmation">Запланированное измерение совсем скоро в %1$s. Подождем или добавить как внеплановое?</string>
     <string name="button_anytime_yes">Да, внепланово</string>
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Информация об артериальном давлении</string>
+    <string name="bp_info_what_is_title">Что такое артериальное давление?</string>
+    <string name="bp_info_what_is_desc">Сила, с которой кровь давит на стенки артерий. Измеряется двумя числами:</string>
+    <string name="bp_info_systolic_title">Систолическое (Верхнее/Первое)</string>
+    <string name="bp_info_systolic_desc">Давление, когда ваше сердце бьется.</string>
+    <string name="bp_info_diastolic_title">Диастолическое (Нижнее/Второе)</string>
+    <string name="bp_info_diastolic_desc">Давление, когда ваше сердце отдыхает между ударами.</string>
+    <string name="bp_info_why_matters_title">Почему это важно</string>
+    <string name="bp_info_why_matters_desc">Оба числа критически важны. Постоянно высокое давление может со временем повредить артерии, что приведет к болезням сердца или инсульту.</string>
+    <string name="bp_info_silent_killer_title">"Тихий убийца"</string>
+    <string name="bp_info_silent_killer_desc">Гипертония часто протекает бессимптомно. Регулярное отслеживание — единственный способ узнать, здоровы ли ваши показатели.</string>
+    <string name="bp_info_when_to_see_doctor_title">Когда обратиться к врачу</string>
+    <string name="bp_info_when_to_see_doctor_desc">Если ваши показатели стабильно выше целевого диапазона (например, 130/80 или 140/90).</string>
+    <string name="bp_info_emergency_title">Чрезвычайная ситуация</string>
+    <string name="bp_info_emergency_desc">Если вы достигли "Гипертонического криза" (180/120 или выше), подождите 5 минут и перемерьте. Если давление остается высоким, немедленно свяжитесь с экстренными службами.</string>
+    <string name="cd_bp_info">Информация об артериальном давлении</string>
+    <string name="label_source_prefix">Источник:</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Если ваше артериальное давление постоянно такое же высокое или выше:</string>
+    <string name="_1_pause_and_re_test">1. Сделайте паузу и повторите замер</string>
+    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Подождите 5 минут, посидите спокойно и повторите замер. Если давление остается высоким, обратитесь к врачу.</string>
+    <string name="_2_check_for_emergency_symptoms">2. Проверьте наличие экстренных симптомов</string>
+    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Если у вас высокое давление и такие симптомы, как боль в груди, одышка, онемение, спутанность сознания или сильная головная боль, немедленно обратитесь за экстренной медицинской помощью.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильное повышение артериального давления (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Сильное повышение артериального давления (≥ 180/110)</string>
+    <string name="hint_cannot_create_slot">е удается создать слот. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
 </resources>
