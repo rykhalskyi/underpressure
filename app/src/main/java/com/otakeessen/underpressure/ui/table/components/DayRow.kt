@@ -1,10 +1,12 @@
 package com.otakeessen.underpressure.ui.table.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +26,8 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
 import com.otakeessen.underpressure.ui.table.DayMeasurementSummary
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -37,6 +41,7 @@ fun DayRow(
     summary: DayMeasurementSummary,
     slotCount: Int,
     guidelines: BpGuidelines,
+    activeTrackers: List<TrackerDefinition> = emptyList(),
     onCellClick: (slotIndex: Int) -> Unit,
     isSummaryVisible: Boolean,
     modifier: Modifier = Modifier
@@ -96,6 +101,19 @@ fun DayRow(
                     BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
                 }
                 
+                val trackerIndicator = data?.let { d ->
+                    activeTrackers.filter { t -> d.trackerValues.containsKey(t.id) }
+                        .joinToString("") { t -> 
+                            when {
+                                t.name.contains("Weight", ignoreCase = true) -> "⚖️"
+                                t.name.contains("Temp", ignoreCase = true) -> "🌡️"
+                                t.name.contains("Med", ignoreCase = true) || t.name.contains("Pill", ignoreCase = true) -> "💊"
+                                t.type == TrackerType.BOOLEAN -> "✅"
+                                else -> "📝"
+                            }
+                        }
+                } ?: ""
+
                 TableCell(
                     text = text, 
                     weight = 1f,
@@ -103,6 +121,7 @@ fun DayRow(
                     isBold = classification?.isBold ?: false,
                     textColor = if (isSummaryVisible) (classification?.textColor ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
                     backgroundColor = Color.Transparent,
+                    trackerIndicator = trackerIndicator,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
@@ -119,6 +138,7 @@ private fun RowScope.TableCell(
     isBold: Boolean = false,
     textColor: Color = Color.Unspecified,
     backgroundColor: Color = Color.Transparent,
+    trackerIndicator: String = "",
     onClick: (() -> Unit)? = null
 ) {
     Surface(
@@ -128,19 +148,31 @@ private fun RowScope.TableCell(
             .padding(horizontal = 2.dp)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
     ) {
-        Text(
-            text = text,
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 4.dp),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = textColor,
-                fontSize = fontSize,
-                fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
-                lineHeight = fontSize * 1.2f
-            ),
-            textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = text,
+                modifier = Modifier
+                    .padding(vertical = 4.dp, horizontal = 4.dp),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = textColor,
+                    fontSize = fontSize,
+                    fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
+                    lineHeight = fontSize * 1.2f
+                ),
+                textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            
+            if (trackerIndicator.isNotEmpty()) {
+                Text(
+                    text = trackerIndicator,
+                    fontSize = 8.sp,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 2.dp, end = 2.dp)
+                )
+            }
+        }
     }
 }

@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +50,9 @@ import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.ClassificationResult
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
@@ -57,6 +63,7 @@ fun MeasurementEditDialog(
     state: MeasurementDialogState,
     guidelines: BpGuidelines,
     onValueChange: (TextFieldValue) -> Unit,
+    onTrackerValueChange: (Long, TrackerValue) -> Unit,
     onSave: (String) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
@@ -116,7 +123,11 @@ fun MeasurementEditDialog(
             )
         },
         text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
                 if (state.isFlexibleMode) {
                     val nowFormatted = java.time.LocalTime.now()
                         .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
@@ -167,7 +178,6 @@ fun MeasurementEditDialog(
                     label = { Text(stringResource(R.string.label_measurement_format)) },
                     placeholder = { Text(stringResource(R.string.placeholder_measurement)) },
                     isError = isError,
-                    // supportingText is removed to prevent automatic height expansion
                     trailingIcon = {
                         if (textValue.isNotEmpty()) {
                             IconButton(onClick = { onValueChange(TextFieldValue("")) }) {
@@ -180,7 +190,7 @@ fun MeasurementEditDialog(
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = if (state.activeTrackers.isEmpty()) ImeAction.Done else ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
@@ -195,20 +205,36 @@ fun MeasurementEditDialog(
                         .focusRequester(focusRequester)
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                if (isError) {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 4.dp, start = 8.dp)
+                    )
+                }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 40.dp) // Minimum height to support ~2 lines
-                ) {
-                    if (isError) {
-                        Text(
-                            text = errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(top = 4.dp)
+                if (state.activeTrackers.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Additional Info",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    state.activeTrackers.forEach { tracker ->
+                        val currentValue = state.trackerValues[tracker.id] ?: TrackerValue(
+                            measurementId = state.existingMeasurementId ?: 0,
+                            trackerId = tracker.id
                         )
+                        
+                        TrackerInput(
+                            tracker = tracker,
+                            value = currentValue,
+                            onValueChange = { onTrackerValueChange(tracker.id, it) }
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
@@ -227,6 +253,51 @@ fun MeasurementEditDialog(
             }
         }
     )
+}
+
+@Composable
+fun TrackerInput(
+    tracker: TrackerDefinition,
+    value: TrackerValue,
+    onValueChange: (TrackerValue) -> Unit
+) {
+    when (tracker.type) {
+        TrackerType.FLOAT -> {
+            OutlinedTextField(
+                value = value.floatValue?.toString() ?: "",
+                onValueChange = { str ->
+                    val floatVal = str.replace(',', '.').toDoubleOrNull()
+                    onValueChange(value.copy(floatValue = floatVal))
+                },
+                label = { Text(tracker.name + (tracker.unit?.let { " ($it)" } ?: "")) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        TrackerType.BOOLEAN -> {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = value.booleanValue ?: false,
+                    onCheckedChange = { onValueChange(value.copy(booleanValue = it)) }
+                )
+                Text(text = tracker.name)
+            }
+        }
+        TrackerType.STRING -> {
+            OutlinedTextField(
+                value = value.stringValue ?: "",
+                onValueChange = { onValueChange(value.copy(stringValue = it)) },
+                label = { Text(tracker.name) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
 }
 
 @Composable

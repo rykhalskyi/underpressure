@@ -1,12 +1,15 @@
 package com.otakeessen.underpressure.ui.table
 
+import com.otakeessen.underpressure.domain.TrackerValue
+
 /**
  * Data model for a single measurement slot's values.
  */
 data class SlotData(
     val systolic: Int,
     val diastolic: Int,
-    val pulse: Int
+    val pulse: Int,
+    val trackerValues: Map<Long, TrackerValue> = emptyMap()
 )
 
 /**
@@ -17,7 +20,8 @@ data class AnytimeReadingData(
     val timeStr: String,
     val systolic: Int,
     val diastolic: Int,
-    val pulse: Int
+    val pulse: Int,
+    val trackerValues: Map<Long, TrackerValue> = emptyMap()
 )
 
 /**

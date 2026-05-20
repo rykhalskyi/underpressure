@@ -32,10 +32,15 @@ import com.otakeessen.underpressure.ui.table.SearchViewModel
 import com.otakeessen.underpressure.ui.table.ShareViewModel
 import com.otakeessen.underpressure.ui.theme.UnderPressureTheme
 
+import com.otakeessen.underpressure.data.repository.TrackerRepositoryImpl
+import com.otakeessen.underpressure.ui.trackers.TrackerManagementScreen
+import com.otakeessen.underpressure.ui.trackers.TrackerViewModel
+
 enum class Screen {
     Table,
     Settings,
-    Chart
+    Chart,
+    Trackers
 }
 
 class MainActivity : ComponentActivity() {
@@ -47,11 +52,12 @@ class MainActivity : ComponentActivity() {
                 val database = AppDatabase.getDatabase(applicationContext)
                 val settingsRepository = SettingsRepositoryImpl(database.appSettingsDao())
                 val measurementRepository = MeasurementRepositoryImpl(database.measurementDao())
+                val trackerRepository = TrackerRepositoryImpl(database.trackerDao())
                 val alarmScheduler = AlarmScheduler(applicationContext)
                 
                 return when {
                     modelClass.isAssignableFrom(MeasurementTableViewModel::class.java) -> {
-                        MeasurementTableViewModel(measurementRepository, settingsRepository, alarmScheduler = alarmScheduler) as T
+                        MeasurementTableViewModel(measurementRepository, settingsRepository, trackerRepository, alarmScheduler = alarmScheduler) as T
                     }
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
                         val importManager = TableImportManager(applicationContext, measurementRepository, settingsRepository)
@@ -59,13 +65,17 @@ class MainActivity : ComponentActivity() {
                     }
                     modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                         SearchViewModel(measurementRepository, settingsRepository) as T
-                    }                    modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
+                    }
+                    modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
                         val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository)
                         ShareViewModel(exportManager) as T
                     }
                     modelClass.isAssignableFrom(ChartViewModel::class.java) -> {
                         val chartExportManager = ChartExportManager(applicationContext)
-                        ChartViewModel(measurementRepository, settingsRepository, chartExportManager) as T
+                        ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager) as T
+                    }
+                    modelClass.isAssignableFrom(TrackerViewModel::class.java) -> {
+                        TrackerViewModel(trackerRepository) as T
                     }
                     else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
                 }
@@ -78,6 +88,7 @@ class MainActivity : ComponentActivity() {
     private val searchViewModel: SearchViewModel by viewModels { viewModelFactory }
     private val shareViewModel: ShareViewModel by viewModels { viewModelFactory }
     private val chartViewModel: ChartViewModel by viewModels { viewModelFactory }
+    private val trackerViewModel: TrackerViewModel by viewModels { viewModelFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,7 +130,8 @@ class MainActivity : ComponentActivity() {
                             searchViewModel = searchViewModel,
                             shareViewModel = shareViewModel,
                             onSettingsClick = { currentScreen = Screen.Settings },
-                            onChartClick = { currentScreen = Screen.Chart }
+                            onChartClick = { currentScreen = Screen.Chart },
+                            onTrackersClick = { currentScreen = Screen.Trackers }
                         )
                     }
                     Screen.Settings -> {
@@ -131,6 +143,12 @@ class MainActivity : ComponentActivity() {
                     Screen.Chart -> {
                         ChartScreen(
                             viewModel = chartViewModel,
+                            onBack = { currentScreen = Screen.Table }
+                        )
+                    }
+                    Screen.Trackers -> {
+                        TrackerManagementScreen(
+                            viewModel = trackerViewModel,
                             onBack = { currentScreen = Screen.Table }
                         )
                     }
