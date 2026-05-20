@@ -2,13 +2,18 @@ package com.otakeessen.underpressure.ui.chart
 
 import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.data.export.ChartExportManager
+import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -32,16 +37,24 @@ class ChartViewModelTest {
 
     private val measurementRepository: MeasurementRepository = mockk()
     private val settingsRepository: SettingsRepository = mockk()
+    private val trackerRepository: TrackerRepository = mockk()
     private val chartExportManager: ChartExportManager = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: ChartViewModel
 
+    private val measurementsFlow = MutableStateFlow<List<MeasurementEntity>>(emptyList())
+    private val settingsFlow = MutableStateFlow<AppSettingsEntity?>(null)
+    private val trackersDefinitionsFlow = MutableStateFlow<List<TrackerDefinition>>(emptyList())
+    private val trackerValuesFlow = MutableStateFlow<List<TrackerValue>>(emptyList())
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(emptyList())
-        coEvery { settingsRepository.getSettings() } returns flowOf(null)
+        every { measurementRepository.getAllMeasurements() } returns measurementsFlow
+        every { settingsRepository.getSettings() } returns settingsFlow
+        every { trackerRepository.getActiveTrackerDefinitions() } returns trackersDefinitionsFlow
+        every { trackerRepository.getAllTrackerValues() } returns trackerValuesFlow
     }
 
     @After
@@ -51,7 +64,7 @@ class ChartViewModelTest {
 
     @Test
     fun `initial state shows no data when repository is empty`() = runTest {
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         
         val state = viewModel.uiState.filter { !it.isLoading }.first()
         assertEquals(R.string.error_no_data, state.errorMessageResId)
@@ -65,9 +78,9 @@ class ChartViewModelTest {
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70),
             MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75)
         )
-        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        measurementsFlow.value = measurements
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         
         // Wait for initial data
         viewModel.uiState.filter { !it.isLoading }.first()
@@ -99,9 +112,9 @@ class ChartViewModelTest {
             MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75),
             MeasurementEntity(id = 3, date = "2026-03-11", slotIndex = 0, systolic = 125, diastolic = 82, pulse = 72)
         )
-        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        measurementsFlow.value = measurements
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         
         // Wait for initial data
         viewModel.uiState.filter { !it.isLoading }.first()
@@ -133,9 +146,9 @@ class ChartViewModelTest {
             MeasurementEntity(id = 2, date = "2026-03-10", slotIndex = 1, systolic = 130, diastolic = 85, pulse = 75),
             MeasurementEntity(id = 3, date = "2026-03-11", slotIndex = 0, systolic = 125, diastolic = 82, pulse = 72)
         )
-        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        measurementsFlow.value = measurements
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         viewModel.uiState.filter { !it.isLoading }.first()
 
         viewModel.setChartMode(ChartMode.CHRONOLOGICAL)
@@ -168,7 +181,7 @@ class ChartViewModelTest {
 
     @Test
     fun `date presets correctly filter the data`() = runTest {
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         val today = LocalDate.now()
         
         // Last 7 Days
@@ -183,9 +196,9 @@ class ChartViewModelTest {
         val measurements = listOf(
             MeasurementEntity(id = 1, date = "2026-03-10", slotIndex = 0, systolic = 120, diastolic = 80, pulse = 70)
         )
-        coEvery { measurementRepository.getAllMeasurements() } returns flowOf(measurements)
+        measurementsFlow.value = measurements
         
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         
         // Wait for initial data
         viewModel.uiState.filter { !it.isLoading }.first()
@@ -203,7 +216,7 @@ class ChartViewModelTest {
 
     @Test
     fun `onShareChart triggers ShareFile event`() = runTest {
-        viewModel = ChartViewModel(measurementRepository, settingsRepository, chartExportManager)
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
         val bitmap: android.graphics.Bitmap = mockk()
         val file = File("test.png")
         coEvery { chartExportManager.saveChartToCache(any()) } returns file
@@ -217,5 +230,17 @@ class ChartViewModelTest {
 
         assertTrue(events.any { it is ChartViewModel.ChartEvent.ShareFile && (it as ChartViewModel.ChartEvent.ShareFile).file == file })
         job.cancel()
+    }
+
+    @Test
+    fun `toggleTrackerVisibility updates the tracker definition`() = runTest {
+        val tracker = TrackerDefinition(id = 1, name = "Weight", type = TrackerType.FLOAT, showOnChart = false)
+        coEvery { trackerRepository.getTrackerDefinitionById(1) } returns tracker
+        coEvery { trackerRepository.saveTrackerDefinition(any()) } returns 1
+
+        viewModel = ChartViewModel(measurementRepository, settingsRepository, trackerRepository, chartExportManager)
+        viewModel.toggleTrackerVisibility(1)
+
+        coVerify { trackerRepository.saveTrackerDefinition(match { it.id == 1L && it.showOnChart }) }
     }
 }

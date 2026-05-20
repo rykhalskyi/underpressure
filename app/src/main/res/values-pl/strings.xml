@@ -67,8 +67,11 @@
     <string name="label_active">Aktywny</string>
     <string name="label_alarm">Przypomnij</string>
     <string name="dialog_title_select_time">Wybierz czas</string>
-    <string name="dialog_title_invalid_time">Nieprawidłowe miejsce pomiarowe</string>
-    <string name="error_loading_settings">Błąd ładowania ustawień</string>
+    <string name="dialog_title_invalid_time">Nieprawidłowy przedział czasowy</string>
+    <string name="dialog_title_delete_tracker">Usuń tracker</string>
+    <string name="dialog_message_delete_tracker">Czy na pewno chcesz usunąć tracker \"%1$s\"? Spowoduje to również usunięcie wszystkich zapisanych wartości.</string>
+    <string name="button_delete">Usuń</string>
+    <string name="error_loading_settings">Błąd podczas ładowania ustawień</string>
 
     <!-- Exact Alarm Warning -->
     <string name="warning_exact_alarms_title">Dokładne alarmy wyłączone</string>
@@ -184,8 +187,6 @@
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Wydaje się, że to nie jest twój czas pomiaru</string>
-    <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?\n\nZawsze możesz zmienić czas slotu w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
     <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
     <string name="warning_large_date_range">Wybrano duzy zakres dat. Moze to wplynac na czytelnosc i wydajnosc.</string>
 

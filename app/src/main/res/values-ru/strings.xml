@@ -66,9 +66,12 @@
     <string name="label_global_alarm">Глобальные напоминания</string>
     <string name="label_active">Активно</string>
     <string name="label_alarm">Напомнить</string>
-    <string name="dialog_title_select_time">Выберите время</string>
-    <string name="dialog_title_invalid_time">Недопустимый слот времени</string>
-    <string name="error_loading_settings">Ошибка загрузки настроек</string>
+    <string name="dialog_title_select_time">Выбрать время</string>
+    <string name="dialog_title_invalid_time">Недопустимый временной слот</string>
+    <string name="dialog_title_delete_tracker">Удалить трекер</string>
+    <string name="dialog_message_delete_tracker">Вы уверены, что хотите удалить трекер \"%1$s\"? Это также удалит все записанные значения.</string>
+    <string name="button_delete">Удалить</string>
+    <string name="error_loading_settings">Ошибка при загрузке настроек</string>
 
     <!-- Exact Alarm Warning -->
     <string name="warning_exact_alarms_title">Точные будильники отключены</string>
@@ -184,8 +187,6 @@
     <string name="button_onboarding_close">Начать</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Кажется, это не ваше время измерения</string>
-    <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
     <string name="warning_large_date_range">Выбран большой диапазон дат. Читаемость и производительность могут быть затронуты.</string>
 

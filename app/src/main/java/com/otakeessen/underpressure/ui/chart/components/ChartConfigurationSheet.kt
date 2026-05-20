@@ -23,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
 import com.otakeessen.underpressure.ui.chart.MeasurementType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,12 +32,14 @@ import com.otakeessen.underpressure.ui.chart.MeasurementType
 fun ChartConfigurationSheet(
     selectedSlots: Set<Int>,
     selectedTypes: Set<MeasurementType>,
+    activeTrackers: List<TrackerDefinition>,
     showRiskZones: Boolean,
     showRollingAverage: Boolean,
     showInteractiveLegend: Boolean,
     onDismiss: () -> Unit,
     onToggleSlot: (Int) -> Unit,
     onToggleType: (MeasurementType) -> Unit,
+    onToggleTracker: (Long) -> Unit,
     onToggleRiskZones: () -> Unit,
     onToggleRollingAverage: () -> Unit,
     onToggleInteractiveLegend: () -> Unit,
@@ -101,6 +105,23 @@ fun ChartConfigurationSheet(
                         MeasurementType.PULSE -> stringResource(R.string.header_pulse)
                     }
                     Text(text = typeLabel)
+                }
+            }
+
+            if (activeTrackers.any { it.type == TrackerType.FLOAT }) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = stringResource(R.string.label_select_trackers), style = MaterialTheme.typography.titleMedium)
+                activeTrackers.filter { it.type == TrackerType.FLOAT }.forEach { tracker ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Checkbox(
+                            checked = tracker.showOnChart,
+                            onCheckedChange = { onToggleTracker(tracker.id) }
+                        )
+                        Text(text = tracker.name)
+                    }
                 }
             }
 

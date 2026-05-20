@@ -181,7 +181,7 @@ class MeasurementTableViewModel(
         val flexibleByDate = flexibleMeasurements
             .groupBy { it.date }
             .mapValues { (_, readings) ->
-                readings.sortedBy { it.timestamp }.map { entity ->
+                readings.sortedByDescending { it.timestamp }.map { entity ->
                     val timeFormatted = if (entity.timestamp > 0) {
                         val localTime = java.time.Instant.ofEpochMilli(entity.timestamp)
                             .atZone(java.time.ZoneId.systemDefault())

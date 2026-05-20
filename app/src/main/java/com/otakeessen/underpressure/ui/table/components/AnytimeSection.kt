@@ -22,6 +22,7 @@ import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.TrackerDefinition
 import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.ui.table.AnytimeReadingData
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
 import java.time.LocalDate
@@ -60,17 +61,6 @@ fun AnytimeSection(
                 if (reading.pulse > 0) append(" @${reading.pulse}")
             }
             
-            val trackerIndicator = activeTrackers.filter { t -> reading.trackerValues.containsKey(t.id) }
-                .joinToString("") { t -> 
-                    when {
-                        t.name.contains("Weight", ignoreCase = true) -> "⚖️"
-                        t.name.contains("Temp", ignoreCase = true) -> "🌡️"
-                        t.name.contains("Med", ignoreCase = true) || t.name.contains("Pill", ignoreCase = true) -> "💊"
-                        t.type == TrackerType.BOOLEAN -> "✅"
-                        else -> "📝"
-                    }
-                }
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -97,10 +87,11 @@ fun AnytimeSection(
                     fontWeight = if (classification?.isBold == true) FontWeight.Bold else FontWeight.Normal
                 )
                 
-                if (trackerIndicator.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = trackerIndicator, fontSize = 10.sp)
-                }
+                TrackerIndicatorBadge(
+                    trackerValues = reading.trackerValues,
+                    activeTrackers = activeTrackers,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
 
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(

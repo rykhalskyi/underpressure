@@ -11,9 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.otakeessen.underpressure.R
@@ -28,6 +32,7 @@ fun TrackerManagementScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
+    var trackerToDelete by remember { mutableStateOf<TrackerDefinition?>(null) }
 
     Scaffold(
         topBar = {
@@ -77,9 +82,7 @@ fun TrackerManagementScreen(
                         TrackerItem(
                             tracker = tracker,
                             onToggleActive = { viewModel.toggleTrackerActive(tracker) },
-                            onToggleChart = { viewModel.toggleTrackerOnChart(tracker) },
-                            onToggleSecondary = { viewModel.toggleTrackerSecondaryAxis(tracker) },
-                            onDelete = { viewModel.deleteTracker(tracker) }
+                            onDelete = { trackerToDelete = tracker }
                         )
                     }
                 }
@@ -95,6 +98,32 @@ fun TrackerManagementScreen(
                 }
             )
         }
+
+        trackerToDelete?.let { tracker ->
+            AlertDialog(
+                onDismissRequest = { trackerToDelete = null },
+                title = { Text(stringResource(R.string.dialog_title_delete_tracker)) },
+                text = {
+                    Text(stringResource(R.string.dialog_message_delete_tracker, tracker.name))
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.deleteTracker(tracker)
+                            trackerToDelete = null
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text(stringResource(R.string.button_delete))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { trackerToDelete = null }) {
+                        Text(stringResource(R.string.button_cancel))
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -102,50 +131,67 @@ fun TrackerManagementScreen(
 fun TrackerItem(
     tracker: TrackerDefinition,
     onToggleActive: () -> Unit,
-    onToggleChart: () -> Unit,
-    onToggleSecondary: () -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val typeText = when (tracker.type) {
+                TrackerType.FLOAT -> "Number"
+                TrackerType.BOOLEAN -> "yes/no"
+                TrackerType.STRING -> "Text"
+            }
+            val details = if (tracker.unit != null) "$typeText, ${tracker.unit}" else typeText
+
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(tracker.name)
+                    }
+                    append(" ($details)")
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.weight(1f)
+            )
+
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
             ) {
-                Column {
-                    Text(text = tracker.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(text = "Type: ${tracker.type}${if (tracker.unit != null) " (${tracker.unit})" else ""}", style = MaterialTheme.typography.bodySmall)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.label_active),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Switch(
+                        checked = tracker.isActive,
+                        onCheckedChange = { onToggleActive() },
+                        modifier = Modifier.scale(0.8f)
+                    )
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = tracker.isActive, onCheckedChange = { onToggleActive() })
-                Text("Active")
-                
-                Spacer(modifier = Modifier.width(16.dp))
-                
-                Checkbox(checked = tracker.showOnChart, onCheckedChange = { onToggleChart() })
-                Text("Show on Chart")
-            }
-            
-            if (tracker.type == TrackerType.FLOAT) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = tracker.useSecondaryAxis, onCheckedChange = { onToggleSecondary() })
-                    Text("Use Secondary Y-Axis")
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.error
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTrackerDialog(
     onDismiss: () -> Unit,
@@ -154,6 +200,7 @@ fun AddTrackerDialog(
     var name by remember { mutableStateOf("") }
     var type by remember { mutableStateOf(TrackerType.FLOAT) }
     var unit by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -167,12 +214,47 @@ fun AddTrackerDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 
-                Text("Type:")
-                Row {
-                    TrackerType.values().forEach { t ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(end = 8.dp)) {
-                            RadioButton(selected = type == t, onClick = { type = t })
-                            Text(t.name)
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = when (type) {
+                            TrackerType.FLOAT -> "Number"
+                            TrackerType.BOOLEAN -> "yes/no"
+                            TrackerType.STRING -> "Text"
+                        },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Type") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        TrackerType.values().forEach { t ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        when (t) {
+                                            TrackerType.FLOAT -> "Number"
+                                            TrackerType.BOOLEAN -> "yes/no"
+                                            TrackerType.STRING -> "Text"
+                                        }
+                                    )
+                                },
+                                onClick = {
+                                    type = t
+                                    expanded = false
+                                }
+                            )
                         }
                     }
                 }

@@ -30,7 +30,7 @@ class BloodPressureMarkerView(
         val data = chart.data
         if (data != null) {
             val selectedDataSet = data.getDataSetByIndex(highlight.dataSetIndex)
-            val selectedLabel = selectedDataSet.label ?: ""
+            val selectedLabel = selectedDataSet?.label ?: ""
             
             // In sequential mode, we don't have slot prefixes in labels, 
             // and each X is a unique measurement point.
@@ -39,9 +39,9 @@ class BloodPressureMarkerView(
             
             for (i in 0 until data.dataSetCount) {
                 val dataSet = data.getDataSetByIndex(i)
-                val label = dataSet.label ?: ""
+                val label = dataSet?.label ?: ""
                 if (slotTime == null || label.startsWith(slotTime)) {
-                    val entryAtX = dataSet.getEntryForXValue(e.x, Float.NaN)
+                    val entryAtX = dataSet?.getEntryForXValue(e.x, Float.NaN)
                     if (entryAtX != null && entryAtX.x == e.x) {
                         if (sb.isNotEmpty()) sb.append("\n")
                         // Show only the type part of the label

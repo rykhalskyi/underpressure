@@ -28,6 +28,7 @@ import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.TrackerDefinition
 import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.ui.table.DayMeasurementSummary
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -101,19 +102,6 @@ fun DayRow(
                     BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
                 }
                 
-                val trackerIndicator = data?.let { d ->
-                    activeTrackers.filter { t -> d.trackerValues.containsKey(t.id) }
-                        .joinToString("") { t -> 
-                            when {
-                                t.name.contains("Weight", ignoreCase = true) -> "⚖️"
-                                t.name.contains("Temp", ignoreCase = true) -> "🌡️"
-                                t.name.contains("Med", ignoreCase = true) || t.name.contains("Pill", ignoreCase = true) -> "💊"
-                                t.type == TrackerType.BOOLEAN -> "✅"
-                                else -> "📝"
-                            }
-                        }
-                } ?: ""
-
                 TableCell(
                     text = text, 
                     weight = 1f,
@@ -121,7 +109,8 @@ fun DayRow(
                     isBold = classification?.isBold ?: false,
                     textColor = if (isSummaryVisible) (classification?.textColor ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
                     backgroundColor = Color.Transparent,
-                    trackerIndicator = trackerIndicator,
+                    trackerValues = data?.trackerValues ?: emptyMap(),
+                    activeTrackers = activeTrackers,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
@@ -138,7 +127,8 @@ private fun RowScope.TableCell(
     isBold: Boolean = false,
     textColor: Color = Color.Unspecified,
     backgroundColor: Color = Color.Transparent,
-    trackerIndicator: String = "",
+    trackerValues: Map<Long, TrackerValue> = emptyMap(),
+    activeTrackers: List<TrackerDefinition> = emptyList(),
     onClick: (() -> Unit)? = null
 ) {
     Surface(
@@ -152,6 +142,7 @@ private fun RowScope.TableCell(
             Text(
                 text = text,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(vertical = 4.dp, horizontal = 4.dp),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = textColor,
@@ -164,15 +155,13 @@ private fun RowScope.TableCell(
                 overflow = TextOverflow.Ellipsis
             )
             
-            if (trackerIndicator.isNotEmpty()) {
-                Text(
-                    text = trackerIndicator,
-                    fontSize = 8.sp,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 2.dp, end = 2.dp)
-                )
-            }
+            TrackerIndicatorBadge(
+                trackerValues = trackerValues,
+                activeTrackers = activeTrackers,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 2.dp, end = 2.dp)
+            )
         }
     }
 }

@@ -66,9 +66,12 @@
     <string name="label_global_alarm">Глобальні нагадування</string>
     <string name="label_active">Активно</string>
     <string name="label_alarm">Нагадати</string>
-    <string name="dialog_title_select_time">Виберіть час</string>
-    <string name="dialog_title_invalid_time">Неприпустимий слот часу</string>
-    <string name="error_loading_settings">Помилка завантаження налаштувань</string>
+    <string name="dialog_title_select_time">Вибрати час</string>
+    <string name="dialog_title_invalid_time">Неприпустимий часовий слот</string>
+    <string name="dialog_title_delete_tracker">Видалити трекер</string>
+    <string name="dialog_message_delete_tracker">Ви впевнені, що хочете видалити трекер \"%1$s\"? Це також видалить усі записані значення.</string>
+    <string name="button_delete">Видалити</string>
+    <string name="error_loading_settings">Помилка при завантаженні налаштувань</string>
 
     <!-- Exact Alarm Warning -->
     <string name="warning_exact_alarms_title">Точні будильники вимкнено</string>
@@ -184,8 +187,6 @@
     <string name="button_onboarding_close">Розпочати</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Здається, це не ваш час вимірювання</string>
-    <string name="guidance_message">Схоже, ви намагаєтесь додати вимірювання не в той час. UnderPressure працює за фіксованими часовими слотами, щоб вимірювання були точнішими та регулярними. Хочете встановити час для Слот %1$d на %2$s і додати вимірювання зараз?\n\nВи завжди можете змінити час слота в Налаштуваннях або просто натиснувши на час в заголовку таблиці.</string>
     <string name="hint_edit_slot">Ви можете змінити значення слота %1$d, натиснувши на нього.</string>
     <string name="warning_large_date_range">Вибрано великий діапазон дат. Читабельність та продуктивність можуть постраждати.</string>
 

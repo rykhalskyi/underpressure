@@ -549,6 +549,15 @@ class ChartViewModel(
         }
     }
 
+    fun toggleTrackerVisibility(trackerId: Long) {
+        viewModelScope.launch {
+            val tracker = trackerRepository.getTrackerDefinitionById(trackerId)
+            if (tracker != null) {
+                trackerRepository.saveTrackerDefinition(tracker.copy(showOnChart = !tracker.showOnChart))
+            }
+        }
+    }
+
     fun setChartMode(mode: ChartMode) {
         viewModelScope.launch {
             val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()

@@ -27,6 +27,11 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +39,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.rotate
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -99,6 +106,15 @@ fun MeasurementEditDialog(
     val haptic = LocalHapticFeedback.current
     var lastLength by remember { mutableStateOf(textValue.length) }
 
+    var isTrackersExpanded by remember(state.isOpen) {
+        mutableStateOf(
+            state.activeTrackers.any { tracker ->
+                val value = state.trackerValues[tracker.id]
+                value?.floatValue != null || (value?.booleanValue == true) || !value?.stringValue.isNullOrBlank()
+            }
+        )
+    }
+
     LaunchedEffect(state.isOpen) {
         if (state.isOpen) {
             focusRequester.requestFocus()
@@ -129,10 +145,8 @@ fun MeasurementEditDialog(
                     .verticalScroll(rememberScrollState())
             ) {
                 if (state.isFlexibleMode) {
-                    val nowFormatted = java.time.LocalTime.now()
-                        .format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"))
                     Text(
-                        text = stringResource(R.string.label_anytime_reading) + " — $nowFormatted",
+                        text = stringResource(R.string.label_anytime_reading) + " — ${state.slotTime}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -216,25 +230,72 @@ fun MeasurementEditDialog(
 
                 if (state.activeTrackers.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Additional Info",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
                     
-                    state.activeTrackers.forEach { tracker ->
-                        val currentValue = state.trackerValues[tracker.id] ?: TrackerValue(
-                            measurementId = state.existingMeasurementId ?: 0,
-                            trackerId = tracker.id
+                    val rotationState by animateFloatAsState(
+                        targetValue = if (isTrackersExpanded) 180f else 0f,
+                        label = "rotation"
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { isTrackersExpanded = !isTrackersExpanded }
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Additional Info",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            val activeCount = state.activeTrackers.count { tracker ->
+                                val valObj = state.trackerValues[tracker.id]
+                                valObj?.floatValue != null || (valObj?.booleanValue == true) || !valObj?.stringValue.isNullOrBlank()
+                            }
+                            Text(
+                                text = if (activeCount > 0) {
+                                    "$activeCount active custom reading(s)"
+                                } else {
+                                    "Tap to show/hide custom readings"
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = if (isTrackersExpanded) "Collapse" else "Expand",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .rotate(rotationState),
+                            tint = MaterialTheme.colorScheme.primary
                         )
-                        
-                        TrackerInput(
-                            tracker = tracker,
-                            value = currentValue,
-                            onValueChange = { onTrackerValueChange(tracker.id, it) }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    AnimatedVisibility(
+                        visible = isTrackersExpanded,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        Column {
+                            state.activeTrackers.forEach { tracker ->
+                                val currentValue = state.trackerValues[tracker.id] ?: TrackerValue(
+                                    measurementId = state.existingMeasurementId ?: 0,
+                                    trackerId = tracker.id
+                                )
+                                
+                                TrackerInput(
+                                    tracker = tracker,
+                                    value = currentValue,
+                                    onValueChange = { onTrackerValueChange(tracker.id, it) }
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
                     }
                 }
             }

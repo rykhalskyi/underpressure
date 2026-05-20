@@ -133,8 +133,10 @@ fun BloodPressureChart(
                 chart.axisLeft.addLimitLine(limit80)
             }
 
-            chart.data = null
-            chart.data = lineData
+            if (chart.data !== lineData) {
+                chart.highlightValues(null)
+                chart.data = lineData
+            }
             chart.invalidate()
         }
     )
