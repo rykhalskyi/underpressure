@@ -26,7 +26,7 @@ import com.otakeessen.underpressure.data.local.entities.TrackerValueEntity
         TrackerDefinitionEntity::class,
         TrackerValueEntity::class
     ],
-    version = 9,
+    version = 11,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -150,6 +150,43 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE tracker_definitions ADD COLUMN min REAL")
+                db.execSQL("ALTER TABLE tracker_definitions ADD COLUMN max REAL")
+            }
+        }
+
+        private val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // 1. Create the new table without useSecondaryAxis
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `tracker_definitions_new` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                        `name` TEXT NOT NULL, 
+                        `type` TEXT NOT NULL, 
+                        `unit` TEXT, 
+                        `isActive` INTEGER NOT NULL, 
+                        `showOnChart` INTEGER NOT NULL, 
+                        `min` REAL, 
+                        `max` REAL
+                    )
+                """.trimIndent())
+
+                // 2. Copy the data
+                db.execSQL("""
+                    INSERT INTO `tracker_definitions_new` (id, name, type, unit, isActive, showOnChart, min, max)
+                    SELECT id, name, type, unit, isActive, showOnChart, min, max FROM tracker_definitions
+                """.trimIndent())
+
+                // 3. Drop the old table
+                db.execSQL("DROP TABLE tracker_definitions")
+
+                // 4. Rename the new table
+                db.execSQL("ALTER TABLE tracker_definitions_new RENAME TO tracker_definitions")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -160,7 +197,8 @@ abstract class AppDatabase : RoomDatabase() {
                 .addMigrations(
                     MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, 
                     MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, 
-                    MIGRATION_7_8, MIGRATION_8_9
+                    MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
+                    MIGRATION_10_11
                 )
                 .build()
                 INSTANCE = instance

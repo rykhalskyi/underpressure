@@ -99,7 +99,7 @@ object BloodPressureClassifier {
             level = level,
             textColor = level.toTextColor(),
             backgroundColor = level.toBackgroundColor(),
-            isBold = level >= BloodPressureLevel.STAGE_1
+            isBold = false//level >= BloodPressureLevel.STAGE_1
         )
     }
 

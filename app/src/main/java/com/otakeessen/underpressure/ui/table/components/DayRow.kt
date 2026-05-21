@@ -1,12 +1,10 @@
 package com.otakeessen.underpressure.ui.table.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -138,12 +136,15 @@ private fun RowScope.TableCell(
             .padding(horizontal = 2.dp)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = text,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp, horizontal = 4.dp),
+                    .weight(1f)
+                    .padding(start = 4.dp, top = 4.dp, bottom = 4.dp),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = textColor,
                     fontSize = fontSize,
@@ -159,8 +160,7 @@ private fun RowScope.TableCell(
                 trackerValues = trackerValues,
                 activeTrackers = activeTrackers,
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 2.dp, end = 2.dp)
+                    .padding(end = 2.dp)
             )
         }
     }

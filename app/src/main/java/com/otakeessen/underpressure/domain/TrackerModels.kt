@@ -19,7 +19,8 @@ data class TrackerDefinition(
     val unit: String? = null,
     val isActive: Boolean = true,
     val showOnChart: Boolean = false,
-    val useSecondaryAxis: Boolean = false
+    val min: Double? = null,
+    val max: Double? = null
 )
 
 /**

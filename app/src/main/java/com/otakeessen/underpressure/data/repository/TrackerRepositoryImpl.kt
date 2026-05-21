@@ -76,7 +76,8 @@ class TrackerRepositoryImpl(
         unit = unit,
         isActive = isActive,
         showOnChart = showOnChart,
-        useSecondaryAxis = useSecondaryAxis
+        min = min,
+        max = max
     )
 
     private fun TrackerDefinition.toEntity() = TrackerDefinitionEntity(
@@ -86,7 +87,8 @@ class TrackerRepositoryImpl(
         unit = unit,
         isActive = isActive,
         showOnChart = showOnChart,
-        useSecondaryAxis = useSecondaryAxis
+        min = min,
+        max = max
     )
 
     private fun TrackerValueEntity.toDomain() = TrackerValue(

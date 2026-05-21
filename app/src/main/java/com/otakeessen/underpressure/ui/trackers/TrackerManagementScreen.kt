@@ -3,6 +3,7 @@ package com.otakeessen.underpressure.ui.trackers
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -13,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,21 +36,24 @@ fun TrackerManagementScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
     var trackerToDelete by remember { mutableStateOf<TrackerDefinition?>(null) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Custom Trackers") },
+                title = { Text(stringResource(R.string.custom_trackers)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(
+                            R.string.back
+                        ))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Tracker")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_tracker))
             }
         }
     ) { padding ->
@@ -59,16 +65,16 @@ fun TrackerManagementScreen(
             if (uiState.trackers.isEmpty() && !uiState.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("No trackers defined", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.no_trackers_defined), style = MaterialTheme.typography.bodyLarge)
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = {
                             // Add some default trackers
-                            viewModel.saveTracker(TrackerDefinition(name = "Weight", type = TrackerType.FLOAT, unit = "kg", useSecondaryAxis = true))
-                            viewModel.saveTracker(TrackerDefinition(name = "Temperature", type = TrackerType.FLOAT, unit = "°C"))
-                            viewModel.saveTracker(TrackerDefinition(name = "Took Medication", type = TrackerType.BOOLEAN))
-                            viewModel.saveTracker(TrackerDefinition(name = "Symptoms", type = TrackerType.STRING))
+                            viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.weight), type = TrackerType.FLOAT, unit = "kg", min = 20.0, max = 320.0))
+                            viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.temperature), type = TrackerType.FLOAT, unit = "°C", min = 35.0, max = 42.5))
+                            viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.took_medication), type = TrackerType.BOOLEAN))
+                            viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.notes), type = TrackerType.STRING))
                         }) {
-                            Text("Add Default Trackers")
+                            Text(stringResource(R.string.button_add_default_trackers))
                         }
                     }
                 }
@@ -92,8 +98,8 @@ fun TrackerManagementScreen(
         if (showAddDialog) {
             AddTrackerDialog(
                 onDismiss = { showAddDialog = false },
-                onConfirm = { name, type, unit ->
-                    viewModel.saveTracker(TrackerDefinition(name = name, type = type, unit = unit))
+                onConfirm = { name, type, unit, min, max ->
+                    viewModel.saveTracker(TrackerDefinition(name = name, type = type, unit = unit, min = min, max = max))
                     showAddDialog = false
                 }
             )
@@ -144,9 +150,9 @@ fun TrackerItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val typeText = when (tracker.type) {
-                TrackerType.FLOAT -> "Number"
-                TrackerType.BOOLEAN -> "yes/no"
-                TrackerType.STRING -> "Text"
+                TrackerType.FLOAT -> stringResource(R.string.tracker_type_number)
+                TrackerType.BOOLEAN -> stringResource(R.string.tracker_type_boolean)
+                TrackerType.STRING -> stringResource(R.string.tracker_type_text)
             }
             val details = if (tracker.unit != null) "$typeText, ${tracker.unit}" else typeText
 
@@ -182,7 +188,7 @@ fun TrackerItem(
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Delete",
+                        contentDescription = stringResource(R.string.button_delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -195,22 +201,24 @@ fun TrackerItem(
 @Composable
 fun AddTrackerDialog(
     onDismiss: () -> Unit,
-    onConfirm: (String, TrackerType, String?) -> Unit
+    onConfirm: (String, TrackerType, String?, Double?, Double?) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var type by remember { mutableStateOf(TrackerType.FLOAT) }
     var unit by remember { mutableStateOf("") }
+    var min by remember { mutableStateOf("") }
+    var max by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Tracker") },
+        title = { Text(stringResource(R.string.dialog_title_add_tracker)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Name (e.g. Weight)") },
+                    label = { Text(stringResource(R.string.label_tracker_name)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 
@@ -221,13 +229,13 @@ fun AddTrackerDialog(
                 ) {
                     OutlinedTextField(
                         value = when (type) {
-                            TrackerType.FLOAT -> "Number"
-                            TrackerType.BOOLEAN -> "yes/no"
-                            TrackerType.STRING -> "Text"
+                            TrackerType.FLOAT -> stringResource(R.string.tracker_type_number)
+                            TrackerType.BOOLEAN -> stringResource(R.string.tracker_type_boolean)
+                            TrackerType.STRING -> stringResource(R.string.tracker_type_text)
                         },
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Type") },
+                        label = { Text(stringResource(R.string.label_tracker_type)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                         modifier = Modifier
@@ -244,9 +252,9 @@ fun AddTrackerDialog(
                                 text = {
                                     Text(
                                         when (t) {
-                                            TrackerType.FLOAT -> "Number"
-                                            TrackerType.BOOLEAN -> "yes/no"
-                                            TrackerType.STRING -> "Text"
+                                            TrackerType.FLOAT -> stringResource(R.string.tracker_type_number)
+                                            TrackerType.BOOLEAN -> stringResource(R.string.tracker_type_boolean)
+                                            TrackerType.STRING -> stringResource(R.string.tracker_type_text)
                                         }
                                     )
                                 },
@@ -263,20 +271,44 @@ fun AddTrackerDialog(
                     OutlinedTextField(
                         value = unit,
                         onValueChange = { unit = it },
-                        label = { Text("Unit (e.g. kg)") },
+                        label = { Text(stringResource(R.string.label_tracker_unit)) },
                         modifier = Modifier.fillMaxWidth()
                     )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedTextField(
+                            value = min,
+                            onValueChange = { min = it },
+                            label = { Text(stringResource(R.string.label_tracker_min)) },
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                        OutlinedTextField(
+                            value = max,
+                            onValueChange = { max = it },
+                            label = { Text(stringResource(R.string.label_tracker_max)) },
+                            modifier = Modifier.weight(1f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
                 }
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(name, type, unit.ifBlank { null }) }, enabled = name.isNotBlank()) {
-                Text("Add")
+            Button(onClick = { 
+                onConfirm(
+                    name, 
+                    type, 
+                    unit.ifBlank { null },
+                    min.toDoubleOrNull(),
+                    max.toDoubleOrNull()
+                ) 
+            }, enabled = name.isNotBlank()) {
+                Text(stringResource(R.string.button_add))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.button_cancel))
             }
         }
     )

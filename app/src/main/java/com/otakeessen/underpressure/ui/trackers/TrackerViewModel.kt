@@ -50,12 +50,6 @@ class TrackerViewModel(
         }
     }
 
-    fun toggleTrackerSecondaryAxis(tracker: TrackerDefinition) {
-        viewModelScope.launch {
-            trackerRepository.saveTrackerDefinition(tracker.copy(useSecondaryAxis = !tracker.useSecondaryAxis))
-        }
-    }
-
     fun saveTracker(tracker: TrackerDefinition) {
         viewModelScope.launch {
             trackerRepository.saveTrackerDefinition(tracker)

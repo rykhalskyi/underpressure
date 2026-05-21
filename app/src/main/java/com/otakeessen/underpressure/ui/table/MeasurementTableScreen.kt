@@ -200,19 +200,7 @@ fun MeasurementTableScreen(
                                 )
                             }
                         )
-                        DropdownMenuItem(
-                            text = { Text("Custom Trackers") },
-                            onClick = {
-                                showMenu = false
-                                onTrackersClick()
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.List,
-                                    contentDescription = null
-                                )
-                            }
-                        )
+
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.cd_toggle_alarms)) },
                             onClick = {
@@ -252,6 +240,19 @@ fun MeasurementTableScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Share,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.custom_trackers)) },
+                            onClick = {
+                                showMenu = false
+                                onTrackersClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.List,
                                     contentDescription = null
                                 )
                             }

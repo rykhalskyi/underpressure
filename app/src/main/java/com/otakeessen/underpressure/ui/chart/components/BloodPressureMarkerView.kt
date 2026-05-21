@@ -8,13 +8,17 @@ import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class BloodPressureMarkerView(
     private val chart: Chart<*>,
     private val startDate: LocalDate?,
-    private val xLabels: Map<Float, String> = emptyMap()
+    private val xLabels: Map<Float, String> = emptyMap(),
+    private val trackerValuesMap: Map<Float, List<TrackerValue>> = emptyMap(),
+    private val trackerDefinitionsMap: Map<Long, TrackerDefinition> = emptyMap()
 ) : MarkerView(chart.context, R.layout.chart_marker_view) {
 
     private val tvDate: TextView = findViewById(R.id.tv_date)
@@ -51,6 +55,19 @@ class BloodPressureMarkerView(
                 }
             }
             
+            // Append tracker info
+            trackerValuesMap[e.x]?.forEach { trackerValue ->
+                val definition = trackerDefinitionsMap[trackerValue.trackerId]
+                if (definition != null) {
+                    sb.append("\n")
+                    if (trackerValue.booleanValue != null) {
+                        sb.append("${definition.name}: ${if (trackerValue.booleanValue) "✓" else "✗"}")
+                    } else if (trackerValue.stringValue != null) {
+                        sb.append("${definition.name}: ${trackerValue.stringValue}")
+                    }
+                }
+            }
+            
             tvDate.text = if (isSequential) dateText else "$dateText $slotTime"
         } else {
             tvDate.text = dateText
@@ -60,6 +77,7 @@ class BloodPressureMarkerView(
 
         super.refreshContent(e, highlight)
     }
+
 
     override fun getOffset(): MPPointF {
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())

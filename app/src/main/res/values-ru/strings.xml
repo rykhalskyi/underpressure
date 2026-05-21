@@ -231,4 +231,24 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильное повышение артериального давления (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Сильное повышение артериального давления (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">е удается создать слот. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
+    <string name="custom_trackers">Пользовательские трекеры</string>
+    <string name="no_trackers_defined">Трекеры не определены</string>
+    <string name="weight">Вес</string>
+    <string name="temperature">Температура</string>
+    <string name="notes">Заметки</string>
+    <string name="took_medication">Прием лекарств</string>
+    <string name="add_tracker">Добавить трекер</string>
+    <string name="back">Назад</string>
+    <string name="button_add_default_trackers">Добавить стандартные трекеры</string>
+    <string name="dialog_title_add_tracker">Добавить новый трекер</string>
+    <string name="label_tracker_name">Название (например, Вес)</string>
+    <string name="label_tracker_type">Тип</string>
+    <string name="tracker_type_number">Число</string>
+    <string name="tracker_type_boolean">да/нет</string>
+    <string name="tracker_type_text">Текст</string>
+    <string name="label_tracker_unit">Единица изм. (например, кг)</string>
+    <string name="label_tracker_min">Мин</string>
+    <string name="label_tracker_max">Макс</string>
+    <string name="button_add">Добавить</string>
+
 </resources>

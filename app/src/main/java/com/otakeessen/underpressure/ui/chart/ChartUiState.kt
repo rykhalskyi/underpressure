@@ -4,6 +4,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.PieData
 import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 import java.time.LocalDate
 
 /**
@@ -44,6 +45,7 @@ enum class DatePreset {
  * @property diaLineData Line data for diastolic.
  * @property pulseLineData Line data for pulse.
  * @property trackerLineData Map of tracker ID to LineData for custom trackers.
+ * @property trackerValuesMap Mapping of X-axis coordinate to associated list of tracker values.
  * @property distributionBarData Bar data for blood pressure level distribution.
  * @property distributionPieData Pie data for blood pressure level distribution.
  * @property startDate The reference start date for DAILY mode.
@@ -67,6 +69,8 @@ data class ChartUiState(
     val diaLineData: LineData? = null,
     val pulseLineData: LineData? = null,
     val trackerLineData: Map<Long, LineData> = emptyMap(),
+    val trackerValuesMap: Map<Float, List<TrackerValue>> = emptyMap(),
+    val trackerDefinitionsMap: Map<Long, TrackerDefinition> = emptyMap(),
     val distributionBarData: BarData? = null,
     val distributionPieData: PieData? = null,
     val startDate: LocalDate? = null,

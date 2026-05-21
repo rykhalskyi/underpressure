@@ -15,8 +15,8 @@ android {
         applicationId = "com.otakeessen.underpressure"
         minSdk = 29
         targetSdk = 36
-        versionCode = 41
-        versionName = "1.7.1-beta"
+        versionCode = 42
+        versionName = "1.7.2-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

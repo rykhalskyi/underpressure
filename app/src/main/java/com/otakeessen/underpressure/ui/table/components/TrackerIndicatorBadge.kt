@@ -80,13 +80,7 @@ fun TrackerIndicatorBadge(
                 modifier = Modifier
                     .padding(8.dp)
             ) {
-                Text(
-                    text = "Trackers",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
+
                 nonEmptyTrackers.forEach { (tracker, value) ->
                     val displayValue = when (tracker.type) {
                         TrackerType.FLOAT -> "${value.floatValue} ${tracker.unit ?: ""}"

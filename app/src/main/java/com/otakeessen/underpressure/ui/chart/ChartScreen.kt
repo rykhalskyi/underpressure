@@ -285,6 +285,7 @@ fun ChartScreen(
                         // Systolic Chart
                         if (uiState.sysLineData != null) {
                             BloodPressureChart(
+                                uiState = uiState,
                                 lineData = uiState.sysLineData,
                                 startDate = uiState.startDate,
                                 xLabels = uiState.xLabels,
@@ -300,6 +301,7 @@ fun ChartScreen(
                         // Diastolic Chart
                         if (uiState.diaLineData != null) {
                             BloodPressureChart(
+                                uiState = uiState,
                                 lineData = uiState.diaLineData,
                                 startDate = uiState.startDate,
                                 xLabels = uiState.xLabels,
@@ -315,6 +317,7 @@ fun ChartScreen(
                         // Pulse Chart
                         if (uiState.pulseLineData != null) {
                             BloodPressureChart(
+                                uiState = uiState,
                                 lineData = uiState.pulseLineData,
                                 startDate = uiState.startDate,
                                 xLabels = uiState.xLabels,
@@ -338,6 +341,7 @@ fun ChartScreen(
                                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                                     )
                                     BloodPressureChart(
+                                        uiState = uiState,
                                         lineData = lineData,
                                         startDate = uiState.startDate,
                                         xLabels = uiState.xLabels,

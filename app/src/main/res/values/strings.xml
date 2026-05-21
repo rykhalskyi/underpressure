@@ -232,6 +232,25 @@
     <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">If you have high BP and symptoms like chest pain, shortness of breath, numbness, confusion, or severe headache, seek emergency medical care immediately.</string>
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Severe Blood Pressure Elevation (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Severe Blood Pressure Elevation (≥ 180/110)</string>
+    <string name="custom_trackers">Custom Trackers</string>
+    <string name="no_trackers_defined">No trackers defined</string>
+    <string name="weight">Weight</string>
+    <string name="temperature">Temperature</string>
+    <string name="notes">Notes</string>
+    <string name="took_medication">Took Medication</string>
+    <string name="add_tracker">Add Tracker</string>
+    <string name="back">Back</string>
+    <string name="button_add_default_trackers">Add Default Trackers</string>
+    <string name="dialog_title_add_tracker">Add New Tracker</string>
+    <string name="label_tracker_name">Name (e.g. Weight)</string>
+    <string name="label_tracker_type">Type</string>
+    <string name="tracker_type_number">Number</string>
+    <string name="tracker_type_boolean">yes/no</string>
+    <string name="tracker_type_text">Text</string>
+    <string name="label_tracker_unit">Unit (e.g. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Add</string>
 
 </resources>
 

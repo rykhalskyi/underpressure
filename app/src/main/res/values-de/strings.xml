@@ -231,4 +231,23 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Starke Blutdruckerhöhung (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Starke Blutdruckerhöhung (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">Zeitfenster kann jetzt nicht erstellt werden. Es muss mindestens 30 Minuten von benachbarten Zeitfenstern entfernt sein. Verwenden Sie das nächste Zeitfenster um %1$s.</string>
+    <string name="custom_trackers">Benutzerdefinierte Tracker</string>
+    <string name="no_trackers_defined">Keine Tracker definiert</string>
+    <string name="weight">Gewicht</string>
+    <string name="temperature">Temperatur</string>
+    <string name="notes">Notizen</string>
+    <string name="took_medication">Medikamente eingenommen</string>
+    <string name="add_tracker">Tracker hinzufügen</string>
+    <string name="back">Zurück</string>
+    <string name="button_add_default_trackers">Standard-Tracker hinzufügen</string>
+    <string name="dialog_title_add_tracker">Neuen Tracker hinzufügen</string>
+    <string name="label_tracker_name">Name (z. B. Gewicht)</string>
+    <string name="label_tracker_type">Typ</string>
+    <string name="tracker_type_number">Nummer</string>
+    <string name="tracker_type_boolean">ja/nein</string>
+    <string name="tracker_type_text">Text</string>
+    <string name="label_tracker_unit">Einheit (z. B. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Hinzufügen</string>
 </resources>

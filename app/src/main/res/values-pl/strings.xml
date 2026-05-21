@@ -231,4 +231,24 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Silne podwyższenie ciśnienia krwi (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Silne podwyższenie ciśnienia krwi (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">Nie można teraz utworzyć miejsca. Musi ono być oddalone o co najmniej 30 minut od sąsiednich miejsc. Użyj następnego miejsca o %1$s.</string>
+    <string name="custom_trackers">Niestandardowe trackery</string>
+    <string name="no_trackers_defined">Brak zdefiniowanych trackerów</string>
+    <string name="weight">Waga</string>
+    <string name="temperature">Temperatura</string>
+    <string name="notes">Notatki</string>
+    <string name="took_medication">Przyjęto leki</string>
+    <string name="add_tracker">Dodaj tracker</string>
+    <string name="back">Wróć</string>
+    <string name="button_add_default_trackers">Dodaj domyślne trackery</string>
+    <string name="dialog_title_add_tracker">Dodaj nowy tracker</string>
+    <string name="label_tracker_name">Nazwa (np. Waga)</string>
+    <string name="label_tracker_type">Typ</string>
+    <string name="tracker_type_number">Liczba</string>
+    <string name="tracker_type_boolean">tak/nie</string>
+    <string name="tracker_type_text">Tekst</string>
+    <string name="label_tracker_unit">Jednostka (np. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Dodaj</string>
+
 </resources>

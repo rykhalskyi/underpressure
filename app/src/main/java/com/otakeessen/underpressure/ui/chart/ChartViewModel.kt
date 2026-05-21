@@ -184,6 +184,29 @@ class ChartViewModel(
         val minDateStr = filtered.minBy { it.date }.date
         val minDate = LocalDate.parse(minDateStr, DATE_FORMATTER)
 
+        // --- Prepare Tracker Data ---
+        val trackerValuesMap = mutableMapOf<Float, MutableList<TrackerValue>>()
+        
+        // Temporarily calculate sequential indices for CHRONOLOGICAL mode mapping
+        val sequentialMeasurements = filtered
+                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
+                .sortedWith(compareBy({ it.date }, { it.timestamp }))
+        
+        activeTrackers.filter { it.type != TrackerType.FLOAT }.forEach { tracker ->
+             allTrackerValues.filter { v -> v.trackerId == tracker.id && (v.booleanValue != null || v.stringValue != null) }
+                .forEach { v ->
+                    val m = measurements.find { it.id == v.measurementId } ?: return@forEach
+                    val x = if (config.mode == ChartMode.TREND_BY_SLOT) {
+                        ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
+                    } else {
+                        sequentialMeasurements.indexOf(m).toFloat()
+                    }
+                    if (x >= 0) {
+                        trackerValuesMap.getOrPut(x) { mutableListOf() }.add(v)
+                    }
+                }
+        }
+
         val sysDataSets = mutableListOf<LineDataSet>()
         val diaDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
@@ -192,7 +215,6 @@ class ChartViewModel(
         var barData: BarData? = null
         var pieData: PieData? = null
         val xLabels = mutableMapOf<Float, String>()
-        var sequentialMeasurements = emptyList<MeasurementEntity>()
 
         if (config.mode == ChartMode.TREND_BY_SLOT) {
             // Logic for TREND_BY_SLOT mode
@@ -243,11 +265,6 @@ class ChartViewModel(
                 }
             }
         } else if (config.mode == ChartMode.CHRONOLOGICAL) {
-            // Logic for CHRONOLOGICAL mode (One plot for all slots, including anytime readings)
-            sequentialMeasurements = filtered
-                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
-                .sortedWith(compareBy({ it.date }, { it.timestamp }))
-            
             sequentialMeasurements.forEachIndexed { index, m ->
                 val date = LocalDate.parse(m.date, DATE_FORMATTER)
                 val formattedDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
@@ -342,43 +359,93 @@ class ChartViewModel(
         }
 
         // --- Process Trackers ---
-        activeTrackers.filter { it.showOnChart && it.type == TrackerType.FLOAT }.forEach { tracker ->
-            val trackerValues = allTrackerValues.filter { it.trackerId == tracker.id }
-            if (trackerValues.isNotEmpty()) {
-                val entries = trackerValues.mapNotNull { v ->
-                    val m = measurements.find { it.id == v.measurementId } ?: return@mapNotNull null
-                    val date = LocalDate.parse(m.date, DATE_FORMATTER)
-                    
-                    // Filter by date range
-                    val afterFrom = config.fromDate == null || !date.isBefore(config.fromDate)
-                    val beforeTo = config.toDate == null || !date.isAfter(config.toDate)
-                    if (!afterFrom || !beforeTo) return@mapNotNull null
-                    
-                    val x = if (config.mode == ChartMode.TREND_BY_SLOT) {
-                        ChronoUnit.DAYS.between(minDate, date).toFloat()
-                    } else if (config.mode == ChartMode.CHRONOLOGICAL) {
-                        val seqIndex = sequentialMeasurements.indexOf(m)
-                        if (seqIndex == -1) return@mapNotNull null
-                        seqIndex.toFloat()
-                    } else return@mapNotNull null
-                    
-                    v.floatValue?.let { Entry(x, it.toFloat()) }
-                }.sortedBy { it.x }
-                
-                if (entries.isNotEmpty()) {
-                    val dataSet = LineDataSet(entries, tracker.name).apply {
-                        color = Color.MAGENTA // Use a distinct color for trackers
-                        setCircleColor(Color.MAGENTA)
-                        lineWidth = 2f
-                        setDrawValues(false)
-                        if (tracker.useSecondaryAxis) {
-                            axisDependency = YAxis.AxisDependency.RIGHT
+        val slotColors = ChartColorUtil.getSlotColors()
+
+        activeTrackers.forEach { tracker ->
+            val trackerDataSets = mutableListOf<LineDataSet>()
+            
+            if (tracker.type == TrackerType.FLOAT && tracker.showOnChart) {
+                // ... (FLOAT tracker logic kept the same)
+                if (config.mode == ChartMode.TREND_BY_SLOT) {
+                    config.slots.forEach { slotIndex ->
+                        val slotValues = allTrackerValues.filter { v ->
+                            val m = measurements.find { it.id == v.measurementId }
+                            m != null && v.trackerId == tracker.id && m.slotIndex == slotIndex
+                        }
+                        
+                        if (slotValues.isNotEmpty()) {
+                            val entries = slotValues.mapNotNull { v ->
+                                val m = measurements.find { it.id == v.measurementId } ?: return@mapNotNull null
+                                val date = LocalDate.parse(m.date, DATE_FORMATTER)
+                                val days = ChronoUnit.DAYS.between(minDate, date).toFloat()
+                                v.floatValue?.let { Entry(days, it.toFloat()) }
+                            }.sortedBy { it.x }
+                            
+                            val slotTimeLabel = if (slotIndex == -1) "Anytime" else slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
+                            val label = "$slotTimeLabel - ${tracker.name}"
+                            
+                            val colorIndex = if (slotIndex == -1) 4 else slotIndex
+                            val colorVal = slotColors.getOrElse(colorIndex) { Color.MAGENTA }
+                            
+                            trackerDataSets.add(LineDataSet(entries, label).apply {
+                                color = colorVal
+                                setCircleColor(colorVal)
+                                lineWidth = 1.5f
+                                mode = LineDataSet.Mode.LINEAR
+                                setDrawValues(false)
+                                axisDependency = YAxis.AxisDependency.RIGHT
+                            })
                         }
                     }
-                    trackerLineData[tracker.id] = LineData(dataSet)
+                } else if (config.mode == ChartMode.CHRONOLOGICAL) {
+                    // For chronological, plot all enabled slots in one line per tracker
+                    val trackerValues = allTrackerValues.filter { v ->
+                        val m = measurements.find { it.id == v.measurementId }
+                        m != null && v.trackerId == tracker.id && (config.slots.contains(m.slotIndex) || m.isFlexible)
+                    }.sortedBy { m -> 
+                        val measurement = measurements.find { it.id == m.measurementId }
+                        measurement?.timestamp ?: 0L 
+                    }
+                    
+                    val entries = trackerValues.mapNotNull { v ->
+                        val m = measurements.find { it.id == v.measurementId } ?: return@mapNotNull null
+                        val seqIndex = sequentialMeasurements.indexOf(m)
+                        if (seqIndex == -1) return@mapNotNull null
+                        v.floatValue?.let { Entry(seqIndex.toFloat(), it.toFloat()) }
+                    }
+                    
+                    if (entries.isNotEmpty()) {
+                        trackerDataSets.add(LineDataSet(entries, tracker.name).apply {
+                            color = Color.MAGENTA
+                            setCircleColor(Color.MAGENTA)
+                            lineWidth = 1.5f
+                            mode = LineDataSet.Mode.LINEAR
+                            setDrawValues(false)
+                            axisDependency = YAxis.AxisDependency.RIGHT
+                        })
+                    }
                 }
+                
+                if (trackerDataSets.isNotEmpty()) {
+                    trackerLineData[tracker.id] = LineData(trackerDataSets.toList())
+                }
+            } else {
+                // Populate trackerValuesMap for Boolean/String trackers
+                allTrackerValues.filter { v -> v.trackerId == tracker.id && (v.booleanValue != null || v.stringValue != null) }
+                    .forEach { v ->
+                        val m = measurements.find { it.id == v.measurementId } ?: return@forEach
+                        val x = if (config.mode == ChartMode.TREND_BY_SLOT) {
+                            ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
+                        } else {
+                            sequentialMeasurements.indexOf(m).toFloat()
+                        }
+                        if (x >= 0) {
+                            trackerValuesMap.getOrPut(x) { mutableListOf() }.add(v)
+                        }
+                    }
             }
         }
+
 
         // 7-Day Rolling Average
         if (config.showRollingAverage && config.mode != ChartMode.SUMMARY) {
@@ -418,6 +485,8 @@ class ChartViewModel(
             diaLineData = if (diaDataSets.isNotEmpty()) LineData(diaDataSets.toList()) else null,
             pulseLineData = if (pulseDataSets.isNotEmpty()) LineData(pulseDataSets.toList()) else null,
             trackerLineData = trackerLineData,
+            trackerValuesMap = trackerValuesMap,
+            trackerDefinitionsMap = activeTrackers.associateBy { it.id },
             distributionBarData = barData,
             distributionPieData = pieData,
             startDate = minDate,

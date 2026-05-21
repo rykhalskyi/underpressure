@@ -128,6 +128,16 @@ fun MeasurementEditDialog(
         lastLength = textValue.length
     }
 
+    val isAnyTrackerError = state.activeTrackers.any { tracker ->
+        if (tracker.type == TrackerType.FLOAT) {
+            val value = state.trackerValues[tracker.id]?.floatValue
+            value != null && (
+                (tracker.min != null && value < tracker.min) ||
+                (tracker.max != null && value > tracker.max)
+            )
+        } else false
+    }
+
     AlertDialog(
         modifier = modifier,
         onDismissRequest = onDismiss,
@@ -144,6 +154,7 @@ fun MeasurementEditDialog(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
+                // ... (rest of the UI implementation)
                 if (state.isFlexibleMode) {
                     Text(
                         text = stringResource(R.string.label_anytime_reading) + " — ${state.slotTime}",
@@ -208,7 +219,7 @@ fun MeasurementEditDialog(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            if (validationResult is ValidationResult.Success) {
+                            if (validationResult is ValidationResult.Success && !isAnyTrackerError) {
                                 onSave(textValue)
                             }
                         }
@@ -303,7 +314,7 @@ fun MeasurementEditDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSave(textValue) },
-                enabled = validationResult is ValidationResult.Success
+                enabled = validationResult is ValidationResult.Success && !isAnyTrackerError
             ) {
                 Text(stringResource(R.string.button_save))
             }
@@ -324,13 +335,41 @@ fun TrackerInput(
 ) {
     when (tracker.type) {
         TrackerType.FLOAT -> {
+            var rawInput by remember(value.floatValue) {
+                mutableStateOf(value.floatValue?.toString() ?: "")
+            }
+            
+            // Check for format validity: either empty or valid number
+            val isFormatError = rawInput.isNotEmpty() && rawInput.replace(',', '.').toDoubleOrNull() == null
+            val numericVal = rawInput.replace(',', '.').toDoubleOrNull()
+            
+            // Check for range validity: only if valid numeric value
+            val isRangeError = numericVal != null && (
+                (tracker.min != null && numericVal < tracker.min) ||
+                (tracker.max != null && numericVal > tracker.max)
+            )
+
+            val isError = isFormatError || isRangeError
+
             OutlinedTextField(
-                value = value.floatValue?.toString() ?: "",
+                value = rawInput,
                 onValueChange = { str ->
-                    val floatVal = str.replace(',', '.').toDoubleOrNull()
-                    onValueChange(value.copy(floatValue = floatVal))
+                    rawInput = str
+                    val newVal = str.replace(',', '.').toDoubleOrNull()
+                    onValueChange(value.copy(floatValue = newVal))
                 },
-                label = { Text(tracker.name + (tracker.unit?.let { " ($it)" } ?: "")) },
+                label = { 
+                    val label = tracker.name + (tracker.unit?.let { " ($it)" } ?: "")
+                    Text(label) 
+                },
+                isError = isError,
+                supportingText = {
+                    if (isFormatError) {
+                        Text("Invalid number format")
+                    } else if (isRangeError) {
+                        Text("Must be between ${tracker.min ?: "-∞"} and ${tracker.max ?: "∞"}")
+                    }
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
