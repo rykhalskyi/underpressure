@@ -33,7 +33,12 @@ class TrackerRepositoryImpl(
     }
 
     override suspend fun saveTrackerDefinition(tracker: TrackerDefinition): Long {
-        return trackerDao.insertTrackerDefinition(tracker.toEntity())
+        return if (tracker.id > 0) {
+            trackerDao.updateTrackerDefinition(tracker.toEntity())
+            tracker.id
+        } else {
+            trackerDao.insertTrackerDefinition(tracker.toEntity())
+        }
     }
 
     override suspend fun deleteTrackerDefinition(tracker: TrackerDefinition) {

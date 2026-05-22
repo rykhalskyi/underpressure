@@ -251,6 +251,13 @@
     <string name="label_tracker_min">Min</string>
     <string name="label_tracker_max">Max</string>
     <string name="button_add">Add</string>
+    <string name="button_edit">Edit</string>
+    <string name="dialog_title_edit_tracker">Edit Tracker</string>
+    <string name="invalid_number_format">Invalid number format</string>
+    <string name="must_be_between_and">Must be between %1$s and %2$s</string>
+    <string name="additional_info">Additional Info</string>
+    <string name="tap_to_show_hide_custom_readings">Tap to show/hide custom readings</string>
+    <string name="active_custom_reading_s">%1$d active custom reading(s)</string>
 
 </resources>
 

@@ -250,5 +250,11 @@
     <string name="label_tracker_min">Мин</string>
     <string name="label_tracker_max">Макс</string>
     <string name="button_add">Добавить</string>
-
+    <string name="button_edit">Редактировать</string>
+    <string name="dialog_title_edit_tracker">Редактировать трекер</string>
+    <string name="invalid_number_format">Неверный формат числа</string>
+    <string name="must_be_between_and">Должно быть между %1$s и %2$s</string>
+    <string name="additional_info">Дополнительная информация</string>
+    <string name="tap_to_show_hide_custom_readings">Нажмите, чтобы показать/скрыть пользовательские показания</string>
+    <string name="active_custom_reading_s">%1$d активное(ые) пользовательское(ие) показание(я)</string>
 </resources>

@@ -53,12 +53,14 @@ class ChartViewModelTest {
         Dispatchers.setMain(testDispatcher)
         every { measurementRepository.getAllMeasurements() } returns measurementsFlow
         every { settingsRepository.getSettings() } returns settingsFlow
+        coEvery { settingsRepository.getSettingsSync() } returns AppSettingsEntity()
         every { trackerRepository.getActiveTrackerDefinitions() } returns trackersDefinitionsFlow
         every { trackerRepository.getAllTrackerValues() } returns trackerValuesFlow
     }
 
     @After
     fun tearDown() {
+        clearAllMocks()
         Dispatchers.resetMain()
     }
 

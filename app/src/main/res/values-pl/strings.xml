@@ -250,5 +250,11 @@
     <string name="label_tracker_min">Min</string>
     <string name="label_tracker_max">Max</string>
     <string name="button_add">Dodaj</string>
-
+    <string name="button_edit">Edytuj</string>
+    <string name="dialog_title_edit_tracker">Edytuj tracker</string>
+    <string name="invalid_number_format">Nieprawidłowy format liczby</string>
+    <string name="must_be_between_and">Musi być między %1$s a %2$s</string>
+    <string name="additional_info">Dodatkowe informacje</string>
+    <string name="tap_to_show_hide_custom_readings">Dotknij, aby pokazać/ukryć niestandardowe odczyty</string>
+    <string name="active_custom_reading_s">%1$d aktywny(e) niestandardowy(e) odczyt(y)</string>
 </resources>

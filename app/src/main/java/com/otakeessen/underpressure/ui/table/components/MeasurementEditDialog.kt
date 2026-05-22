@@ -256,7 +256,7 @@ fun MeasurementEditDialog(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Additional Info",
+                                text = stringResource(R.string.additional_info),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
@@ -267,9 +267,9 @@ fun MeasurementEditDialog(
                             }
                             Text(
                                 text = if (activeCount > 0) {
-                                    "$activeCount active custom reading(s)"
+                                    stringResource(R.string.active_custom_reading_s, activeCount)
                                 } else {
-                                    "Tap to show/hide custom readings"
+                                    stringResource(R.string.tap_to_show_hide_custom_readings)
                                 },
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -365,9 +365,14 @@ fun TrackerInput(
                 isError = isError,
                 supportingText = {
                     if (isFormatError) {
-                        Text("Invalid number format")
+                        Text(stringResource(R.string.invalid_number_format))
                     } else if (isRangeError) {
-                        Text("Must be between ${tracker.min ?: "-∞"} and ${tracker.max ?: "∞"}")
+                        Text(
+                            stringResource(
+                                R.string.must_be_between_and,
+                                tracker.min ?: "-∞",
+                                tracker.max ?: "∞"
+                            ))
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),

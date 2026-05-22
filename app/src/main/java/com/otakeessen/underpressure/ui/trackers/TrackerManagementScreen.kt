@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ fun TrackerManagementScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
+    var trackerToEdit by remember { mutableStateOf<TrackerDefinition?>(null) }
     var trackerToDelete by remember { mutableStateOf<TrackerDefinition?>(null) }
     val context = LocalContext.current
 
@@ -88,6 +90,7 @@ fun TrackerManagementScreen(
                         TrackerItem(
                             tracker = tracker,
                             onToggleActive = { viewModel.toggleTrackerActive(tracker) },
+                            onEdit = { trackerToEdit = tracker },
                             onDelete = { trackerToDelete = tracker }
                         )
                     }
@@ -96,11 +99,22 @@ fun TrackerManagementScreen(
         }
 
         if (showAddDialog) {
-            AddTrackerDialog(
+            TrackerDialog(
                 onDismiss = { showAddDialog = false },
-                onConfirm = { name, type, unit, min, max ->
-                    viewModel.saveTracker(TrackerDefinition(name = name, type = type, unit = unit, min = min, max = max))
+                onConfirm = { updatedTracker ->
+                    viewModel.saveTracker(updatedTracker)
                     showAddDialog = false
+                }
+            )
+        }
+
+        trackerToEdit?.let { tracker ->
+            TrackerDialog(
+                tracker = tracker,
+                onDismiss = { trackerToEdit = null },
+                onConfirm = { updatedTracker ->
+                    viewModel.saveTracker(updatedTracker)
+                    trackerToEdit = null
                 }
             )
         }
@@ -137,6 +151,7 @@ fun TrackerManagementScreen(
 fun TrackerItem(
     tracker: TrackerDefinition,
     onToggleActive: () -> Unit,
+    onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
@@ -185,6 +200,13 @@ fun TrackerItem(
                         modifier = Modifier.scale(0.8f)
                     )
                 }
+                IconButton(onClick = onEdit) {
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.button_edit),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
@@ -199,20 +221,26 @@ fun TrackerItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTrackerDialog(
+fun TrackerDialog(
+    tracker: TrackerDefinition? = null,
     onDismiss: () -> Unit,
-    onConfirm: (String, TrackerType, String?, Double?, Double?) -> Unit
+    onConfirm: (TrackerDefinition) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf(TrackerType.FLOAT) }
-    var unit by remember { mutableStateOf("") }
-    var min by remember { mutableStateOf("") }
-    var max by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(tracker?.name ?: "") }
+    var type by remember { mutableStateOf(tracker?.type ?: TrackerType.FLOAT) }
+    var unit by remember { mutableStateOf(tracker?.unit ?: "") }
+    var min by remember { mutableStateOf(tracker?.min?.toString() ?: "") }
+    var max by remember { mutableStateOf(tracker?.max?.toString() ?: "") }
     var expanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.dialog_title_add_tracker)) },
+        title = { 
+            Text(
+                if (tracker == null) stringResource(R.string.dialog_title_add_tracker)
+                else stringResource(R.string.dialog_title_edit_tracker)
+            ) 
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -296,14 +324,22 @@ fun AddTrackerDialog(
         confirmButton = {
             Button(onClick = { 
                 onConfirm(
-                    name, 
-                    type, 
-                    unit.ifBlank { null },
-                    min.toDoubleOrNull(),
-                    max.toDoubleOrNull()
+                    TrackerDefinition(
+                        id = tracker?.id ?: 0,
+                        name = name,
+                        type = type,
+                        unit = unit.ifBlank { null },
+                        min = min.toDoubleOrNull(),
+                        max = max.toDoubleOrNull(),
+                        isActive = tracker?.isActive ?: true,
+                        showOnChart = tracker?.showOnChart ?: false
+                    )
                 ) 
             }, enabled = name.isNotBlank()) {
-                Text(stringResource(R.string.button_add))
+                Text(
+                    if (tracker == null) stringResource(R.string.button_add)
+                    else stringResource(R.string.button_save)
+                )
             }
         },
         dismissButton = {

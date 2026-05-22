@@ -250,4 +250,11 @@
     <string name="label_tracker_min">Min</string>
     <string name="label_tracker_max">Max</string>
     <string name="button_add">Hinzufügen</string>
+    <string name="button_edit">Bearbeiten</string>
+    <string name="dialog_title_edit_tracker">Tracker bearbeiten</string>  ┃
+    <string name="invalid_number_format">Ungültiges Zahlenformat</string>                                                                                                                           connect. Is the computer able to
+    <string name="must_be_between_and">Muss zwischen %1$s und %2$s liegen</string>                                                                                                                  access the url?
+    <string name="additional_info">Zusätzliche Informationen</string>
+    <string name="tap_to_show_hide_custom_readings">Tippen, um benutzerdefinierte Messwerte anzuzeigen/auszublenden</string>                                                                      LSP
+    <string name="active_custom_reading_s">%1$d aktive benutzerdefinierte(s) Messwert(e)</string>
 </resources>

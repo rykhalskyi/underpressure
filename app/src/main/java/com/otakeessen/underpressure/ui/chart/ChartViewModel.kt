@@ -58,6 +58,37 @@ class ChartViewModel(
     private val _slotColors = MutableStateFlow(ChartColorUtil.getSlotColors())
     private val _levelColors = MutableStateFlow(ChartColorUtil.getLevelColors())
 
+    init {
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync()
+            settings?.chartDatePreset?.let { presetName ->
+                try {
+                    val preset = DatePreset.valueOf(presetName)
+                    val today = LocalDate.now()
+                    when (preset) {
+                        DatePreset.ALL_TIME -> {
+                            _fromDate.value = null
+                            _toDate.value = null
+                        }
+                        DatePreset.LAST_7_DAYS -> {
+                            _fromDate.value = today.minusDays(6)
+                            _toDate.value = today
+                        }
+                        DatePreset.THIS_MONTH -> {
+                            _fromDate.value = today.withDayOfMonth(1)
+                            _toDate.value = today.withDayOfMonth(today.lengthOfMonth())
+                        }
+                        DatePreset.CUSTOM -> {
+                            // Custom range is not persisted currently, default to all time or keep as null
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Ignore invalid preset name
+                }
+            }
+        }
+    }
+
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
         data class Error(val messageResId: Int, val arg: String? = null) : ChartEvent()
@@ -73,7 +104,21 @@ class ChartViewModel(
             _toDate,
             _slotColors,
             _levelColors
-        ) { settings, from, to, sc, lc ->
+        ) { settings, manualFrom, manualTo, sc, lc ->
+            val preset = try { DatePreset.valueOf(settings?.chartDatePreset ?: "ALL_TIME") } catch (e: Exception) { DatePreset.ALL_TIME }
+            val today = LocalDate.now()
+            
+            val (from, to) = if (manualFrom != null || manualTo != null) {
+                manualFrom to manualTo
+            } else {
+                when (preset) {
+                    DatePreset.ALL_TIME -> null to null
+                    DatePreset.LAST_7_DAYS -> today.minusDays(6) to today
+                    DatePreset.THIS_MONTH -> today.withDayOfMonth(1) to today.withDayOfMonth(today.lengthOfMonth())
+                    DatePreset.CUSTOM -> null to null
+                }
+            }
+            
             val slots = settings?.chartSelectedSlots?.toSet() ?: setOf(0, 1, 2, 3, -1)
             val types = settings?.chartSelectedTypes?.mapNotNull { 
                 try { MeasurementType.valueOf(it) } catch (e: Exception) { null } 
@@ -191,21 +236,6 @@ class ChartViewModel(
         val sequentialMeasurements = filtered
                 .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
                 .sortedWith(compareBy({ it.date }, { it.timestamp }))
-        
-        activeTrackers.filter { it.type != TrackerType.FLOAT }.forEach { tracker ->
-             allTrackerValues.filter { v -> v.trackerId == tracker.id && (v.booleanValue != null || v.stringValue != null) }
-                .forEach { v ->
-                    val m = measurements.find { it.id == v.measurementId } ?: return@forEach
-                    val x = if (config.mode == ChartMode.TREND_BY_SLOT) {
-                        ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
-                    } else {
-                        sequentialMeasurements.indexOf(m).toFloat()
-                    }
-                    if (x >= 0) {
-                        trackerValuesMap.getOrPut(x) { mutableListOf() }.add(v)
-                    }
-                }
-        }
 
         val sysDataSets = mutableListOf<LineDataSet>()
         val diaDataSets = mutableListOf<LineDataSet>()
@@ -510,7 +540,7 @@ class ChartViewModel(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Lazily,
         initialValue = ChartUiState(isLoading = true)
     )
 

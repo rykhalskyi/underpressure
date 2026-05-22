@@ -88,7 +88,7 @@ fun TrackerIndicatorBadge(
                         TrackerType.STRING -> value.stringValue ?: ""
                     }
                     Text(
-                        text = "• ${tracker.name}: $displayValue",
+                        text = "${tracker.name}: $displayValue",
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(vertical = 2.dp)
