@@ -28,6 +28,7 @@ import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import com.otakeessen.underpressure.ui.chart.util.ChartColorUtil
 import com.otakeessen.underpressure.ui.chart.util.ChartDataUtils
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -543,6 +544,10 @@ class ChartViewModel(
         started = SharingStarted.Lazily,
         initialValue = ChartUiState(isLoading = true)
     )
+
+    fun testOnlyClear() {
+        viewModelScope.cancel()
+    }
 
     companion object {
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")

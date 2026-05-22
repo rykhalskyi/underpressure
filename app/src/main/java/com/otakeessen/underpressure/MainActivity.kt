@@ -60,14 +60,14 @@ class MainActivity : ComponentActivity() {
                         MeasurementTableViewModel(measurementRepository, settingsRepository, trackerRepository, alarmScheduler = alarmScheduler) as T
                     }
                     modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
-                        val importManager = TableImportManager(applicationContext, measurementRepository, settingsRepository)
-                        SettingsViewModel(settingsRepository, alarmScheduler, importManager) as T
+                        val importManager = TableImportManager(applicationContext, measurementRepository, settingsRepository, trackerRepository)
+                        SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository) as T
                     }
                     modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                         SearchViewModel(measurementRepository, settingsRepository) as T
                     }
                     modelClass.isAssignableFrom(ShareViewModel::class.java) -> {
-                        val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository)
+                        val exportManager = TableExportManager(applicationContext, measurementRepository, settingsRepository, trackerRepository)
                         ShareViewModel(exportManager) as T
                     }
                     modelClass.isAssignableFrom(ChartViewModel::class.java) -> {

@@ -3,6 +3,7 @@ package com.otakeessen.underpressure.ui.settings
 import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -26,6 +27,7 @@ class SettingsViewModelTest {
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var alarmScheduler: AlarmScheduler
     private lateinit var importManager: com.otakeessen.underpressure.data.export.TableImportManager
+    private lateinit var trackerRepository: TrackerRepository
     private lateinit var viewModel: SettingsViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -35,6 +37,8 @@ class SettingsViewModelTest {
         settingsRepository = mockk()
         alarmScheduler = mockk(relaxed = true)
         importManager = mockk(relaxed = true)
+        trackerRepository = mockk()
+        every { trackerRepository.getAllTrackerDefinitions() } returns flowOf(emptyList())
     }
 
     @Test
@@ -45,7 +49,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
@@ -67,7 +71,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         viewModel.updateSlotTime(1, "14:30")
 
         coVerify {
@@ -86,7 +90,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         viewModel.updateSlotActive(1, true)
 
         coVerify {
@@ -104,7 +108,7 @@ class SettingsViewModelTest {
         val settings = AppSettingsEntity(slotActiveFlags = listOf(true, false, false, false))
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         viewModel.updateSlotActive(0, false)
 
         coVerify(exactly = 0) {
@@ -123,7 +127,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         
         // Try to set slot 2 (index 1) to 07:15, which is only 15 mins from slot 1 (07:00)
         viewModel.updateSlotTime(1, "07:15")
@@ -146,7 +150,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         
         // Try to set slot 2 to 07:30
         viewModel.updateSlotTime(1, "07:30")
@@ -164,7 +168,7 @@ class SettingsViewModelTest {
         )
         every { settingsRepository.getSettings() } returns flowOf(settings)
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         
         // Try to set slot 4 (index 3) to 23:55, which is 10 mins from slot 1 (23:45)
         viewModel.updateSlotTime(3, "23:55")
@@ -187,7 +191,7 @@ class SettingsViewModelTest {
         every { settingsRepository.getSettings() } returns flowOf(settings)
         coEvery { settingsRepository.saveSettings(any()) } returns Unit
 
-        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager)
+        viewModel = SettingsViewModel(settingsRepository, alarmScheduler, importManager, trackerRepository)
         
         // Try to set slot 1 (index 0) to 07:10. 
         // Even though slot 2 is 07:15, it's inactive, so it should be ignored.
@@ -198,4 +202,3 @@ class SettingsViewModelTest {
         }
     }
 }
-

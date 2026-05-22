@@ -5,12 +5,18 @@ import android.content.Context
 import android.net.Uri
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.export.TrackerMappingAction
+import com.otakeessen.underpressure.domain.export.TrackerMatchStatus
 import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -24,6 +30,7 @@ class TableImportManagerTest {
     private val context: Context = mockk()
     private val measurementRepository: MeasurementRepository = mockk()
     private val settingsRepository: SettingsRepository = mockk()
+    private val trackerRepository: TrackerRepository = mockk()
     private val contentResolver: ContentResolver = mockk()
     private val uri: Uri = mockk()
 
@@ -31,8 +38,82 @@ class TableImportManagerTest {
 
     @Before
     fun setup() {
-        importManager = TableImportManager(context, measurementRepository, settingsRepository)
+        importManager = TableImportManager(context, measurementRepository, settingsRepository, trackerRepository)
         every { context.contentResolver } returns contentResolver
+    }
+
+    @Test
+    fun `importCsv saves tracker values linked to measurements`() = runTest {
+        // Arrange
+        val csvContent = """
+            Date,Slot 1,Anytime,[Tracker] Weight (kg)
+            2026-05-15,120/80,130/85 (14:30),75.5 (14:30)
+        """.trimIndent()
+        
+        val inputStream = ByteArrayInputStream(csvContent.toByteArray())
+        every { contentResolver.openInputStream(uri) } returns inputStream
+        
+        val settings = AppSettingsEntity(slotTimes = listOf("08:00"))
+        coEvery { settingsRepository.getSettingsSync() } returns settings
+        coEvery { measurementRepository.getMeasurementsByDateSync("2026-05-15") } returns emptyList()
+        coEvery { measurementRepository.saveMeasurement(any()) } returns 101L andThen 102L // 101 for Slot 1, 102 for Anytime
+
+        val trackerDef = TrackerDefinition(id = 1, name = "Weight", unit = "kg", type = TrackerType.FLOAT)
+        coEvery { trackerRepository.getTrackerDefinitionById(1) } returns trackerDef
+        coEvery { trackerRepository.getTrackerValueByMeasurementAndTracker(any(), any()) } returns null
+        coEvery { trackerRepository.saveTrackerValue(any()) } returns 1L
+
+        val mapping = mapOf("[Tracker] Weight (kg)" to TrackerMappingAction.MapToExisting(1))
+
+        // Act
+        val result = importManager.importCsv(uri, TableImportManager.ImportStrategy.Skip, mapping)
+
+        // Assert
+        assertEquals(2, result.successCount)
+        assertEquals(1, result.trackerValuesCount)
+
+        // Verify tracker value is linked to measurement 102 (Anytime 14:30) because of timestamp match
+        coVerify { 
+            trackerRepository.saveTrackerValue(match { 
+                it.measurementId == 102L && it.trackerId == 1L && it.floatValue == 75.5
+            }) 
+        }
+    }
+
+    @Test
+    fun `discoverTrackers correctly identifies new, matched, and conflicted trackers`() = runTest {
+        // Arrange
+        val csvHeader = "Date,Slot 1,[Tracker] Weight (kg),[Tracker] Mood,[Tracker] Temp (C)\n"
+        val inputStream = ByteArrayInputStream(csvHeader.toByteArray())
+        every { contentResolver.openInputStream(uri) } returns inputStream
+        
+        val existingTrackers = listOf(
+            TrackerDefinition(id = 1, name = "Weight", unit = "kg", type = TrackerType.FLOAT), // Exact match
+            TrackerDefinition(id = 2, name = "Mood", unit = "score", type = TrackerType.FLOAT), // Conflict (unit)
+        )
+        every { trackerRepository.getAllTrackerDefinitions() } returns flowOf(existingTrackers)
+
+        // Act
+        val result = importManager.discoverTrackers(uri)
+
+        // Assert
+        assertEquals(3, result.discoveredTrackers.size)
+        assertEquals(5, result.totalColumns)
+
+        // Weight (kg) -> Exact Match
+        val weight = result.discoveredTrackers.find { it.extractedName == "Weight" }!!
+        assertEquals(TrackerMatchStatus.EXACT_MATCH, weight.matchStatus)
+        assertEquals("kg", weight.unit)
+
+        // Mood -> Conflict (CSV has no unit, DB has "score")
+        val mood = result.discoveredTrackers.find { it.extractedName == "Mood" }!!
+        assertEquals(TrackerMatchStatus.CONFLICT, mood.matchStatus)
+        assertEquals(null, mood.unit)
+
+        // Temp (C) -> New
+        val temp = result.discoveredTrackers.find { it.extractedName == "Temp" }!!
+        assertEquals(TrackerMatchStatus.NEW, temp.matchStatus)
+        assertEquals("C", temp.unit)
     }
 
     @Test
