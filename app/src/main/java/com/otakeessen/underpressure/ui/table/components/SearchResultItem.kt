@@ -17,6 +17,8 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 
 /**
  * A reusable component to display an individual search result.
@@ -25,6 +27,8 @@ import com.otakeessen.underpressure.domain.BpGuidelines
 fun SearchResultItem(
     measurement: MeasurementEntity,
     guidelines: BpGuidelines,
+    trackerValues: Map<Long, TrackerValue>,
+    trackerDefinitions: Map<Long, TrackerDefinition>,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -74,6 +78,25 @@ fun SearchResultItem(
                 fontWeight = if (classification.isBold) FontWeight.Bold else FontWeight.Normal,
                 color = classification.textColor
             )
+
+            if (trackerValues.isNotEmpty()) {
+                Column(modifier = Modifier.padding(top = 4.dp)) {
+                    trackerValues.forEach { (trackerId, value) ->
+                        val definition = trackerDefinitions[trackerId] ?: return@forEach
+                        val displayValue = when {
+                            value.floatValue != null -> value.floatValue.toString()
+                            value.booleanValue != null -> if (value.booleanValue) "✓" else "✗"
+                            value.stringValue != null -> value.stringValue
+                            else -> ""
+                        }
+                        Text(
+                            text = "${definition.name}: $displayValue",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
         }
     }
 }

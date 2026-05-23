@@ -54,7 +54,14 @@ fun SearchDialog(
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
     val filter by viewModel.filter.collectAsStateWithLifecycle()
+    val trackerFilter by viewModel.trackerFilter.collectAsStateWithLifecycle()
+    val trackers by viewModel.trackers.collectAsStateWithLifecycle()
+    val allTrackerValues by viewModel.allTrackerValues.collectAsStateWithLifecycle()
     val uiState by viewModel.resultsState.collectAsStateWithLifecycle()
+    
+    val trackerDefinitionsMap = remember(trackers) { trackers.associateBy { it.id } }
+    val trackerValuesMap = remember(allTrackerValues) { allTrackerValues.groupBy { it.measurementId }.mapValues { it.value.associateBy { v -> v.trackerId } } }
+
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val scrollState = rememberScrollState()
@@ -102,7 +109,7 @@ fun SearchDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp)
+                        .padding(bottom = 4.dp)
                         .horizontalScroll(scrollState),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -125,6 +132,24 @@ fun SearchDialog(
                     }
                 }
 
+                if (trackers.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 4.dp)
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        trackers.forEach { tracker ->
+                            FilterChip(
+                                selected = trackerFilter == tracker.id,
+                                onClick = { viewModel.setTrackerFilter(tracker.id) },
+                                label = { Text(tracker.name) }
+                            )
+                        }
+                    }
+                }
+
                 if (uiState.results.isEmpty() && query.isNotEmpty()) {
                     Text(
                         text = stringResource(R.string.message_no_results),
@@ -137,6 +162,8 @@ fun SearchDialog(
                             SearchResultItem(
                                 measurement = measurement,
                                 guidelines = guidelines,
+                                trackerValues = trackerValuesMap[measurement.id] ?: emptyMap(),
+                                trackerDefinitions = trackerDefinitionsMap,
                                 onClick = { onResultClick(measurement.date) }
                             )
                             HorizontalDivider(
