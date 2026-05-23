@@ -67,6 +67,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.LinearProgressIndicator
 import com.otakeessen.underpressure.ui.settings.components.ImportMappingDialog
+import com.otakeessen.underpressure.ui.settings.components.ImpressumDialog
 
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
@@ -82,6 +83,7 @@ fun SettingsScreen(
     val allTrackers by viewModel.allTrackers.collectAsStateWithLifecycle()
     var showTimePickerForIndex by remember { mutableStateOf<Int?>(null) }
     var showOnboarding by remember { mutableStateOf(false) }
+    var showImpressum by remember { mutableStateOf(false) }
     
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -275,13 +277,38 @@ fun SettingsScreen(
                     item {
                         ListItem(
                             headlineContent = { Text(stringResource(R.string.label_privacy_policy)) },
-                            supportingContent = { Text("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md") },
+                            supportingContent = { Text(stringResource(R.string.url_privacy_policy)) },
                             modifier = Modifier.clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md"))
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.url_privacy_policy)))
                                 context.startActivity(intent)
                             }
                         )
                         HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
+                        ListItem(
+                            headlineContent = { Text(stringResource(R.string.label_terms_of_service)) },
+                            supportingContent = { Text(stringResource(R.string.url_terms_of_service)) },
+                            modifier = Modifier.clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.url_terms_of_service)))
+                                context.startActivity(intent)
+                            }
+                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    // Impressum only for German locale
+                    if (context.resources.configuration.locales.get(0).language == "de") {
+                        item {
+                            ListItem(
+                                headlineContent = { Text(stringResource(R.string.label_impressum)) },
+                                modifier = Modifier.clickable {
+                                    showImpressum = true
+                                }
+                            )
+                            HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                        }
                     }
 
                     item {
@@ -294,6 +321,7 @@ fun SettingsScreen(
                             }
                         )
                     }
+
                 }
             }
         }
@@ -301,6 +329,18 @@ fun SettingsScreen(
         if (showOnboarding) {
             OnboardingDialog(
                 onDismiss = { showOnboarding = false }
+            )
+        }
+
+        if (showImpressum) {
+            val content = try {
+                context.assets.open("impressum.md").bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                "Impressum not available."
+            }
+            ImpressumDialog(
+                content = content,
+                onDismiss = { showImpressum = false }
             )
         }
 

@@ -121,6 +121,7 @@
     <string name="label_version">Wersja %1$s</string>
     <string name="label_repo">Kod źródłowy (GitHub)</string>
     <string name="label_privacy_policy">Polityka prywatności</string>
+    <string name="label_terms_of_service">Warunki korzystania</string>
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
     <!-- BP Ranges AHA -->

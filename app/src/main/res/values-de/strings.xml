@@ -121,6 +121,12 @@
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Quellcode (GitHub)</string>
     <string name="label_privacy_policy">Datenschutzerklärung</string>
+    <string name="url_privacy_policy">https://github.com/rykhalskyi/underpressure/blob/main/de/PRIVACYPOLICY.md</string>
+    <string name="label_terms_of_service">Nutzungsbedingungen</string>
+    <string name="url_terms_of_service">https://github.com/rykhalskyi/underpressure/blob/main/de/TERMOFSERVICE.md</string>
+    <string name="label_impressum">Impressum</string>
+    <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
+
     <string name="button_show_onboarding">Einführung anzeigen</string>
 
     <!-- BP Ranges AHA -->

@@ -28,6 +28,7 @@ replay_pid*
 *.iml
 .gradle
 /local.properties
+impressum.md
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml

@@ -121,6 +121,7 @@
     <string name="label_version">Версія %1$s</string>
     <string name="label_repo">Вихідний код (GitHub)</string>
     <string name="label_privacy_policy">Політика конфіденційності</string>
+    <string name="label_terms_of_service">Умови використання</string>
     <string name="button_show_onboarding">Показати знайомство</string>
 
     <!-- BP Ranges AHA -->
