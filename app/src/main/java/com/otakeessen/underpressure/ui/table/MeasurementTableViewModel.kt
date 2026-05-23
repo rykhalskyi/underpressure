@@ -134,6 +134,12 @@ class MeasurementTableViewModel(
         val headers = allTimesStr.filterIndexed { index, _ -> activeFlags.getOrElse(index) { false } }
         val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
         
+        val activeSlotIndex = headers.indexOfFirst { time ->
+            val slotTime = LocalTime.parse(time, timeFormatter)
+            val duration = Math.abs(java.time.Duration.between(now, slotTime).toMinutes())
+            duration <= SLOT_WINDOW_MINUTES
+        }.takeIf { it != -1 }
+
         // Separate scheduled (slot-bound) and flexible (anytime) measurements
         val (scheduledMeasurements, flexibleMeasurements) = measurements.partition { !it.isFlexible }
 
@@ -319,7 +325,8 @@ class MeasurementTableViewModel(
             activeTrackers = activeTrackers,
             activeGuidelines = guidelines,
             error = manualError,
-            classificationStats = stats
+            classificationStats = stats,
+            activeSlotIndex = activeSlotIndex
         )
     }.stateIn(
         scope = viewModelScope,

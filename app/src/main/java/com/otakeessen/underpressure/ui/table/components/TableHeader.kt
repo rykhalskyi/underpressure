@@ -24,6 +24,7 @@ import com.otakeessen.underpressure.R
 fun TableHeader(
     slotHeaders: List<String>,
     onSlotClick: (Int) -> Unit,
+    activeSlotIndex: Int? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -39,11 +40,13 @@ fun TableHeader(
         )
         
         slotHeaders.forEachIndexed { index, time ->
+            val isActive = index == activeSlotIndex
             HeaderCell(
                 text = time,
                 weight = 1f,
                 textAlign = TextAlign.Center,
-                onClick = { onSlotClick(index) }
+                onClick = { onSlotClick(index) },
+                modifier = if (isActive) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier
             )
         }
     }
@@ -54,11 +57,12 @@ private fun RowScope.HeaderCell(
     text: String,
     weight: Float,
     textAlign: TextAlign,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = text,
-        modifier = Modifier
+        modifier = modifier
             .weight(weight)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it },
         style = MaterialTheme.typography.labelSmall.copy(

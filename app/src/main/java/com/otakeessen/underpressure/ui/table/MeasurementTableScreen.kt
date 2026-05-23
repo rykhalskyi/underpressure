@@ -342,7 +342,8 @@ fun MeasurementTableScreen(
                 Column(modifier = Modifier.fillMaxSize()) {
                     TableHeader(
                         slotHeaders = uiState.slotHeaders,
-                        onSlotClick = { showTimePickerForUiIndex = it }
+                        onSlotClick = { showTimePickerForUiIndex = it },
+                        activeSlotIndex = uiState.activeSlotIndex
                     )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

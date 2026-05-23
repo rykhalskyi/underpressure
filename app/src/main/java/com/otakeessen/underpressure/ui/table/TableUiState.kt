@@ -63,7 +63,8 @@ data class TableUiState(
     val activeTrackers: List<TrackerDefinition> = emptyList(),
     val activeGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
     val error: String? = null,
-    val classificationStats: Map<BloodPressureLevel, Int> = emptyMap()
+    val classificationStats: Map<BloodPressureLevel, Int> = emptyMap(),
+    val activeSlotIndex: Int? = null
 )
 
 /**
