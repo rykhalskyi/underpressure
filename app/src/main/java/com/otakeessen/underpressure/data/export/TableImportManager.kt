@@ -63,7 +63,7 @@ class TableImportManager(
                 val trimmedHeader = header.trim()
                 if (trimmedHeader.startsWith(trackerPrefix)) {
                     val content = trimmedHeader.removePrefix(trackerPrefix)
-                    val (name, unit) = parseTrackerHeader(content)
+                    val (name, unit, type) = parseTrackerHeader(content)
                     
                     val existing = allTrackers.find { it.name.equals(name, ignoreCase = true) }
                     val status = when {
@@ -77,6 +77,7 @@ class TableImportManager(
                         headerName = trimmedHeader,
                         extractedName = name,
                         unit = unit,
+                        type = type,
                         matchStatus = status,
                         existingDefinition = existing
                     )
@@ -89,15 +90,25 @@ class TableImportManager(
         }
     }
 
-    private fun parseTrackerHeader(content: String): Pair<String, String?> {
-        // Format: "Name (Unit)" or just "Name"
-        return if (content.contains(" (") && content.endsWith(")")) {
-            val name = content.substringBeforeLast(" (").trim()
-            val unit = content.substringAfterLast(" (").removeSuffix(")").trim()
-            name to unit
-        } else {
-            content.trim() to null
+    private fun parseTrackerHeader(content: String): Triple<String, String?, TrackerType?> {
+        // Format: "Name (Unit) [Type]" or "Name (Unit)" or "Name"
+        var name = content
+        var unit: String? = null
+        var type: TrackerType? = null
+
+        if (name.endsWith("]")) {
+            val typePart = name.substringAfterLast("[").removeSuffix("]")
+            type = TrackerType.values().find { it.name == typePart }
+            name = name.substringBeforeLast("[").trim()
         }
+
+        if (name.endsWith(")")) {
+            val unitPart = name.substringAfterLast("(").removeSuffix(")")
+            unit = unitPart.trim()
+            name = name.substringBeforeLast("(").trim()
+        }
+
+        return Triple(name, unit, type)
     }
 
     /**

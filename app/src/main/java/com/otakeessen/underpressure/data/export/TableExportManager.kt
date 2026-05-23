@@ -122,7 +122,7 @@ class TableExportManager(
         val bpHeaders = listOf("Date") + activeSlotsMap.map { "Slot ${it.first + 1}" } + listOf("Anytime")
         val trackerHeaders = activeTrackerDefinitions.map { tracker ->
             val unitPart = if (!tracker.unit.isNullOrBlank()) " (${tracker.unit})" else ""
-            "[Tracker] ${tracker.name}$unitPart"
+            "[Tracker] ${tracker.name}$unitPart [${tracker.type}]"
         }
         val headers = bpHeaders + trackerHeaders
 

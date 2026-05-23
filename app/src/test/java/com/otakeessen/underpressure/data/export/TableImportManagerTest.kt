@@ -43,10 +43,32 @@ class TableImportManagerTest {
     }
 
     @Test
+    fun `discoverTrackers parses tracker type from header`() = runTest {
+        // Arrange
+        val csvContent = """
+            Date,Slot 1,[Tracker] Mood (none) [STRING]
+        """.trimIndent()
+        val inputStream = ByteArrayInputStream(csvContent.toByteArray())
+        every { contentResolver.openInputStream(uri) } returns inputStream
+        
+        coEvery { trackerRepository.getAllTrackerDefinitions() } returns flowOf(emptyList())
+
+        // Act
+        val result = importManager.discoverTrackers(uri)
+
+        // Assert
+        assertEquals(1, result.discoveredTrackers.size)
+        val tracker = result.discoveredTrackers[0]
+        assertEquals("Mood", tracker.extractedName)
+        assertEquals("none", tracker.unit)
+        assertEquals(TrackerType.STRING, tracker.type)
+    }
+
+    @Test
     fun `importCsv saves tracker values linked to measurements`() = runTest {
         // Arrange
         val csvContent = """
-            Date,Slot 1,Anytime,[Tracker] Weight (kg)
+            Date,Slot 1,Anytime,[Tracker] Weight (kg) [FLOAT]
             2026-05-15,120/80,130/85 (14:30),75.5 (14:30)
         """.trimIndent()
         
@@ -63,7 +85,7 @@ class TableImportManagerTest {
         coEvery { trackerRepository.getTrackerValueByMeasurementAndTracker(any(), any()) } returns null
         coEvery { trackerRepository.saveTrackerValue(any()) } returns 1L
 
-        val mapping = mapOf("[Tracker] Weight (kg)" to TrackerMappingAction.MapToExisting(1))
+        val mapping = mapOf("[Tracker] Weight (kg) [FLOAT]" to TrackerMappingAction.MapToExisting(1))
 
         // Act
         val result = importManager.importCsv(uri, TableImportManager.ImportStrategy.Skip, mapping)

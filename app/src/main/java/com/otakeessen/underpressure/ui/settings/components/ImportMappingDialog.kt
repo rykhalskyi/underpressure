@@ -143,12 +143,16 @@ fun TrackerMappingItem(
                     onClick = { expanded = true },
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    val label = when (currentAction) {
+                        is TrackerMappingAction.MapToExisting -> existingTrackers.find { it.id == currentAction.trackerId }?.name ?: stringResource(R.string.mapping_map_to_existing)
+                        is TrackerMappingAction.CreateNew -> {
+                            val typeLabel = tracker.type?.let { " (${it})" } ?: ""
+                            "${stringResource(R.string.mapping_create_new)}$typeLabel"
+                        }
+                        is TrackerMappingAction.Skip -> stringResource(R.string.mapping_skip)
+                    }
                     Text(
-                        text = when (currentAction) {
-                            is TrackerMappingAction.MapToExisting -> existingTrackers.find { it.id == currentAction.trackerId }?.name ?: stringResource(R.string.mapping_map_to_existing)
-                            is TrackerMappingAction.CreateNew -> stringResource(R.string.mapping_create_new)
-                            is TrackerMappingAction.Skip -> stringResource(R.string.mapping_skip)
-                        },
+                        text = label,
                         modifier = Modifier.padding(12.dp),
                         style = MaterialTheme.typography.bodySmall
                     )
@@ -160,7 +164,14 @@ fun TrackerMappingItem(
                     )
                     DropdownMenuItem(
                         text = { Text(stringResource(R.string.mapping_create_new)) },
-                        onClick = { onActionChange(TrackerMappingAction.CreateNew(tracker.extractedName, TrackerType.FLOAT, tracker.unit)); expanded = false }
+                        onClick = { 
+                            onActionChange(TrackerMappingAction.CreateNew(
+                                tracker.extractedName, 
+                                tracker.type ?: TrackerType.FLOAT, 
+                                tracker.unit
+                            )); 
+                            expanded = false 
+                        }
                     )
                     existingTrackers.forEach { trackerDef ->
                         DropdownMenuItem(
@@ -170,33 +181,6 @@ fun TrackerMappingItem(
                     }
                 }
             }
-
-            if (currentAction is TrackerMappingAction.CreateNew) {
-                Spacer(modifier = Modifier.height(8.dp))
-                TypeSelector(
-                    selectedType = currentAction.type,
-                    onSelect = { onActionChange(currentAction.copy(type = it)) }
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TypeSelector(
-    selectedType: TrackerType,
-    onSelect: (TrackerType) -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        TrackerType.values().forEach { type ->
-            FilterChip(
-                selected = selectedType == type,
-                onClick = { onSelect(type) },
-                label = { Text(type.name, style = MaterialTheme.typography.labelSmall) }
-            )
         }
     }
 }

@@ -11,6 +11,7 @@ data class DiscoveredTracker(
     val headerName: String,
     val extractedName: String,
     val unit: String?,
+    val type: TrackerType?,
     val matchStatus: TrackerMatchStatus,
     val existingDefinition: TrackerDefinition? = null
 )

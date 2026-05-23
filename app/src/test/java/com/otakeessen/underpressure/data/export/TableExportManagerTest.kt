@@ -71,8 +71,8 @@ class TableExportManagerTest {
         val lines = csv.split("\n").filter { it.isNotBlank() }
         assertEquals(2, lines.size)
         
-        // Header: Date, Slot 1, Anytime, [Tracker] Weight (kg)
-        assertEquals("Date,Slot 1,Anytime,[Tracker] Weight (kg)", lines[0].trim())
+        // Header: Date, Slot 1, Anytime, [Tracker] Weight (kg) [FLOAT]
+        assertEquals("Date,Slot 1,Anytime,[Tracker] Weight (kg) [FLOAT]", lines[0].trim())
         
         // Row: 2026-05-15, 120/80@70, "", 75.5 (08:00)
         assertTrue(lines[1].contains("2026-05-15"))
