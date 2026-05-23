@@ -24,6 +24,9 @@ import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.ui.table.DayMeasurementSummary
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -37,10 +40,12 @@ fun DayRow(
     summary: DayMeasurementSummary,
     slotCount: Int,
     guidelines: BpGuidelines,
+    activeTrackers: List<TrackerDefinition> = emptyList(),
     onCellClick: (slotIndex: Int) -> Unit,
     isSummaryVisible: Boolean,
+    isTrackersVisible: Boolean,
     modifier: Modifier = Modifier
-) {
+    ) {
     val date = remember(summary.date) { LocalDate.parse(summary.date) }
     val isWeekend = date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY
 
@@ -80,7 +85,7 @@ fun DayRow(
                 isTitle = true,
                 fontSize = 14.sp
             )
-            
+
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
                 val text = data?.let { 
@@ -95,7 +100,7 @@ fun DayRow(
                 val classification = data?.let { 
                     BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
                 }
-                
+
                 TableCell(
                     text = text, 
                     weight = 1f,
@@ -103,15 +108,18 @@ fun DayRow(
                     isBold = classification?.isBold ?: false,
                     textColor = if (isSummaryVisible) (classification?.textColor ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
                     backgroundColor = Color.Transparent,
+                    trackerValues = data?.trackerValues ?: emptyMap(),
+                    activeTrackers = activeTrackers,
+                    isTrackersVisible = isTrackersVisible,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
         }
     }
-}
+    }
 
-@Composable
-private fun RowScope.TableCell(
+    @Composable
+    private fun RowScope.TableCell(
     text: String,
     weight: Float,
     fontSize: TextUnit = 12.sp,
@@ -119,8 +127,11 @@ private fun RowScope.TableCell(
     isBold: Boolean = false,
     textColor: Color = Color.Unspecified,
     backgroundColor: Color = Color.Transparent,
+    trackerValues: Map<Long, TrackerValue> = emptyMap(),
+    activeTrackers: List<TrackerDefinition> = emptyList(),
+    isTrackersVisible: Boolean = true,
     onClick: (() -> Unit)? = null
-) {
+    ) {
     Surface(
         color = backgroundColor,
         modifier = Modifier
@@ -128,19 +139,34 @@ private fun RowScope.TableCell(
             .padding(horizontal = 2.dp)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
     ) {
-        Text(
-            text = text,
-            modifier = Modifier
-                .padding(vertical = 4.dp, horizontal = 4.dp),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = textColor,
-                fontSize = fontSize,
-                fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
-                lineHeight = fontSize * 1.2f
-            ),
-            textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = text,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 4.dp, top = 4.dp, bottom = 4.dp),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = textColor,
+                    fontSize = fontSize,
+                    fontWeight = if (isTitle || isBold) FontWeight.Bold else FontWeight.Normal,
+                    lineHeight = fontSize * 1.2f
+                ),
+                textAlign = if (isTitle) TextAlign.Start else TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            if (isTrackersVisible) {
+                TrackerIndicatorBadge(
+                    trackerValues = trackerValues,
+                    activeTrackers = activeTrackers,
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                )
+            }
+        }
     }
-}
+    }

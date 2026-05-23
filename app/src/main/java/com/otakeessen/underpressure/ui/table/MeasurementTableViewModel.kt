@@ -39,6 +39,10 @@ import com.otakeessen.underpressure.util.Constants.SLOT_WINDOW_MINUTES
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
+import kotlinx.coroutines.flow.first
 
 /**
  * ViewModel for the Measurement Table Screen.
@@ -47,6 +51,7 @@ import com.otakeessen.underpressure.domain.BpGuidelines
 class MeasurementTableViewModel(
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
+    private val trackerRepository: TrackerRepository,
     private val clock: Clock = Clock.systemDefaultZone(),
     private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
@@ -95,6 +100,8 @@ class MeasurementTableViewModel(
     val uiState: StateFlow<TableUiState> = combine(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
+        trackerRepository.getActiveTrackerDefinitions(),
+        trackerRepository.getAllTrackerValues(),
         _dialogState,
         _expandedYears,
         _expandedMonths,
@@ -104,10 +111,14 @@ class MeasurementTableViewModel(
     ) { args: Array<Any?> ->
         val measurements = args[0] as List<MeasurementEntity>
         val settings = args[1] as AppSettingsEntity?
-        val dialogState = args[2] as MeasurementDialogState
-        val expandedYears = args[3] as Set<Int>
-        val expandedMonths = args[4] as Set<String>
-        val manualError = args[5] as String?
+        val activeTrackers = args[2] as List<TrackerDefinition>
+        val allTrackerValues = args[3] as List<TrackerValue>
+        val dialogState = args[4] as MeasurementDialogState
+        val expandedYears = args[5] as Set<Int>
+        val expandedMonths = args[6] as Set<String>
+        val manualError = args[7] as String?
+
+        val trackerValuesByMeasurementId = allTrackerValues.groupBy { it.measurementId }
 
         val isSummaryVisible = settings?.tableIsSummaryVisible ?: true
         val isAllView = settings?.tableIsAllView ?: false
@@ -123,6 +134,12 @@ class MeasurementTableViewModel(
         val headers = allTimesStr.filterIndexed { index, _ -> activeFlags.getOrElse(index) { false } }
         val activeIndices = activeFlags.mapIndexedNotNull { index, active -> if (active) index else null }
         
+        val activeSlotIndex = headers.indexOfFirst { time ->
+            val slotTime = LocalTime.parse(time, timeFormatter)
+            val duration = Math.abs(java.time.Duration.between(now, slotTime).toMinutes())
+            duration <= SLOT_WINDOW_MINUTES
+        }.takeIf { it != -1 }
+
         // Separate scheduled (slot-bound) and flexible (anytime) measurements
         val (scheduledMeasurements, flexibleMeasurements) = measurements.partition { !it.isFlexible }
 
@@ -132,8 +149,13 @@ class MeasurementTableViewModel(
             .map { date ->
                 val dailyMeasurements = scheduledMeasurements.filter { it.date == date }
                 val activeSlots = activeIndices.mapIndexedNotNull { uiIndex, originalIndex ->
-                    dailyMeasurements.find { it.slotIndex == originalIndex }?.let { 
-                        uiIndex to SlotData(it.systolic, it.diastolic, it.pulse)
+                    dailyMeasurements.find { it.slotIndex == originalIndex }?.let { m ->
+                        uiIndex to SlotData(
+                            systolic = m.systolic, 
+                            diastolic = m.diastolic, 
+                            pulse = m.pulse,
+                            trackerValues = trackerValuesByMeasurementId[m.id]?.associateBy { it.trackerId } ?: emptyMap()
+                        )
                     }
                 }.toMap()
 
@@ -165,7 +187,7 @@ class MeasurementTableViewModel(
         val flexibleByDate = flexibleMeasurements
             .groupBy { it.date }
             .mapValues { (_, readings) ->
-                readings.sortedBy { it.timestamp }.map { entity ->
+                readings.sortedByDescending { it.timestamp }.map { entity ->
                     val timeFormatted = if (entity.timestamp > 0) {
                         val localTime = java.time.Instant.ofEpochMilli(entity.timestamp)
                             .atZone(java.time.ZoneId.systemDefault())
@@ -177,7 +199,8 @@ class MeasurementTableViewModel(
                         timeStr = timeFormatted,
                         systolic = entity.systolic,
                         diastolic = entity.diastolic,
-                        pulse = entity.pulse
+                        pulse = entity.pulse,
+                        trackerValues = trackerValuesByMeasurementId[entity.id]?.associateBy { it.trackerId } ?: emptyMap()
                     )
                 }
             }
@@ -299,9 +322,11 @@ class MeasurementTableViewModel(
             isMasterAlarmEnabled = settings?.masterAlarmEnabled ?: false,
             isSummaryVisible = isSummaryVisible,
             isAllView = isAllView,
+            activeTrackers = activeTrackers,
             activeGuidelines = guidelines,
             error = manualError,
-            classificationStats = stats
+            classificationStats = stats,
+            activeSlotIndex = activeSlotIndex
         )
     }.stateIn(
         scope = viewModelScope,
@@ -553,6 +578,11 @@ class MeasurementTableViewModel(
             LocalTime.now(clock).format(timeFormatter)
         }
 
+        val activeTrackers = trackerRepository.getActiveTrackerDefinitions().first()
+        val existingTrackerValues = existing?.let {
+            trackerRepository.getTrackerValuesByMeasurementId(it.id).first()
+        } ?: emptyList()
+
         _dialogState.update {
             it.copy(
                 isOpen = true,
@@ -564,8 +594,21 @@ class MeasurementTableViewModel(
                 existingMeasurementId = existing?.id,
                 isGuidanceVisible = false,
                 isAnytimeConfirmationVisible = false,
-                isFlexibleMode = isFlexibleMode
+                isFlexibleMode = isFlexibleMode,
+                activeTrackers = activeTrackers,
+                trackerValues = existingTrackerValues.associateBy { v -> v.trackerId }
             )
+        }
+    }
+
+    /**
+     * Called when a tracker value changes in the dialog.
+     */
+    fun onTrackerValueChanged(trackerId: Long, value: TrackerValue) {
+        _dialogState.update {
+            val newValues = it.trackerValues.toMutableMap()
+            newValues[trackerId] = value
+            it.copy(trackerValues = newValues)
         }
     }
 
@@ -674,8 +717,8 @@ class MeasurementTableViewModel(
                     updatedAt = now
                 )
 
-                if (currentState.existingMeasurementId == null) {
-                    measurementRepository.saveMeasurement(entity)
+                val measurementId = if (currentState.existingMeasurementId == null) {
+                    val newId = measurementRepository.saveMeasurement(entity)
                     if (!isFlexible) {
                         // Mark slot as modified and active
                         val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
@@ -703,9 +746,17 @@ class MeasurementTableViewModel(
                             settingsRepository.saveSettings(settings.copy(tableIsAllView = true))
                         }
                     }
+                    newId
                 } else {
                     measurementRepository.updateMeasurement(entity)
+                    currentState.existingMeasurementId
                 }
+
+                // Save tracker values
+                currentState.trackerValues.values.forEach { trackerValue ->
+                    trackerRepository.saveTrackerValue(trackerValue.copy(measurementId = measurementId))
+                }
+
                 onDialogDismiss()
             }
         }

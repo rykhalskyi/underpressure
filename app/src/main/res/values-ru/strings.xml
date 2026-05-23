@@ -66,9 +66,12 @@
     <string name="label_global_alarm">Глобальные напоминания</string>
     <string name="label_active">Активно</string>
     <string name="label_alarm">Напомнить</string>
-    <string name="dialog_title_select_time">Выберите время</string>
-    <string name="dialog_title_invalid_time">Недопустимый слот времени</string>
-    <string name="error_loading_settings">Ошибка загрузки настроек</string>
+    <string name="dialog_title_select_time">Выбрать время</string>
+    <string name="dialog_title_invalid_time">Недопустимый временной слот</string>
+    <string name="dialog_title_delete_tracker">Удалить трекер</string>
+    <string name="dialog_message_delete_tracker">Вы уверены, что хотите удалить трекер \"%1$s\"? Это также удалит все записанные значения.</string>
+    <string name="button_delete">Удалить</string>
+    <string name="error_loading_settings">Ошибка при загрузке настроек</string>
 
     <!-- Exact Alarm Warning -->
     <string name="warning_exact_alarms_title">Точные будильники отключены</string>
@@ -181,11 +184,11 @@
     <string name="onboarding_slide4_description">Вы можете поделиться данными, если хотите. В остальных случаях ваши данные не покинут ваш телефон. Мы также не собираем никакой телеметрии или логов.</string>
     <string name="onboarding_slide5_caption">Рекомендации по классификации</string>
     <string name="onboarding_slide5_description">UnderPressure поддерживает рекомендации по классификации как ACC/AHA, так и ESC/ESH. Переключайтесь между ними в настройках, чтобы они соответствовали рекомендациям вашего врача.</string>
+    <string name="onboarding_slide6_caption">Пользовательские трекеры</string>
+    <string name="onboarding_slide6_description">Добавляйте пользовательские трекеры, такие как вес, настроение или прием лекарств, к вашим измерениям. Отслеживайте не только артериальное давление, чтобы получить более глубокое представление о своем здоровье.</string>
     <string name="button_onboarding_close">Начать</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Кажется, это не ваше время измерения</string>
-    <string name="guidance_message">Похоже, вы пытаетесь добавить измерение в неподходящее время. UnderPressure работает с фиксированными временными слотами, чтобы измерения были более точными и регулярными. Хотите установить время для слота %1$d на %2$s и добавить измерение прямо сейчас?\n\nВы всегда можете изменить время слота в Настройках или просто нажав на время в заголовке таблицы.</string>
     <string name="hint_edit_slot">Вы можете изменить значение слота %1$d, нажав на него.</string>
     <string name="warning_large_date_range">Выбран большой диапазон дат. Читаемость и производительность могут быть затронуты.</string>
 
@@ -230,4 +233,39 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильное повышение артериального давления (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Сильное повышение артериального давления (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">е удается создать слот. Он должен быть как минимум в 30 минутах от соседних слотов. Используйте следующий слот в %1$s.</string>
+    <string name="custom_trackers">Пользовательские трекеры</string>
+    <string name="no_trackers_defined">Трекеры не определены</string>
+    <string name="weight">Вес</string>
+    <string name="temperature">Температура</string>
+    <string name="notes">Заметки</string>
+    <string name="took_medication">Прием лекарств</string>
+    <string name="add_tracker">Добавить трекер</string>
+    <string name="back">Назад</string>
+    <string name="button_add_default_trackers">Добавить стандартные трекеры</string>
+    <string name="dialog_title_add_tracker">Добавить новый трекер</string>
+    <string name="label_tracker_name">Название (например, Вес)</string>
+    <string name="label_tracker_type">Тип</string>
+    <string name="tracker_type_number">Число</string>
+    <string name="tracker_type_boolean">да/нет</string>
+    <string name="tracker_type_text">Текст</string>
+    <string name="label_tracker_unit">Единица изм. (например, кг)</string>
+    <string name="label_tracker_min">Мин</string>
+    <string name="label_tracker_max">Макс</string>
+    <string name="button_add">Добавить</string>
+    <string name="button_edit">Редактировать</string>
+    <string name="dialog_title_edit_tracker">Редактировать трекер</string>
+    <string name="invalid_number_format">Неверный формат числа</string>
+    <string name="must_be_between_and">Должно быть между %1$s и %2$s</string>
+    <string name="additional_info">Дополнительная информация</string>
+    <string name="tap_to_show_hide_custom_readings">Нажмите, чтобы показать/скрыть пользовательские показания</string>
+    <string name="active_custom_reading_s">%1$d активное(ые) пользовательское(ие) показание(я)</string>
+    <string name="import_title">Импорт трекеров</string>
+    <string name="import_description">Мы нашли пользовательские трекеры в вашем CSV. Выберите, как их сопоставить:</string>
+    <string name="overwrite_existing_data">Перезаписать существующие данные</string>
+    <string name="overwrite_hint">Если не выбрано, существующие измерения для той же даты/времени будут пропущены.</string>
+    <string name="button_start_import">Начать импорт</string>
+    <string name="mapping_map_to_existing">Сопоставить с существующим</string>
+    <string name="mapping_create_new">Создать новый трекер</string>
+    <string name="mapping_skip">Пропустить этот столбец</string>
+    <string name="placeholder_select_tracker">Выберите трекер</string>
 </resources>

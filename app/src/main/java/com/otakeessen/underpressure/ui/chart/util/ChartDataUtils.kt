@@ -81,20 +81,26 @@ object ChartDataUtils {
         type: MeasurementType,
         mode: ChartMode
     ): List<Entry> {
-        val sorted = measurements
-            .filter { m -> type != MeasurementType.PULSE || m.pulse > 0 }
-            .sortedBy { it.date }
-
-        if (sorted.isEmpty()) return emptyList()
+        if (measurements.isEmpty()) return emptyList()
 
         return if (mode == ChartMode.TREND_BY_SLOT) {
+            val sorted = measurements
+                .filter { m -> type != MeasurementType.PULSE || m.pulse > 0 }
+                .sortedBy { it.date }
             val valuesByDate = sorted.groupBy { LocalDate.parse(it.date, DATE_FORMATTER) }
                 .mapValues { (_, ms) -> ms.map { m -> m.valueForType(type) } }
             calculateDailyRollingAverage(valuesByDate, minDate)
         } else {
-            val entries = sorted.mapIndexed { index, m ->
-                index.toFloat() to m.valueForType(type)
+            // For CHRONOLOGICAL mode, use the provided list as is (already sorted by time)
+            val entries = measurements.mapIndexedNotNull { index, m ->
+                val value = when (type) {
+                    MeasurementType.SYS -> m.systolic.toFloat()
+                    MeasurementType.DIA -> m.diastolic.toFloat()
+                    MeasurementType.PULSE -> if (m.pulse > 0) m.pulse.toFloat() else null
+                }
+                value?.let { index.toFloat() to it }
             }
+            
             calculateSequentialRollingAverage(entries)
         }
     }

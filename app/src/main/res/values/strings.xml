@@ -121,6 +121,9 @@
     <string name="label_alarm">Remind</string>
     <string name="dialog_title_select_time">Select Time</string>
     <string name="dialog_title_invalid_time">Invalid Time Slot</string>
+    <string name="dialog_title_delete_tracker">Delete Tracker</string>
+    <string name="dialog_message_delete_tracker">Are you sure you want to delete tracker \"%1$s\"? This will also delete all its recorded values.</string>
+    <string name="button_delete">Delete</string>
     <string name="error_loading_settings">Error loading settings</string>
 
     <!-- Exact Alarm Warning -->
@@ -139,6 +142,7 @@
     <string name="dialog_title_chart_config">Chart Configuration</string>
     <string name="label_select_slots">Select Slots</string>
     <string name="label_select_types">Select Measurement Types</string>
+    <string name="label_select_trackers">Select Trackers</string>
     <string name="button_apply">Apply</string>
     <string name="error_no_slots_selected">Please select at least one slot and one type.</string>
     <string name="error_no_data">No data available</string>
@@ -201,11 +205,11 @@
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
     <string name="onboarding_slide5_caption">Classification Guidelines</string>
     <string name="onboarding_slide5_description">UnderPressure supports both ACC/AHA and ESC/ESH classification guidelines. Switch between them in settings to match your doctor\'s advice.</string>
+    <string name="onboarding_slide6_caption">Custom Trackers</string>
+    <string name="onboarding_slide6_description">Add custom trackers like weight, mood, or medication to your measurements. Track more than just blood pressure to gain deeper insights into your health.</string>
     <string name="button_onboarding_close">Get Started</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">It doesn\'t seem to be your measurement time</string>
-    <string name="guidance_message">It seems you are trying to add a measurement at the wrong time. UnderPressure works with fixed time slots to make measurements more precise and regular. Do you want to set the time for Slot %1$d to %2$s and add the measurement now?\n\nYou can always change the slot time in Settings or by simply tapping on the time in the table header.</string>
     <string name="hint_edit_slot">You can change value of slot %1$d by tapping on it.</string>
     <string name="hint_cannot_create_slot">Cannot create slot now. It must be at least 30 minutes away from neighbor slots. Use the next slot at %1$s.</string>
 
@@ -230,6 +234,43 @@
     <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">If you have high BP and symptoms like chest pain, shortness of breath, numbness, confusion, or severe headache, seek emergency medical care immediately.</string>
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Severe Blood Pressure Elevation (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Severe Blood Pressure Elevation (≥ 180/110)</string>
+    <string name="custom_trackers">Custom Trackers</string>
+    <string name="no_trackers_defined">No trackers defined</string>
+    <string name="weight">Weight</string>
+    <string name="temperature">Temperature</string>
+    <string name="notes">Notes</string>
+    <string name="took_medication">Took Medication</string>
+    <string name="add_tracker">Add Tracker</string>
+    <string name="back">Back</string>
+    <string name="button_add_default_trackers">Add Default Trackers</string>
+    <string name="dialog_title_add_tracker">Add New Tracker</string>
+    <string name="label_tracker_name">Name (e.g. Weight)</string>
+    <string name="label_tracker_type">Type</string>
+    <string name="tracker_type_number">Number</string>
+    <string name="tracker_type_boolean">yes/no</string>
+    <string name="tracker_type_text">Text</string>
+    <string name="label_tracker_unit">Unit (e.g. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Add</string>
+    <string name="button_edit">Edit</string>
+    <string name="dialog_title_edit_tracker">Edit Tracker</string>
+    <string name="invalid_number_format">Invalid number format</string>
+    <string name="must_be_between_and">Must be between %1$s and %2$s</string>
+    <string name="additional_info">Additional Info</string>
+    <string name="tap_to_show_hide_custom_readings">Tap to show/hide custom readings</string>
+    <string name="active_custom_reading_s">%1$d active custom reading(s)</string>
+
+    <!-- Import Mapping -->
+    <string name="import_title">Import Trackers</string>
+    <string name="import_description">We found custom trackers in your CSV. Choose how to map them:</string>
+    <string name="overwrite_existing_data">Overwrite existing data</string>
+    <string name="overwrite_hint">If unchecked, existing readings for the same date/time will be skipped.</string>
+    <string name="button_start_import">Start Import</string>
+    <string name="mapping_map_to_existing">Map to Existing</string>
+    <string name="mapping_create_new">Create New Tracker</string>
+    <string name="mapping_skip">Skip this column</string>
+    <string name="placeholder_select_tracker">Select tracker</string>
 
 </resources>
 

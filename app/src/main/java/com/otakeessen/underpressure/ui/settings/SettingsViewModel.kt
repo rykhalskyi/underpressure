@@ -7,13 +7,18 @@ import com.otakeessen.underpressure.alarm.AlarmScheduler
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.export.TableImportManager
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.export.TrackerMappingAction
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.Duration
@@ -27,7 +32,8 @@ import kotlin.math.min
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val alarmScheduler: AlarmScheduler,
-    private val importManager: TableImportManager
+    private val importManager: TableImportManager,
+    private val trackerRepository: TrackerRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
@@ -35,6 +41,10 @@ class SettingsViewModel(
 
     private var currentSettings: AppSettingsEntity? = null
     private var selectedImportUri: Uri? = null
+
+    val allTrackers: StateFlow<List<TrackerDefinition>> = trackerRepository.getAllTrackerDefinitions()
+        .catch { e -> _uiState.update { it.copy(error = e.message) } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         loadSettings()
@@ -142,28 +152,50 @@ class SettingsViewModel(
      */
     fun onImportCsvUriSelected(uri: Uri) {
         selectedImportUri = uri
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            val discoveryResult = importManager.discoverTrackers(uri)
+            _uiState.update { 
+                it.copy(
+                    isLoading = false,
+                    trackerDiscoveryResult = if (discoveryResult.discoveredTrackers.isNotEmpty()) discoveryResult else null,
+                    showImportStrategyDialog = discoveryResult.discoveredTrackers.isEmpty()
+                ) 
+            }
+        }
     }
 
     /**
      * Imports data from a CSV file.
      */
-    fun onImportCsv(overwrite: Boolean) {
+    fun onImportCsv(overwrite: Boolean, trackerMapping: Map<String, TrackerMappingAction> = emptyMap()) {
         val uri = selectedImportUri ?: return
         viewModelScope.launch {
-            _uiState.update { it.copy(isImporting = true, importResult = null) }
+            _uiState.update { it.copy(isImporting = true, importResult = null, trackerDiscoveryResult = null, showImportStrategyDialog = false) }
             val strategy = if (overwrite) TableImportManager.ImportStrategy.Overwrite 
                            else TableImportManager.ImportStrategy.Skip
             
-            val result = importManager.importCsv(uri, strategy)
+            val result = importManager.importCsv(uri, strategy, trackerMapping)
             _uiState.update { 
                 it.copy(
                     isImporting = false, 
                     importResult = if (result.error != null) result.error 
-                                   else "${result.successCount}/${result.totalCount}"
+                                   else {
+                                       val msg = "${result.successCount}/${result.totalCount}"
+                                       if (result.trackerValuesCount > 0) "$msg (+${result.trackerValuesCount} trackers)" else msg
+                                   }
                 ) 
             }
             selectedImportUri = null
         }
+    }
+
+    /**
+     * Cancels the current import process.
+     */
+    fun cancelImport() {
+        selectedImportUri = null
+        _uiState.update { it.copy(trackerDiscoveryResult = null, showImportStrategyDialog = false) }
     }
 
     /**
@@ -204,4 +236,3 @@ class SettingsViewModel(
         }
     }
 }
-

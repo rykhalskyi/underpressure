@@ -67,8 +67,11 @@
     <string name="label_active">Aktywny</string>
     <string name="label_alarm">Przypomnij</string>
     <string name="dialog_title_select_time">Wybierz czas</string>
-    <string name="dialog_title_invalid_time">Nieprawidłowe miejsce pomiarowe</string>
-    <string name="error_loading_settings">Błąd ładowania ustawień</string>
+    <string name="dialog_title_invalid_time">Nieprawidłowy przedział czasowy</string>
+    <string name="dialog_title_delete_tracker">Usuń tracker</string>
+    <string name="dialog_message_delete_tracker">Czy na pewno chcesz usunąć tracker \"%1$s\"? Spowoduje to również usunięcie wszystkich zapisanych wartości.</string>
+    <string name="button_delete">Usuń</string>
+    <string name="error_loading_settings">Błąd podczas ładowania ustawień</string>
 
     <!-- Exact Alarm Warning -->
     <string name="warning_exact_alarms_title">Dokładne alarmy wyłączone</string>
@@ -181,11 +184,11 @@
     <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
     <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
     <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do zaleceń lekarza.</string>
+    <string name="onboarding_slide6_caption">Niestandardowe trackery</string>
+    <string name="onboarding_slide6_description">Dodawaj niestandardowe trackery, takie jak waga, nastrój czy przyjmowanie leków do swoich pomiarów. Śledź więcej niż tylko ciśnienie krwi, aby uzyskać głębszy wgląd w swoje zdrowie.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Wydaje się, że to nie jest twój czas pomiaru</string>
-    <string name="guidance_message">Wydaje się, że próbujesz dodać pomiar w niewłaściwym czasie. UnderPressure korzysta ze stałych przedziałów czasowych, aby pomiary były bardziej precyzyjne i regularne. Czy chcesz ustawić czas dla slotu %1$d na %2$s i dodać pomiar już teraz?\n\nZawsze możesz zmienić czas slotu w Ustawieniach lub po prostu dotykając czasu w nagłówku tabeli.</string>
     <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
     <string name="warning_large_date_range">Wybrano duzy zakres dat. Moze to wplynac na czytelnosc i wydajnosc.</string>
 
@@ -230,4 +233,39 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Silne podwyższenie ciśnienia krwi (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Silne podwyższenie ciśnienia krwi (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">Nie można teraz utworzyć miejsca. Musi ono być oddalone o co najmniej 30 minut od sąsiednich miejsc. Użyj następnego miejsca o %1$s.</string>
+    <string name="custom_trackers">Niestandardowe trackery</string>
+    <string name="no_trackers_defined">Brak zdefiniowanych trackerów</string>
+    <string name="weight">Waga</string>
+    <string name="temperature">Temperatura</string>
+    <string name="notes">Notatki</string>
+    <string name="took_medication">Przyjęto leki</string>
+    <string name="add_tracker">Dodaj tracker</string>
+    <string name="back">Wróć</string>
+    <string name="button_add_default_trackers">Dodaj domyślne trackery</string>
+    <string name="dialog_title_add_tracker">Dodaj nowy tracker</string>
+    <string name="label_tracker_name">Nazwa (np. Waga)</string>
+    <string name="label_tracker_type">Typ</string>
+    <string name="tracker_type_number">Liczba</string>
+    <string name="tracker_type_boolean">tak/nie</string>
+    <string name="tracker_type_text">Tekst</string>
+    <string name="label_tracker_unit">Jednostka (np. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Dodaj</string>
+    <string name="button_edit">Edytuj</string>
+    <string name="dialog_title_edit_tracker">Edytuj tracker</string>
+    <string name="invalid_number_format">Nieprawidłowy format liczby</string>
+    <string name="must_be_between_and">Musi być między %1$s a %2$s</string>
+    <string name="additional_info">Dodatkowe informacje</string>
+    <string name="tap_to_show_hide_custom_readings">Dotknij, aby pokazać/ukryć niestandardowe odczyty</string>
+    <string name="active_custom_reading_s">%1$d aktywny(e) niestandardowy(e) odczyt(y)</string>
+    <string name="import_title">Importuj trackery</string>
+    <string name="import_description">Znaleźliśmy niestandardowe trackery w Twoim pliku CSV. Wybierz, jak mają zostać zmapowane:</string>
+    <string name="overwrite_existing_data">Nadpisz istniejące dane</string>
+    <string name="overwrite_hint">Jeśli nie zaznaczono, istniejące pomiary dla tej samej daty/godziny zostaną pominięte.</string>
+    <string name="button_start_import">Rozpocznij import</string>
+    <string name="mapping_map_to_existing">Mapuj do istniejącego</string>
+    <string name="mapping_create_new">Utwórz nowy tracker</string>
+    <string name="mapping_skip">Pomiń tę kolumnę</string>
+    <string name="placeholder_select_tracker">Wybierz tracker</string>
 </resources>

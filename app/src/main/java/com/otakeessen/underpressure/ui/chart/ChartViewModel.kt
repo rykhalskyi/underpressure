@@ -17,12 +17,18 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.components.YAxis
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import com.otakeessen.underpressure.ui.chart.util.ChartColorUtil
 import com.otakeessen.underpressure.ui.chart.util.ChartDataUtils
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,6 +49,7 @@ import java.time.temporal.ChronoUnit
 class ChartViewModel(
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
+    private val trackerRepository: TrackerRepository,
     private val chartExportManager: ChartExportManager
 ) : ViewModel() {
 
@@ -52,7 +59,36 @@ class ChartViewModel(
     private val _slotColors = MutableStateFlow(ChartColorUtil.getSlotColors())
     private val _levelColors = MutableStateFlow(ChartColorUtil.getLevelColors())
 
-    // ... (rest of the file as before, but ensure configFlow and uiState use colors)
+    init {
+        viewModelScope.launch {
+            val settings = settingsRepository.getSettingsSync()
+            settings?.chartDatePreset?.let { presetName ->
+                try {
+                    val preset = DatePreset.valueOf(presetName)
+                    val today = LocalDate.now()
+                    when (preset) {
+                        DatePreset.ALL_TIME -> {
+                            _fromDate.value = null
+                            _toDate.value = null
+                        }
+                        DatePreset.LAST_7_DAYS -> {
+                            _fromDate.value = today.minusDays(6)
+                            _toDate.value = today
+                        }
+                        DatePreset.THIS_MONTH -> {
+                            _fromDate.value = today.withDayOfMonth(1)
+                            _toDate.value = today.withDayOfMonth(today.lengthOfMonth())
+                        }
+                        DatePreset.CUSTOM -> {
+                            // Custom range is not persisted currently, default to all time or keep as null
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Ignore invalid preset name
+                }
+            }
+        }
+    }
 
     sealed class ChartEvent {
         data class ShareFile(val file: File) : ChartEvent()
@@ -69,7 +105,21 @@ class ChartViewModel(
             _toDate,
             _slotColors,
             _levelColors
-        ) { settings, from, to, sc, lc ->
+        ) { settings, manualFrom, manualTo, sc, lc ->
+            val preset = try { DatePreset.valueOf(settings?.chartDatePreset ?: "ALL_TIME") } catch (e: Exception) { DatePreset.ALL_TIME }
+            val today = LocalDate.now()
+            
+            val (from, to) = if (manualFrom != null || manualTo != null) {
+                manualFrom to manualTo
+            } else {
+                when (preset) {
+                    DatePreset.ALL_TIME -> null to null
+                    DatePreset.LAST_7_DAYS -> today.minusDays(6) to today
+                    DatePreset.THIS_MONTH -> today.withDayOfMonth(1) to today.withDayOfMonth(today.lengthOfMonth())
+                    DatePreset.CUSTOM -> null to null
+                }
+            }
+            
             val slots = settings?.chartSelectedSlots?.toSet() ?: setOf(0, 1, 2, 3, -1)
             val types = settings?.chartSelectedTypes?.mapNotNull { 
                 try { MeasurementType.valueOf(it) } catch (e: Exception) { null } 
@@ -100,8 +150,15 @@ class ChartViewModel(
     val uiState: StateFlow<ChartUiState> = combine(
         measurementRepository.getAllMeasurements(),
         settingsRepository.getSettings(),
+        trackerRepository.getActiveTrackerDefinitions(),
+        trackerRepository.getAllTrackerValues(),
         configFlow
-    ) { measurements: List<MeasurementEntity>, settings, config: ConfigState ->
+    ) { args ->
+        val measurements = args[0] as List<MeasurementEntity>
+        val settings = args[1] as AppSettingsEntity?
+        val activeTrackers = args[2] as List<TrackerDefinition>
+        val allTrackerValues = args[3] as List<TrackerValue>
+        val config = args[4] as ConfigState
         
         val slotTimes = settings?.slotTimes ?: listOf("07:00", "12:00", "18:00", "22:00")
 
@@ -131,7 +188,8 @@ class ChartViewModel(
                 showInteractiveLegend = config.showInteractiveLegend,
                 slotColors = config.slotColors,
                 levelColors = config.levelColors,
-                typeLabelResIds = typeLabelResIds
+                typeLabelResIds = typeLabelResIds,
+                activeTrackers = activeTrackers
             )
         }
 
@@ -163,7 +221,8 @@ class ChartViewModel(
                 showInteractiveLegend = config.showInteractiveLegend,
                 slotColors = config.slotColors,
                 levelColors = config.levelColors,
-                typeLabelResIds = typeLabelResIds
+                typeLabelResIds = typeLabelResIds,
+                activeTrackers = activeTrackers
             )
         }
 
@@ -171,13 +230,22 @@ class ChartViewModel(
         val minDateStr = filtered.minBy { it.date }.date
         val minDate = LocalDate.parse(minDateStr, DATE_FORMATTER)
 
+        // --- Prepare Tracker Data ---
+        val trackerValuesMap = mutableMapOf<Float, MutableList<TrackerValue>>()
+        
+        // Temporarily calculate sequential indices for CHRONOLOGICAL mode mapping
+        val sequentialMeasurements = filtered
+                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
+                .sortedWith(compareBy({ it.date }, { it.timestamp }))
+
         val sysDataSets = mutableListOf<LineDataSet>()
         val diaDataSets = mutableListOf<LineDataSet>()
         val pulseDataSets = mutableListOf<LineDataSet>()
+        val trackerLineData = mutableMapOf<Long, LineData>()
+        
         var barData: BarData? = null
         var pieData: PieData? = null
         val xLabels = mutableMapOf<Float, String>()
-        var sequentialMeasurements = emptyList<MeasurementEntity>()
 
         if (config.mode == ChartMode.TREND_BY_SLOT) {
             // Logic for TREND_BY_SLOT mode
@@ -228,11 +296,6 @@ class ChartViewModel(
                 }
             }
         } else if (config.mode == ChartMode.CHRONOLOGICAL) {
-            // Logic for CHRONOLOGICAL mode (One plot for all slots, including anytime readings)
-            sequentialMeasurements = filtered
-                .filter { config.slots.contains(it.slotIndex) || it.isFlexible }
-                .sortedWith(compareBy({ it.date }, { it.timestamp }))
-            
             sequentialMeasurements.forEachIndexed { index, m ->
                 val date = LocalDate.parse(m.date, DATE_FORMATTER)
                 val formattedDate = date.format(DateTimeFormatter.ofPattern("dd.MM"))
@@ -261,13 +324,12 @@ class ChartViewModel(
                         MeasurementType.PULSE -> "Pulse"
                     }
                     val dataSet = LineDataSet(entries, label).apply {
-                        // Use a single color for all points in sequential mode
                         val colorVal = if (type == MeasurementType.DIA) {
-                            ChartColorUtil.getSlotColors()[1] // Green for Diastolic
+                            ChartColorUtil.getSlotColors()[1]
                         } else if (type == MeasurementType.PULSE) {
-                            ChartColorUtil.getSlotColors()[2] // Orange for Pulse
+                            ChartColorUtil.getSlotColors()[2]
                         } else {
-                            ChartColorUtil.getSlotColors()[0] // Blue for Systolic/Default
+                            ChartColorUtil.getSlotColors()[0]
                         }
                         
                         color = colorVal
@@ -298,10 +360,7 @@ class ChartViewModel(
 
             val total = distributionData.size.toFloat()
             if (total > 0) {
-                // Filter only levels with values
                 val activeLevels = BloodPressureLevel.entries.filter { (counts[it] ?: 0) > 0 }
-                
-                // Bar Data
                 val barEntries = activeLevels.mapIndexed { index, level ->
                     BarEntry(index.toFloat(), counts[level]?.toFloat() ?: 0f)
                 }
@@ -316,7 +375,6 @@ class ChartViewModel(
                 }
                 barData = BarData(barDataSet)
 
-                // Pie Data
                 val pieEntries = activeLevels.map { level ->
                     PieEntry(counts[level]?.toFloat() ?: 0f, level.name.replace("_", " "))
                 }
@@ -330,6 +388,95 @@ class ChartViewModel(
                 pieData = PieData(pieDataSet)
             }
         }
+
+        // --- Process Trackers ---
+        val slotColors = ChartColorUtil.getSlotColors()
+
+        activeTrackers.forEach { tracker ->
+            val trackerDataSets = mutableListOf<LineDataSet>()
+            
+            if (tracker.type == TrackerType.FLOAT && tracker.showOnChart) {
+                // ... (FLOAT tracker logic kept the same)
+                if (config.mode == ChartMode.TREND_BY_SLOT) {
+                    config.slots.forEach { slotIndex ->
+                        val slotValues = allTrackerValues.filter { v ->
+                            val m = measurements.find { it.id == v.measurementId }
+                            m != null && v.trackerId == tracker.id && m.slotIndex == slotIndex
+                        }
+                        
+                        if (slotValues.isNotEmpty()) {
+                            val entries = slotValues.mapNotNull { v ->
+                                val m = measurements.find { it.id == v.measurementId } ?: return@mapNotNull null
+                                val date = LocalDate.parse(m.date, DATE_FORMATTER)
+                                val days = ChronoUnit.DAYS.between(minDate, date).toFloat()
+                                v.floatValue?.let { Entry(days, it.toFloat()) }
+                            }.sortedBy { it.x }
+                            
+                            val slotTimeLabel = if (slotIndex == -1) "Anytime" else slotTimes.getOrElse(slotIndex) { "Slot ${slotIndex + 1}" }
+                            val label = "$slotTimeLabel - ${tracker.name}"
+                            
+                            val colorIndex = if (slotIndex == -1) 4 else slotIndex
+                            val colorVal = slotColors.getOrElse(colorIndex) { Color.MAGENTA }
+                            
+                            trackerDataSets.add(LineDataSet(entries, label).apply {
+                                color = colorVal
+                                setCircleColor(colorVal)
+                                lineWidth = 1.5f
+                                mode = LineDataSet.Mode.LINEAR
+                                setDrawValues(false)
+                                axisDependency = YAxis.AxisDependency.RIGHT
+                            })
+                        }
+                    }
+                } else if (config.mode == ChartMode.CHRONOLOGICAL) {
+                    // For chronological, plot all enabled slots in one line per tracker
+                    val trackerValues = allTrackerValues.filter { v ->
+                        val m = measurements.find { it.id == v.measurementId }
+                        m != null && v.trackerId == tracker.id && (config.slots.contains(m.slotIndex) || m.isFlexible)
+                    }.sortedBy { m -> 
+                        val measurement = measurements.find { it.id == m.measurementId }
+                        measurement?.timestamp ?: 0L 
+                    }
+                    
+                    val entries = trackerValues.mapNotNull { v ->
+                        val m = measurements.find { it.id == v.measurementId } ?: return@mapNotNull null
+                        val seqIndex = sequentialMeasurements.indexOf(m)
+                        if (seqIndex == -1) return@mapNotNull null
+                        v.floatValue?.let { Entry(seqIndex.toFloat(), it.toFloat()) }
+                    }
+                    
+                    if (entries.isNotEmpty()) {
+                        trackerDataSets.add(LineDataSet(entries, tracker.name).apply {
+                            color = Color.MAGENTA
+                            setCircleColor(Color.MAGENTA)
+                            lineWidth = 1.5f
+                            mode = LineDataSet.Mode.LINEAR
+                            setDrawValues(false)
+                            axisDependency = YAxis.AxisDependency.RIGHT
+                        })
+                    }
+                }
+                
+                if (trackerDataSets.isNotEmpty()) {
+                    trackerLineData[tracker.id] = LineData(trackerDataSets.toList())
+                }
+            } else {
+                // Populate trackerValuesMap for Boolean/String trackers
+                allTrackerValues.filter { v -> v.trackerId == tracker.id && (v.booleanValue != null || v.stringValue != null) }
+                    .forEach { v ->
+                        val m = measurements.find { it.id == v.measurementId } ?: return@forEach
+                        val x = if (config.mode == ChartMode.TREND_BY_SLOT) {
+                            ChronoUnit.DAYS.between(minDate, LocalDate.parse(m.date, DATE_FORMATTER)).toFloat()
+                        } else {
+                            sequentialMeasurements.indexOf(m).toFloat()
+                        }
+                        if (x >= 0) {
+                            trackerValuesMap.getOrPut(x) { mutableListOf() }.add(v)
+                        }
+                    }
+            }
+        }
+
 
         // 7-Day Rolling Average
         if (config.showRollingAverage && config.mode != ChartMode.SUMMARY) {
@@ -368,6 +515,9 @@ class ChartViewModel(
             sysLineData = if (sysDataSets.isNotEmpty()) LineData(sysDataSets.toList()) else null,
             diaLineData = if (diaDataSets.isNotEmpty()) LineData(diaDataSets.toList()) else null,
             pulseLineData = if (pulseDataSets.isNotEmpty()) LineData(pulseDataSets.toList()) else null,
+            trackerLineData = trackerLineData,
+            trackerValuesMap = trackerValuesMap,
+            trackerDefinitionsMap = activeTrackers.associateBy { it.id },
             distributionBarData = barData,
             distributionPieData = pieData,
             startDate = minDate,
@@ -386,13 +536,18 @@ class ChartViewModel(
             showInteractiveLegend = config.showInteractiveLegend,
             slotColors = config.slotColors,
             levelColors = config.levelColors,
-            typeLabelResIds = typeLabelResIds
+            typeLabelResIds = typeLabelResIds,
+            activeTrackers = activeTrackers
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
+        started = SharingStarted.Lazily,
         initialValue = ChartUiState(isLoading = true)
     )
+
+    fun testOnlyClear() {
+        viewModelScope.cancel()
+    }
 
     companion object {
         private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -411,12 +566,6 @@ class ChartViewModel(
         val chartMode: ChartMode,
         val datePreset: DatePreset,
         val isOpen: Boolean
-    )
-
-    private data class ConfigVisuals(
-        val showRiskZones: Boolean,
-        val showRollingAverage: Boolean,
-        val showInteractiveLegend: Boolean
     )
 
     private data class ConfigState(
@@ -501,6 +650,15 @@ class ChartViewModel(
         viewModelScope.launch {
             val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
             settingsRepository.saveSettings(settings.copy(chartShowInteractiveLegend = !settings.chartShowInteractiveLegend))
+        }
+    }
+
+    fun toggleTrackerVisibility(trackerId: Long) {
+        viewModelScope.launch {
+            val tracker = trackerRepository.getTrackerDefinitionById(trackerId)
+            if (tracker != null) {
+                trackerRepository.saveTrackerDefinition(tracker.copy(showOnChart = !tracker.showOnChart))
+            }
         }
     }
 

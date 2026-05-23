@@ -3,6 +3,8 @@ package com.otakeessen.underpressure.ui.table
 import androidx.compose.ui.text.input.TextFieldValue
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 
 /**
  * UI state for the Measurement Edit Dialog.
@@ -19,7 +21,9 @@ data class MeasurementDialogState(
     val suggestedSlotTime: String = "",
     val isFlexibleMode: Boolean = false,
     val isAnytimeConfirmationVisible: Boolean = false,
-    val nearestSlotLabel: String = ""
+    val nearestSlotLabel: String = "",
+    val trackerValues: Map<Long, TrackerValue> = emptyMap(), // trackerId -> TrackerValue
+    val activeTrackers: List<TrackerDefinition> = emptyList()
 )
 
 /**
@@ -37,7 +41,8 @@ data class MeasurementDialogState(
  * @property isGuidanceRequired True if clicking the FAB should show guidance instead of the edit dialog.
  * @property fabHint Optional hint message to show when FAB is clicked (or if disabled).
  * @property isMasterAlarmEnabled True if the global alarm reminder switch is ON.
- * @property isAllView True to show anytime readings alongside scheduled slots in the table.
+ * @property isAllView True to show anytime readings alongside scheduled slots in the table, and to show tracker icons.
+ * @property activeTrackers List of trackers that are currently active and should be shown in the table.
  * @property error Error message if data load fails.
  */
 data class TableUiState(
@@ -55,9 +60,11 @@ data class TableUiState(
     val isMasterAlarmEnabled: Boolean = false,
     val isSummaryVisible: Boolean = true,
     val isAllView: Boolean = false,
+    val activeTrackers: List<TrackerDefinition> = emptyList(),
     val activeGuidelines: BpGuidelines = BpGuidelines.ESC_ESH,
     val error: String? = null,
-    val classificationStats: Map<BloodPressureLevel, Int> = emptyMap()
+    val classificationStats: Map<BloodPressureLevel, Int> = emptyMap(),
+    val activeSlotIndex: Int? = null
 )
 
 /**

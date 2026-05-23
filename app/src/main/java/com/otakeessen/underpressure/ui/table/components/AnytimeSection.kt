@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureClassifier
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerType
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.ui.table.AnytimeReadingData
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
 import java.time.LocalDate
@@ -29,6 +32,7 @@ fun AnytimeSection(
     date: String,
     readings: List<AnytimeReadingData>,
     guidelines: BpGuidelines,
+    activeTrackers: List<TrackerDefinition> = emptyList(),
     isSummaryVisible: Boolean,
     onReadingClick: (String, Long) -> Unit,
     modifier: Modifier = Modifier
@@ -56,6 +60,7 @@ fun AnytimeSection(
                 append("${reading.systolic}/${reading.diastolic}")
                 if (reading.pulse > 0) append(" @${reading.pulse}")
             }
+            
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -81,6 +86,13 @@ fun AnytimeSection(
                     else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = if (classification?.isBold == true) FontWeight.Bold else FontWeight.Normal
                 )
+                
+                TrackerIndicatorBadge(
+                    trackerValues = reading.trackerValues,
+                    activeTrackers = activeTrackers,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = classification?.let {

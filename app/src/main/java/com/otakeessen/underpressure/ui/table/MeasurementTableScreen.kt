@@ -47,7 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import android.content.Intent
 import androidx.compose.material.icons.filled.FormatLineSpacing
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.core.content.FileProvider
 import com.otakeessen.underpressure.ui.table.ShareViewModel.ShareEvent
 import kotlinx.coroutines.flow.collectLatest
@@ -83,6 +83,7 @@ fun MeasurementTableScreen(
     shareViewModel: ShareViewModel,
     onSettingsClick: () -> Unit,
     onChartClick: () -> Unit,
+    onTrackersClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -199,6 +200,7 @@ fun MeasurementTableScreen(
                                 )
                             }
                         )
+
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.cd_toggle_alarms)) },
                             onClick = {
@@ -238,6 +240,19 @@ fun MeasurementTableScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.Share,
+                                    contentDescription = null
+                                )
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.custom_trackers)) },
+                            onClick = {
+                                showMenu = false
+                                onTrackersClick()
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.List,
                                     contentDescription = null
                                 )
                             }
@@ -327,7 +342,8 @@ fun MeasurementTableScreen(
                 Column(modifier = Modifier.fillMaxSize()) {
                     TableHeader(
                         slotHeaders = uiState.slotHeaders,
-                        onSlotClick = { showTimePickerForUiIndex = it }
+                        onSlotClick = { showTimePickerForUiIndex = it },
+                        activeSlotIndex = uiState.activeSlotIndex
                     )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -373,7 +389,9 @@ fun MeasurementTableScreen(
                                         summary = item.summary,
                                         slotCount = uiState.slotHeaders.size,
                                         guidelines = uiState.activeGuidelines,
+                                        activeTrackers = uiState.activeTrackers,
                                         isSummaryVisible = uiState.isSummaryVisible,
+                                        isTrackersVisible = uiState.isAllView,
                                         onCellClick = { slotIndex -> 
                                             viewModel.onCellClicked(item.summary.date, slotIndex)
                                         }
@@ -389,6 +407,7 @@ fun MeasurementTableScreen(
                                         date = item.date,
                                         readings = item.readings,
                                         guidelines = uiState.activeGuidelines,
+                                        activeTrackers = uiState.activeTrackers,
                                         isSummaryVisible = uiState.isSummaryVisible,
                                         onReadingClick = viewModel::onAnytimeReadingClicked
                                     )
@@ -435,6 +454,7 @@ fun MeasurementTableScreen(
                 state = uiState.dialogState,
                 guidelines = uiState.activeGuidelines,
                 onValueChange = { viewModel.onMeasurementInputChanged(it) },
+                onTrackerValueChange = { id, value -> viewModel.onTrackerValueChanged(id, value) },
                 onSave = { viewModel.onSaveMeasurement(it) },
                 onDismiss = { viewModel.onDialogDismiss() }
             )

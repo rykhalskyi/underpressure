@@ -2,10 +2,13 @@ package com.otakeessen.underpressure.data.export
 
 import android.content.Context
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
+import com.otakeessen.underpressure.domain.TrackerValue
 import com.otakeessen.underpressure.domain.export.TableFormatter
 import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.LocalDate
@@ -19,6 +22,7 @@ class TableExportManager(
     private val context: Context,
     private val measurementRepository: MeasurementRepository,
     private val settingsRepository: SettingsRepository,
+    private val trackerRepository: TrackerRepository,
     private val tableFormatter: TableFormatter = TableFormatter(),
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -83,6 +87,9 @@ class TableExportManager(
     ): Triple<List<String>, List<List<String>>, String> {
         val allMeasurements = measurementRepository.getAllMeasurementsSync()
         val settings = settingsRepository.getSettingsSync() ?: AppSettingsEntity()
+        
+        val allTrackerDefinitions = trackerRepository.getAllTrackerDefinitions().first()
+        val allTrackerValues = trackerRepository.getAllTrackerValues().first()
 
         // Filter measurements by date range
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -92,6 +99,15 @@ class TableExportManager(
             val isBeforeTo = to == null || !measureDate.isAfter(to)
             isAfterFrom && isBeforeTo
         }
+
+        // Determine which trackers have values in the filtered range
+        val filteredMeasurementIds = filteredMeasurements.map { it.id }.toSet()
+        val trackersInRange = allTrackerValues
+            .filter { it.measurementId in filteredMeasurementIds }
+            .map { it.trackerId }
+            .toSet()
+        
+        val activeTrackerDefinitions = allTrackerDefinitions.filter { it.id in trackersInRange }
 
         // Determine active slots and headers
         val allTimes = settings.slotTimes
@@ -103,7 +119,12 @@ class TableExportManager(
                 if (isActive) index to allTimes.getOrElse(index) { "" } else null
             }
 
-        val headers = listOf("Date") + activeSlotsMap.map { "Slot ${it.first + 1}" } + listOf("Anytime")
+        val bpHeaders = listOf("Date") + activeSlotsMap.map { "Slot ${it.first + 1}" } + listOf("Anytime")
+        val trackerHeaders = activeTrackerDefinitions.map { tracker ->
+            val unitPart = if (!tracker.unit.isNullOrBlank()) " (${tracker.unit})" else ""
+            "[Tracker] ${tracker.name}$unitPart [${tracker.type}]"
+        }
+        val headers = bpHeaders + trackerHeaders
 
         // Group by date and build rows
         val groupedByDate = filteredMeasurements.groupBy { it.date }
@@ -115,6 +136,7 @@ class TableExportManager(
         val rows = mutableListOf<List<String>>()
         sortedDates.forEach { date ->
             val dailyMeasurements = groupedByDate[date] ?: emptyList()
+            val dailyMeasurementIds = dailyMeasurements.map { it.id }.toSet()
 
             val rowValues = mutableListOf<String>()
             rowValues.add(date)
@@ -147,6 +169,31 @@ class TableExportManager(
                 }
             rowValues.add(anytimeReadings.joinToString("; "))
 
+            // Custom Trackers
+            activeTrackerDefinitions.forEach { tracker ->
+                val trackerValues = allTrackerValues.filter { 
+                    it.trackerId == tracker.id && it.measurementId in dailyMeasurementIds 
+                }.sortedBy { it.id } // Stable order, though ideally we'd have timestamps on tracker values too
+
+                val cellValue = trackerValues.joinToString("; ") { value ->
+                    val displayValue = value.floatValue?.toString() 
+                        ?: value.booleanValue?.let { if (it) "True" else "False" }
+                        ?: value.stringValue ?: ""
+                    
+                    val measurement = dailyMeasurements.find { it.id == value.measurementId }
+                    val timePart = measurement?.let { m ->
+                        val effectiveTimestamp = if (m.timestamp > 0) m.timestamp else m.createdAt
+                        val localTime = java.time.Instant.ofEpochMilli(effectiveTimestamp)
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalTime()
+                        " (${localTime.format(timeFormatter)})"
+                    } ?: ""
+                    
+                    "$displayValue$timePart"
+                }
+                rowValues.add(cellValue)
+            }
+
             rows.add(rowValues)
         }
 
@@ -158,4 +205,5 @@ class TableExportManager(
         return Triple(headers, rows, dateRange)
     }
 }
+
 

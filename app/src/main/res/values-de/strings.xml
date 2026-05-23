@@ -68,6 +68,9 @@
     <string name="label_alarm">Erinnern</string>
     <string name="dialog_title_select_time">Zeit auswählen</string>
     <string name="dialog_title_invalid_time">Ungültiges Zeitfenster</string>
+    <string name="dialog_title_delete_tracker">Tracker löschen</string>
+    <string name="dialog_message_delete_tracker">Sind Sie sicher, dass Sie den Tracker \"%1$s\" löschen möchten? Dadurch werden auch alle aufgezeichneten Werte gelöscht.</string>
+    <string name="button_delete">Löschen</string>
     <string name="error_loading_settings">Fehler beim Laden der Einstellungen</string>
 
     <!-- Exact Alarm Warning -->
@@ -181,11 +184,11 @@
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
     <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
     <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Arztes anzupassen.</string>
+    <string name="onboarding_slide6_caption">Benutzerdefinierte Tracker</string>
+    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Medikamente zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur den Blutdruck, um tiefere Einblicke in Ihre Gesundheit zu erhalten.</string>
     <string name="button_onboarding_close">Loslegen</string>
 
     <!-- Guidance Popup -->
-    <string name="guidance_title">Das scheint nicht deine Messzeit zu sein</string>
-    <string name="guidance_message">Es scheint, als versuchst du, eine Messung zur falschen Zeit hinzuzufügen. UnderPressure arbeitet mit festen Zeitfenstern, um Messungen präziser und regelmäßiger zu machen. Möchtest du die Zeit für Slot %1$d auf %2$s setzen und die Messung jetzt hinzufügen?\n\nDu kannst die Slot-Zeit jederzeit in den Einstellungen ändern oder einfach auf die Zeit in der Tabellenüberschrift tippen.</string>
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
     <string name="warning_large_date_range">Großer Datumsbereich ausgewählt. Lesbarkeit und Leistung können beeinträchtigt sein.</string>
 
@@ -230,4 +233,39 @@
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Starke Blutdruckerhöhung (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Starke Blutdruckerhöhung (≥ 180/110)</string>
     <string name="hint_cannot_create_slot">Zeitfenster kann jetzt nicht erstellt werden. Es muss mindestens 30 Minuten von benachbarten Zeitfenstern entfernt sein. Verwenden Sie das nächste Zeitfenster um %1$s.</string>
+    <string name="custom_trackers">Benutzerdefinierte Tracker</string>
+    <string name="no_trackers_defined">Keine Tracker definiert</string>
+    <string name="weight">Gewicht</string>
+    <string name="temperature">Temperatur</string>
+    <string name="notes">Notizen</string>
+    <string name="took_medication">Medikamente eingenommen</string>
+    <string name="add_tracker">Tracker hinzufügen</string>
+    <string name="back">Zurück</string>
+    <string name="button_add_default_trackers">Standard-Tracker hinzufügen</string>
+    <string name="dialog_title_add_tracker">Neuen Tracker hinzufügen</string>
+    <string name="label_tracker_name">Name (z. B. Gewicht)</string>
+    <string name="label_tracker_type">Typ</string>
+    <string name="tracker_type_number">Nummer</string>
+    <string name="tracker_type_boolean">ja/nein</string>
+    <string name="tracker_type_text">Text</string>
+    <string name="label_tracker_unit">Einheit (z. B. kg)</string>
+    <string name="label_tracker_min">Min</string>
+    <string name="label_tracker_max">Max</string>
+    <string name="button_add">Hinzufügen</string>
+    <string name="button_edit">Bearbeiten</string>
+    <string name="dialog_title_edit_tracker">Tracker bearbeiten</string>  ┃
+    <string name="invalid_number_format">Ungültiges Zahlenformat</string>                                                                                                                           connect. Is the computer able to
+    <string name="must_be_between_and">Muss zwischen %1$s und %2$s liegen</string>                                                                                                                  access the url?
+    <string name="additional_info">Zusätzliche Informationen</string>
+    <string name="tap_to_show_hide_custom_readings">Tippen, um benutzerdefinierte Messwerte anzuzeigen/auszublenden</string>                                                                      LSP
+    <string name="active_custom_reading_s">%1$d aktive benutzerdefinierte(s) Messwert(e)</string>
+    <string name="import_title">Tracker importieren</string>
+    <string name="import_description">Wir haben benutzerdefinierte Tracker in Ihrer CSV gefunden. Wählen Sie aus, wie diese zugeordnet werden sollen:</string>
+    <string name="overwrite_existing_data">Vorhandene Daten überschreiben</string>
+    <string name="overwrite_hint">Wenn nicht markiert, werden vorhandene Messwerte für das gleiche Datum/die gleiche Uhrzeit übersprungen.</string>
+    <string name="button_start_import">Import starten</string>
+    <string name="mapping_map_to_existing">Vorhandenem zuordnen</string>
+    <string name="mapping_create_new">Neuen Tracker erstellen</string>
+    <string name="mapping_skip">Spalte überspringen</string>
+    <string name="placeholder_select_tracker">Tracker auswählen</string>
 </resources>

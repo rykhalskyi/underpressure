@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.domain.repository.TrackerRepository
 
 enum class SearchFilter {
     NONE, HYPOTENSION, NORMAL, ELEVATED, STAGE_1, STAGE_2
@@ -33,7 +34,8 @@ enum class SearchFilter {
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SearchViewModel(
     private val measurementRepository: MeasurementRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val trackerRepository: TrackerRepository
 ) : ViewModel() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -44,16 +46,33 @@ class SearchViewModel(
     private val _filter = MutableStateFlow(SearchFilter.NONE)
     val filter = _filter.asStateFlow()
 
+    private val _trackerFilter = MutableStateFlow<Long?>(null)
+    val trackerFilter = _trackerFilter.asStateFlow()
+
+    val trackers = trackerRepository.getActiveTrackerDefinitions().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    val allTrackerValues = trackerRepository.getAllTrackerValues().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
     private val _isLoading = MutableStateFlow(false)
 
-    val resultsState: StateFlow<SearchUiState> = combine(_query, _filter, settingsRepository.getSettings()) { query, filter, settings ->
+    val resultsState: StateFlow<SearchUiState> = combine(
+        _query, _filter, _trackerFilter, settingsRepository.getSettings(), allTrackerValues
+    ) { query, filter, trackerFilter, settings, allTrackerValues ->
         val guidelines = settings?.bpGuidelines ?: BpGuidelines.ESC_ESH
-        Triple(query, filter, guidelines)
+        Quadruple(query, filter, trackerFilter, guidelines, allTrackerValues)
     }
         .debounce(300L)
         .distinctUntilChanged()
-        .flatMapLatest { (query, filter, guidelines) ->
-            if (query.isBlank() && filter == SearchFilter.NONE) {
+        .flatMapLatest { (query, filter, trackerFilter, guidelines, allTrackerValues) ->
+            if (query.isBlank() && filter == SearchFilter.NONE && trackerFilter == null) {
                 _isLoading.value = false
                 flowOf(SearchUiState())
             } else {
@@ -86,6 +105,11 @@ class SearchViewModel(
                             BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines).level == targetLevel
                         }
                     }
+                    if (trackerFilter != null) {
+                        results = results.filter { measurement ->
+                            allTrackerValues.any { it.measurementId == measurement.id && it.trackerId == trackerFilter }
+                        }
+                    }
                     flowOf(state.copy(results = results, isNoResults = results.isEmpty(), isLoading = false))
                 }
             }
@@ -99,6 +123,12 @@ class SearchViewModel(
     fun setFilter(filter: SearchFilter) {
         _filter.value = if (_filter.value == filter) SearchFilter.NONE else filter
     }
+
+    fun setTrackerFilter(trackerId: Long?) {
+        _trackerFilter.value = if (_trackerFilter.value == trackerId) null else trackerId
+    }
+
+    private data class Quadruple<A, B, C, D, E>(val first: A, val second: B, val third: C, val fourth: D, val fifth: E)
 
     private fun SearchFilter.toBloodPressureLevel(): BloodPressureLevel? = when (this) {
         SearchFilter.HYPOTENSION -> BloodPressureLevel.HYPOTENSION

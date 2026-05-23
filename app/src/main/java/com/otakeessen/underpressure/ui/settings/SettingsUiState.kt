@@ -1,6 +1,7 @@
 package com.otakeessen.underpressure.ui.settings
 
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.export.TrackerDiscoveryResult
 
 /**
  * UI state for the Settings screen.
@@ -13,6 +14,8 @@ data class SettingsUiState(
     val lastOnboardedVersion: String? = null,
     val isLoading: Boolean = false,
     val isImporting: Boolean = false,
+    val showImportStrategyDialog: Boolean = false,
+    val trackerDiscoveryResult: TrackerDiscoveryResult? = null,
     val importResult: String? = null,
     val error: String? = null
 )

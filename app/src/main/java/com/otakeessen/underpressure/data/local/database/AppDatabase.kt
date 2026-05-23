@@ -10,8 +10,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.otakeessen.underpressure.data.local.converters.Converters
 import com.otakeessen.underpressure.data.local.dao.AppSettingsDao
 import com.otakeessen.underpressure.data.local.dao.MeasurementDao
+import com.otakeessen.underpressure.data.local.dao.TrackerDao
 import com.otakeessen.underpressure.data.local.entities.AppSettingsEntity
 import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
+import com.otakeessen.underpressure.data.local.entities.TrackerDefinitionEntity
+import com.otakeessen.underpressure.data.local.entities.TrackerValueEntity
 
 /**
  * Main database class for the application.
@@ -19,15 +22,18 @@ import com.otakeessen.underpressure.data.local.entities.MeasurementEntity
 @Database(
     entities = [
         MeasurementEntity::class,
-        AppSettingsEntity::class
+        AppSettingsEntity::class,
+        TrackerDefinitionEntity::class,
+        TrackerValueEntity::class
     ],
-    version = 8,
+    version = 11,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
     abstract fun appSettingsDao(): AppSettingsDao
+    abstract fun trackerDao(): TrackerDao
 
     companion object {
         @Volatile
@@ -111,6 +117,76 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `tracker_definitions` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                        `name` TEXT NOT NULL, 
+                        `type` TEXT NOT NULL, 
+                        `unit` TEXT, 
+                        `isActive` INTEGER NOT NULL, 
+                        `showOnChart` INTEGER NOT NULL, 
+                        `useSecondaryAxis` INTEGER NOT NULL
+                    )
+                """.trimIndent())
+
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `tracker_values` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                        `measurementId` INTEGER NOT NULL, 
+                        `trackerId` INTEGER NOT NULL, 
+                        `floatValue` REAL, 
+                        `booleanValue` INTEGER, 
+                        `stringValue` TEXT, 
+                        `timestamp` INTEGER NOT NULL, 
+                        FOREIGN KEY(`measurementId`) REFERENCES `measurements`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE, 
+                        FOREIGN KEY(`trackerId`) REFERENCES `tracker_definitions`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE 
+                    )
+                """.trimIndent())
+
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_tracker_values_measurementId` ON `tracker_values` (`measurementId`)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS `index_tracker_values_trackerId` ON `tracker_values` (`trackerId`)")
+            }
+        }
+
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE tracker_definitions ADD COLUMN min REAL")
+                db.execSQL("ALTER TABLE tracker_definitions ADD COLUMN max REAL")
+            }
+        }
+
+        private val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // 1. Create the new table without useSecondaryAxis
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `tracker_definitions_new` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                        `name` TEXT NOT NULL, 
+                        `type` TEXT NOT NULL, 
+                        `unit` TEXT, 
+                        `isActive` INTEGER NOT NULL, 
+                        `showOnChart` INTEGER NOT NULL, 
+                        `min` REAL, 
+                        `max` REAL
+                    )
+                """.trimIndent())
+
+                // 2. Copy the data
+                db.execSQL("""
+                    INSERT INTO `tracker_definitions_new` (id, name, type, unit, isActive, showOnChart, min, max)
+                    SELECT id, name, type, unit, isActive, showOnChart, min, max FROM tracker_definitions
+                """.trimIndent())
+
+                // 3. Drop the old table
+                db.execSQL("DROP TABLE tracker_definitions")
+
+                // 4. Rename the new table
+                db.execSQL("ALTER TABLE tracker_definitions_new RENAME TO tracker_definitions")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -121,7 +197,8 @@ abstract class AppDatabase : RoomDatabase() {
                 .addMigrations(
                     MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, 
                     MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7, 
-                    MIGRATION_7_8
+                    MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
+                    MIGRATION_10_11
                 )
                 .build()
                 INSTANCE = instance

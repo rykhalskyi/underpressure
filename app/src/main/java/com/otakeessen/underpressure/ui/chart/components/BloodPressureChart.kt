@@ -18,11 +18,13 @@ import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.otakeessen.underpressure.ui.chart.ChartUiState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun BloodPressureChart(
+    uiState: ChartUiState,
     lineData: LineData?,
     startDate: LocalDate?,
     xLabels: Map<Float, String> = emptyMap(),
@@ -84,7 +86,7 @@ fun BloodPressureChart(
             val riskChart = chart as? RiskZoneLineChart
             riskChart?.showRiskZones = showRiskZones
             
-            chart.marker = BloodPressureMarkerView(chart, startDate, xLabels)
+            chart.marker = BloodPressureMarkerView(chart, startDate, xLabels, uiState.trackerValuesMap, uiState.trackerDefinitionsMap)
 
             chart.xAxis.textColor = textColor
             chart.axisLeft.textColor = textColor
@@ -133,8 +135,10 @@ fun BloodPressureChart(
                 chart.axisLeft.addLimitLine(limit80)
             }
 
-            chart.data = null
-            chart.data = lineData
+            if (chart.data !== lineData) {
+                chart.highlightValues(null)
+                chart.data = lineData
+            }
             chart.invalidate()
         }
     )

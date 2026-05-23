@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,6 +54,11 @@ fun OnboardingDialog(
             icon = Icons.Default.Analytics,
             caption = stringResource(R.string.onboarding_slide5_caption),
             description = stringResource(R.string.onboarding_slide5_description)
+        ),
+        OnboardingSlideData(
+            icon = Icons.Default.Tune,
+            caption = stringResource(R.string.onboarding_slide6_caption),
+            description = stringResource(R.string.onboarding_slide6_description)
         )
     )
 

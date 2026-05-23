@@ -25,7 +25,8 @@ This skill guides a structured process to analyze GitHub issues and generate a t
 
 ## PHASE 2: Atomic Task Generation
 1.  **Generate Tasks**: Immediately following the plan (while context is fresh), generate atomic tasks in `.design-specs/specs/tasks-{issue_number}.md`. **Do not re-read the plan file if already in context.**
-2.  **Task Requirements**:
+2.  Task must contain necessary technical details
+3.  **Task Requirements**:
     - **Atomic**: 1-3 files per task, ~20 mins work.
     - **Structure**:
       - `[ ] {Task Number}. {Title}`
@@ -33,7 +34,7 @@ This skill guides a structured process to analyze GitHub issues and generate a t
       - `Description`: Clear "what" and "why".
       - `_Leverage_`: Existing files/patterns to use.
       - `_Prompt_`: A self-contained, high-signal instruction for an agent (Role, Task, Restrictions, Success Criteria).
-3.  **State Management**: If the session is interrupted, check for existing `plan-{issue_number}.md` or `tasks-{issue_number}.md` before restarting from Phase 1.
+4.  **State Management**: If the session is interrupted, check for existing `plan-{issue_number}.md` or `tasks-{issue_number}.md` before restarting from Phase 1.
 
 ## Token Efficiency Tips
 - **Consolidate Turns**: Perform research and planning in one continuous flow.

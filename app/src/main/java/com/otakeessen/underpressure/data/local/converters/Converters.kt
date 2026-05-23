@@ -3,6 +3,7 @@ package com.otakeessen.underpressure.data.local.converters
 import androidx.room.TypeConverter
 
 import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.domain.TrackerType
 
 /**
  * Room TypeConverters for serializing complex data types.
@@ -16,6 +17,16 @@ class Converters {
     @TypeConverter
     fun toBpGuidelines(value: String): BpGuidelines {
         return BpGuidelines.valueOf(value)
+    }
+
+    @TypeConverter
+    fun fromTrackerType(value: TrackerType): String {
+        return value.name
+    }
+
+    @TypeConverter
+    fun toTrackerType(value: String): TrackerType {
+        return TrackerType.valueOf(value)
     }
 
     @TypeConverter

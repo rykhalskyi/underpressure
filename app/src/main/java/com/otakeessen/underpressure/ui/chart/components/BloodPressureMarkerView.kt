@@ -8,13 +8,17 @@ import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class BloodPressureMarkerView(
     private val chart: Chart<*>,
     private val startDate: LocalDate?,
-    private val xLabels: Map<Float, String> = emptyMap()
+    private val xLabels: Map<Float, String> = emptyMap(),
+    private val trackerValuesMap: Map<Float, List<TrackerValue>> = emptyMap(),
+    private val trackerDefinitionsMap: Map<Long, TrackerDefinition> = emptyMap()
 ) : MarkerView(chart.context, R.layout.chart_marker_view) {
 
     private val tvDate: TextView = findViewById(R.id.tv_date)
@@ -30,7 +34,7 @@ class BloodPressureMarkerView(
         val data = chart.data
         if (data != null) {
             val selectedDataSet = data.getDataSetByIndex(highlight.dataSetIndex)
-            val selectedLabel = selectedDataSet.label ?: ""
+            val selectedLabel = selectedDataSet?.label ?: ""
             
             // In sequential mode, we don't have slot prefixes in labels, 
             // and each X is a unique measurement point.
@@ -39,14 +43,27 @@ class BloodPressureMarkerView(
             
             for (i in 0 until data.dataSetCount) {
                 val dataSet = data.getDataSetByIndex(i)
-                val label = dataSet.label ?: ""
+                val label = dataSet?.label ?: ""
                 if (slotTime == null || label.startsWith(slotTime)) {
-                    val entryAtX = dataSet.getEntryForXValue(e.x, Float.NaN)
+                    val entryAtX = dataSet?.getEntryForXValue(e.x, Float.NaN)
                     if (entryAtX != null && entryAtX.x == e.x) {
                         if (sb.isNotEmpty()) sb.append("\n")
                         // Show only the type part of the label
                         val type = label.split(" - ").lastOrNull() ?: label
                         sb.append("$type: ${entryAtX.y.toInt()}")
+                    }
+                }
+            }
+            
+            // Append tracker info
+            trackerValuesMap[e.x]?.forEach { trackerValue ->
+                val definition = trackerDefinitionsMap[trackerValue.trackerId]
+                if (definition != null) {
+                    sb.append("\n")
+                    if (trackerValue.booleanValue != null) {
+                        sb.append("${definition.name}: ${if (trackerValue.booleanValue) "✓" else "✗"}")
+                    } else if (trackerValue.stringValue != null) {
+                        sb.append("${definition.name}: ${trackerValue.stringValue}")
                     }
                 }
             }
@@ -60,6 +77,7 @@ class BloodPressureMarkerView(
 
         super.refreshContent(e, highlight)
     }
+
 
     override fun getOffset(): MPPointF {
         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())

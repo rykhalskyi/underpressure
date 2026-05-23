@@ -66,6 +66,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.LinearProgressIndicator
+import com.otakeessen.underpressure.ui.settings.components.ImportMappingDialog
 
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
@@ -78,9 +79,10 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val allTrackers by viewModel.allTrackers.collectAsStateWithLifecycle()
     var showTimePickerForIndex by remember { mutableStateOf<Int?>(null) }
     var showOnboarding by remember { mutableStateOf(false) }
-    var showImportDialog by remember { mutableStateOf(false) }
+    
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -88,8 +90,6 @@ fun SettingsScreen(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             uri?.let {
-                showImportDialog = true
-                // We'll store the URI temporarily or pass it to the dialog
                 viewModel.onImportCsvUriSelected(it)
             }
         }
@@ -343,13 +343,23 @@ fun SettingsScreen(
             )
         }
 
-        if (showImportDialog) {
+        if (uiState.showImportStrategyDialog) {
             ImportDialog(
-                onDismiss = { showImportDialog = false },
+                onDismiss = { viewModel.cancelImport() },
                 onConfirm = { overwrite ->
                     viewModel.onImportCsv(overwrite)
-                    showImportDialog = false
                 }
+            )
+        }
+
+        uiState.trackerDiscoveryResult?.let { result ->
+            ImportMappingDialog(
+                discoveryResult = result,
+                existingTrackers = allTrackers,
+                onConfirm = { overwrite, mapping ->
+                    viewModel.onImportCsv(overwrite, mapping)
+                },
+                onDismiss = { viewModel.cancelImport() }
             )
         }
 

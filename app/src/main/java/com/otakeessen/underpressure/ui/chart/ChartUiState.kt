@@ -3,6 +3,8 @@ package com.otakeessen.underpressure.ui.chart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.PieData
+import com.otakeessen.underpressure.domain.TrackerDefinition
+import com.otakeessen.underpressure.domain.TrackerValue
 import java.time.LocalDate
 
 /**
@@ -42,6 +44,8 @@ enum class DatePreset {
  * @property sysLineData Line data for systolic.
  * @property diaLineData Line data for diastolic.
  * @property pulseLineData Line data for pulse.
+ * @property trackerLineData Map of tracker ID to LineData for custom trackers.
+ * @property trackerValuesMap Mapping of X-axis coordinate to associated list of tracker values.
  * @property distributionBarData Bar data for blood pressure level distribution.
  * @property distributionPieData Pie data for blood pressure level distribution.
  * @property startDate The reference start date for DAILY mode.
@@ -57,12 +61,16 @@ enum class DatePreset {
  * @property showRiskZones Whether to display risk zone background bands.
  * @property showRollingAverage Whether to display 7-day rolling average lines.
  * @property showInteractiveLegend Whether to display the interactive legend overlay.
+ * @property activeTrackers List of trackers that are currently active and configured for chart display.
  */
 data class ChartUiState(
     val isLoading: Boolean = true,
     val sysLineData: LineData? = null,
     val diaLineData: LineData? = null,
     val pulseLineData: LineData? = null,
+    val trackerLineData: Map<Long, LineData> = emptyMap(),
+    val trackerValuesMap: Map<Float, List<TrackerValue>> = emptyMap(),
+    val trackerDefinitionsMap: Map<Long, TrackerDefinition> = emptyMap(),
     val distributionBarData: BarData? = null,
     val distributionPieData: PieData? = null,
     val startDate: LocalDate? = null,
@@ -81,5 +89,6 @@ data class ChartUiState(
     val showInteractiveLegend: Boolean = false,
     val slotColors: List<Int> = emptyList(),
     val levelColors: List<Int> = emptyList(),
-    val typeLabelResIds: Map<MeasurementType, Int> = emptyMap()
+    val typeLabelResIds: Map<MeasurementType, Int> = emptyMap(),
+    val activeTrackers: List<TrackerDefinition> = emptyList()
 )
