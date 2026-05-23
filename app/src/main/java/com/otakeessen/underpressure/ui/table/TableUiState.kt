@@ -41,7 +41,7 @@ data class MeasurementDialogState(
  * @property isGuidanceRequired True if clicking the FAB should show guidance instead of the edit dialog.
  * @property fabHint Optional hint message to show when FAB is clicked (or if disabled).
  * @property isMasterAlarmEnabled True if the global alarm reminder switch is ON.
- * @property isAllView True to show anytime readings alongside scheduled slots in the table.
+ * @property isAllView True to show anytime readings alongside scheduled slots in the table, and to show tracker icons.
  * @property activeTrackers List of trackers that are currently active and should be shown in the table.
  * @property error Error message if data load fails.
  */

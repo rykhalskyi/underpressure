@@ -43,8 +43,9 @@ fun DayRow(
     activeTrackers: List<TrackerDefinition> = emptyList(),
     onCellClick: (slotIndex: Int) -> Unit,
     isSummaryVisible: Boolean,
+    isTrackersVisible: Boolean,
     modifier: Modifier = Modifier
-) {
+    ) {
     val date = remember(summary.date) { LocalDate.parse(summary.date) }
     val isWeekend = date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY
 
@@ -84,7 +85,7 @@ fun DayRow(
                 isTitle = true,
                 fontSize = 14.sp
             )
-            
+
             for (i in 0 until slotCount) {
                 val data = summary.slots[i]
                 val text = data?.let { 
@@ -99,7 +100,7 @@ fun DayRow(
                 val classification = data?.let { 
                     BloodPressureClassifier.classify(it.systolic, it.diastolic, guidelines)
                 }
-                
+
                 TableCell(
                     text = text, 
                     weight = 1f,
@@ -109,15 +110,16 @@ fun DayRow(
                     backgroundColor = Color.Transparent,
                     trackerValues = data?.trackerValues ?: emptyMap(),
                     activeTrackers = activeTrackers,
+                    isTrackersVisible = isTrackersVisible,
                     onClick = if (summary.isToday && summary.clickableSlots.contains(i)) { { onCellClick(i) } } else null
                 )
             }
         }
     }
-}
+    }
 
-@Composable
-private fun RowScope.TableCell(
+    @Composable
+    private fun RowScope.TableCell(
     text: String,
     weight: Float,
     fontSize: TextUnit = 12.sp,
@@ -127,8 +129,9 @@ private fun RowScope.TableCell(
     backgroundColor: Color = Color.Transparent,
     trackerValues: Map<Long, TrackerValue> = emptyMap(),
     activeTrackers: List<TrackerDefinition> = emptyList(),
+    isTrackersVisible: Boolean = true,
     onClick: (() -> Unit)? = null
-) {
+    ) {
     Surface(
         color = backgroundColor,
         modifier = Modifier
@@ -155,13 +158,15 @@ private fun RowScope.TableCell(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            
-            TrackerIndicatorBadge(
-                trackerValues = trackerValues,
-                activeTrackers = activeTrackers,
-                modifier = Modifier
-                    .padding(end = 2.dp)
-            )
+
+            if (isTrackersVisible) {
+                TrackerIndicatorBadge(
+                    trackerValues = trackerValues,
+                    activeTrackers = activeTrackers,
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                )
+            }
         }
     }
-}
+    }
