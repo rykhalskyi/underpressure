@@ -184,6 +184,8 @@
     <string name="onboarding_slide4_description">Ви можете поділитися даними, якщо хочете. В інших випадках ваші дані не залишать ваш телефон. Ми також не збираємо жодної телеметрії чи журналів.</string>
     <string name="onboarding_slide5_caption">Рекомендації щодо класифікації</string>
     <string name="onboarding_slide5_description">UnderPressure підтримує рекомендації щодо класифікації як ACC/AHA, так і ESC/ESH. Перемикайтеся між ними в налаштуваннях, щоб вони відповідали порадам вашого лікаря.</string>
+    <string name="onboarding_slide6_caption">Користувацькі трекери</string>
+    <string name="onboarding_slide6_description">Додавайте користувацькі трекери, такі як вага, настрій або прийом ліків, до своїх вимірювань. Відстежуйте більше, ніж просто артеріальний тиск, щоб отримати глибше розуміння свого здоров\'я.</string>
     <string name="button_onboarding_close">Розпочати</string>
 
     <!-- Guidance Popup -->
@@ -258,4 +260,13 @@
     <string name="tap_to_show_hide_custom_readings">Натисніть, щоб показати/сховати користувацькі показники</string>                                                                              LSP
     <string name="active_custom_reading_s">%1$d активне(і) користувацьке(і) показник(и)</string>
 
+    <string name="import_title">Імпорт трекерів</string>
+    <string name="import_description">Ми знайшли користувацькі трекери у вашому CSV. Виберіть, як їх зіставити:</string>
+    <string name="overwrite_existing_data">Перезаписати існуючі дані</string>
+    <string name="overwrite_hint">Якщо не вибрано, існуючі вимірювання для тієї ж дати/часу будуть пропущені.</string>
+    <string name="button_start_import">Почати імпорт</string>
+    <string name="mapping_map_to_existing">Зіставити з існуючим</string>
+    <string name="mapping_create_new">Створити новий трекер</string>
+    <string name="mapping_skip">Пропустити цей стовпець</string>
+    <string name="placeholder_select_tracker">Виберіть трекер</string>
 </resources>

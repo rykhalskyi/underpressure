@@ -184,6 +184,8 @@
     <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
     <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
     <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do zaleceń lekarza.</string>
+    <string name="onboarding_slide6_caption">Niestandardowe trackery</string>
+    <string name="onboarding_slide6_description">Dodawaj niestandardowe trackery, takie jak waga, nastrój czy przyjmowanie leków do swoich pomiarów. Śledź więcej niż tylko ciśnienie krwi, aby uzyskać głębszy wgląd w swoje zdrowie.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
@@ -257,4 +259,13 @@
     <string name="additional_info">Dodatkowe informacje</string>
     <string name="tap_to_show_hide_custom_readings">Dotknij, aby pokazać/ukryć niestandardowe odczyty</string>
     <string name="active_custom_reading_s">%1$d aktywny(e) niestandardowy(e) odczyt(y)</string>
+    <string name="import_title">Importuj trackery</string>
+    <string name="import_description">Znaleźliśmy niestandardowe trackery w Twoim pliku CSV. Wybierz, jak mają zostać zmapowane:</string>
+    <string name="overwrite_existing_data">Nadpisz istniejące dane</string>
+    <string name="overwrite_hint">Jeśli nie zaznaczono, istniejące pomiary dla tej samej daty/godziny zostaną pominięte.</string>
+    <string name="button_start_import">Rozpocznij import</string>
+    <string name="mapping_map_to_existing">Mapuj do istniejącego</string>
+    <string name="mapping_create_new">Utwórz nowy tracker</string>
+    <string name="mapping_skip">Pomiń tę kolumnę</string>
+    <string name="placeholder_select_tracker">Wybierz tracker</string>
 </resources>

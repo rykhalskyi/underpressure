@@ -217,6 +217,7 @@ class TableImportManager(
                                         systolic = systolic,
                                         diastolic = diastolic,
                                         pulse = pulse,
+                                        createdAt = existing?.createdAt ?: System.currentTimeMillis(),
                                         updatedAt = System.currentTimeMillis()
                                     )
 

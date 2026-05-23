@@ -184,6 +184,8 @@
     <string name="onboarding_slide4_description">Вы можете поделиться данными, если хотите. В остальных случаях ваши данные не покинут ваш телефон. Мы также не собираем никакой телеметрии или логов.</string>
     <string name="onboarding_slide5_caption">Рекомендации по классификации</string>
     <string name="onboarding_slide5_description">UnderPressure поддерживает рекомендации по классификации как ACC/AHA, так и ESC/ESH. Переключайтесь между ними в настройках, чтобы они соответствовали рекомендациям вашего врача.</string>
+    <string name="onboarding_slide6_caption">Пользовательские трекеры</string>
+    <string name="onboarding_slide6_description">Добавляйте пользовательские трекеры, такие как вес, настроение или прием лекарств, к вашим измерениям. Отслеживайте не только артериальное давление, чтобы получить более глубокое представление о своем здоровье.</string>
     <string name="button_onboarding_close">Начать</string>
 
     <!-- Guidance Popup -->
@@ -257,4 +259,13 @@
     <string name="additional_info">Дополнительная информация</string>
     <string name="tap_to_show_hide_custom_readings">Нажмите, чтобы показать/скрыть пользовательские показания</string>
     <string name="active_custom_reading_s">%1$d активное(ые) пользовательское(ие) показание(я)</string>
+    <string name="import_title">Импорт трекеров</string>
+    <string name="import_description">Мы нашли пользовательские трекеры в вашем CSV. Выберите, как их сопоставить:</string>
+    <string name="overwrite_existing_data">Перезаписать существующие данные</string>
+    <string name="overwrite_hint">Если не выбрано, существующие измерения для той же даты/времени будут пропущены.</string>
+    <string name="button_start_import">Начать импорт</string>
+    <string name="mapping_map_to_existing">Сопоставить с существующим</string>
+    <string name="mapping_create_new">Создать новый трекер</string>
+    <string name="mapping_skip">Пропустить этот столбец</string>
+    <string name="placeholder_select_tracker">Выберите трекер</string>
 </resources>

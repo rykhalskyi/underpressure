@@ -205,6 +205,8 @@
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
     <string name="onboarding_slide5_caption">Classification Guidelines</string>
     <string name="onboarding_slide5_description">UnderPressure supports both ACC/AHA and ESC/ESH classification guidelines. Switch between them in settings to match your doctor\'s advice.</string>
+    <string name="onboarding_slide6_caption">Custom Trackers</string>
+    <string name="onboarding_slide6_description">Add custom trackers like weight, mood, or medication to your measurements. Track more than just blood pressure to gain deeper insights into your health.</string>
     <string name="button_onboarding_close">Get Started</string>
 
     <!-- Guidance Popup -->
@@ -258,6 +260,17 @@
     <string name="additional_info">Additional Info</string>
     <string name="tap_to_show_hide_custom_readings">Tap to show/hide custom readings</string>
     <string name="active_custom_reading_s">%1$d active custom reading(s)</string>
+
+    <!-- Import Mapping -->
+    <string name="import_title">Import Trackers</string>
+    <string name="import_description">We found custom trackers in your CSV. Choose how to map them:</string>
+    <string name="overwrite_existing_data">Overwrite existing data</string>
+    <string name="overwrite_hint">If unchecked, existing readings for the same date/time will be skipped.</string>
+    <string name="button_start_import">Start Import</string>
+    <string name="mapping_map_to_existing">Map to Existing</string>
+    <string name="mapping_create_new">Create New Tracker</string>
+    <string name="mapping_skip">Skip this column</string>
+    <string name="placeholder_select_tracker">Select tracker</string>
 
 </resources>
 

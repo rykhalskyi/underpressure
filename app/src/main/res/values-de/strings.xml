@@ -184,6 +184,8 @@
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
     <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
     <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Arztes anzupassen.</string>
+    <string name="onboarding_slide6_caption">Benutzerdefinierte Tracker</string>
+    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Medikamente zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur den Blutdruck, um tiefere Einblicke in Ihre Gesundheit zu erhalten.</string>
     <string name="button_onboarding_close">Loslegen</string>
 
     <!-- Guidance Popup -->
@@ -257,4 +259,13 @@
     <string name="additional_info">Zusätzliche Informationen</string>
     <string name="tap_to_show_hide_custom_readings">Tippen, um benutzerdefinierte Messwerte anzuzeigen/auszublenden</string>                                                                      LSP
     <string name="active_custom_reading_s">%1$d aktive benutzerdefinierte(s) Messwert(e)</string>
+    <string name="import_title">Tracker importieren</string>
+    <string name="import_description">Wir haben benutzerdefinierte Tracker in Ihrer CSV gefunden. Wählen Sie aus, wie diese zugeordnet werden sollen:</string>
+    <string name="overwrite_existing_data">Vorhandene Daten überschreiben</string>
+    <string name="overwrite_hint">Wenn nicht markiert, werden vorhandene Messwerte für das gleiche Datum/die gleiche Uhrzeit übersprungen.</string>
+    <string name="button_start_import">Import starten</string>
+    <string name="mapping_map_to_existing">Vorhandenem zuordnen</string>
+    <string name="mapping_create_new">Neuen Tracker erstellen</string>
+    <string name="mapping_skip">Spalte überspringen</string>
+    <string name="placeholder_select_tracker">Tracker auswählen</string>
 </resources>

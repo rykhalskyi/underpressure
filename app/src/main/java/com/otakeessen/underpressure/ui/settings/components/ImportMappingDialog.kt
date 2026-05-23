@@ -8,8 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.TrackerDefinition
 import com.otakeessen.underpressure.domain.TrackerType
 import com.otakeessen.underpressure.domain.export.DiscoveredTracker
@@ -41,11 +43,11 @@ fun ImportMappingDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Import Trackers") },
+        title = { Text(stringResource(R.string.import_title)) },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    "We found custom trackers in your CSV. Choose how to map them:",
+                    stringResource(R.string.import_description),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -76,13 +78,13 @@ fun ImportMappingDialog(
                         onCheckedChange = { overwrite = it }
                     )
                     Text(
-                        "Overwrite existing data",
+                        stringResource(R.string.overwrite_existing_data),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
                 Text(
-                    "If unchecked, existing readings for the same date/time will be skipped.",
+                    stringResource(R.string.overwrite_hint),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -90,17 +92,18 @@ fun ImportMappingDialog(
         },
         confirmButton = {
             Button(onClick = { onConfirm(overwrite, mappingState.toMap()) }) {
-                Text("Start Import")
+                Text(stringResource(R.string.button_start_import))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.button_cancel))
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackerMappingItem(
     tracker: DiscoveredTracker,
@@ -108,6 +111,8 @@ fun TrackerMappingItem(
     currentAction: TrackerMappingAction,
     onActionChange: (TrackerMappingAction) -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,97 +137,45 @@ fun TrackerMappingItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Column {
-                MappingRadioButton(
-                    selected = currentAction is TrackerMappingAction.MapToExisting,
-                    onClick = {
-                        val targetId = tracker.existingDefinition?.id ?: existingTrackers.firstOrNull()?.id ?: 0L
-                        onActionChange(TrackerMappingAction.MapToExisting(targetId))
-                    },
-                    label = "Map to Existing"
-                )
-                
-                if (currentAction is TrackerMappingAction.MapToExisting) {
-                    TrackerSelector(
-                        selectedId = currentAction.trackerId,
-                        allTrackers = existingTrackers,
-                        onSelect = { onActionChange(TrackerMappingAction.MapToExisting(it)) }
+            // Compact Action Selector
+            Box {
+                OutlinedCard(
+                    onClick = { expanded = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = when (currentAction) {
+                            is TrackerMappingAction.MapToExisting -> existingTrackers.find { it.id == currentAction.trackerId }?.name ?: stringResource(R.string.mapping_map_to_existing)
+                            is TrackerMappingAction.CreateNew -> stringResource(R.string.mapping_create_new)
+                            is TrackerMappingAction.Skip -> stringResource(R.string.mapping_skip)
+                        },
+                        modifier = Modifier.padding(12.dp),
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
-
-                MappingRadioButton(
-                    selected = currentAction is TrackerMappingAction.CreateNew,
-                    onClick = { 
-                        onActionChange(TrackerMappingAction.CreateNew(tracker.extractedName, TrackerType.FLOAT, tracker.unit)) 
-                    },
-                    label = "Create New Tracker"
-                )
-                
-                if (currentAction is TrackerMappingAction.CreateNew) {
-                    TypeSelector(
-                        selectedType = currentAction.type,
-                        onSelect = { onActionChange(currentAction.copy(type = it)) }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.mapping_skip)) },
+                        onClick = { onActionChange(TrackerMappingAction.Skip); expanded = false }
                     )
-                }
-
-                MappingRadioButton(
-                    selected = currentAction is TrackerMappingAction.Skip,
-                    onClick = { onActionChange(TrackerMappingAction.Skip) },
-                    label = "Skip this column"
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MappingRadioButton(
-    selected: Boolean,
-    onClick: () -> Unit,
-    label: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        RadioButton(selected = selected, onClick = onClick)
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(start = 4.dp)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TrackerSelector(
-    selectedId: Long,
-    allTrackers: List<TrackerDefinition>,
-    onSelect: (Long) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val selectedTracker = allTrackers.find { it.id == selectedId }
-
-    Box(modifier = Modifier.padding(start = 32.dp, bottom = 8.dp)) {
-        OutlinedCard(
-            onClick = { expanded = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = selectedTracker?.let { "${it.name}${if (!it.unit.isNullOrBlank()) " (${it.unit})" else ""}" } ?: "Select tracker",
-                modifier = Modifier.padding(8.dp),
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            allTrackers.forEach { tracker ->
-                DropdownMenuItem(
-                    text = { Text("${tracker.name} (${tracker.unit ?: "no unit"})", style = MaterialTheme.typography.bodySmall) },
-                    onClick = {
-                        onSelect(tracker.id)
-                        expanded = false
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.mapping_create_new)) },
+                        onClick = { onActionChange(TrackerMappingAction.CreateNew(tracker.extractedName, TrackerType.FLOAT, tracker.unit)); expanded = false }
+                    )
+                    existingTrackers.forEach { trackerDef ->
+                        DropdownMenuItem(
+                            text = { Text("${trackerDef.name} (${trackerDef.unit ?: "no unit"})") },
+                            onClick = { onActionChange(TrackerMappingAction.MapToExisting(trackerDef.id)); expanded = false }
+                        )
                     }
+                }
+            }
+
+            if (currentAction is TrackerMappingAction.CreateNew) {
+                Spacer(modifier = Modifier.height(8.dp))
+                TypeSelector(
+                    selectedType = currentAction.type,
+                    onSelect = { onActionChange(currentAction.copy(type = it)) }
                 )
             }
         }
@@ -236,7 +189,6 @@ fun TypeSelector(
     onSelect: (TrackerType) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(start = 32.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         TrackerType.values().forEach { type ->
