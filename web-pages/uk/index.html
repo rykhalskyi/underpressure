@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnderPressure - Додаток для відстеження артеріального тиску</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .section p {
+            margin-bottom: 10px;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 500;
+        }
+        
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-selector a {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 8px 15px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .language-selector a:hover {
+            background: #f0f0f0;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        <a href="../index.html">← Мови</a>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>UnderPressure</h1>
+            <p>Додаток для відстеження артеріального тиску</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Ласкаво просимо</h2>
+                <p>UnderPressure - це простий і приватний мобільний додаток для відстеження вимірювань артеріального тиску та пульсу на вашому пристрої Android.</p>
+                <p>Усі ваші дані залишаються на вашому пристрої - ми не збираємо, не зберігаємо та не ділимося будь-якою інформацією про здоров'я з третіми сторонами.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Функції</h2>
+                <p>✓ Локальне зберігання даних - всі вимірювання залишаються на вашому пристрої<br>
+                ✓ Простий інтерфейс для запису артеріального тиску та пульсу<br>
+                ✓ Обліковий запис не потрібен<br>
+                ✓ Без реклами та відстеження<br>
+                ✓ Ділитися даними тільки коли хочете</p>
+            </div>
+            
+            <div class="section">
+                <h2>Важлива інформація</h2>
+                <p>Перегляньте наші політики та умови перед використанням UnderPressure:</p>
+                <div class="links">
+                    <a href="privacy-policy.html" class="link-button">Політика конфіденційності</a>
+                    <a href="terms-of-service.html" class="link-button">Умови використання</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 Iaroslav Rykhalskyi. Усі права застережені.</p>
+            <p>Контакт: <a href="mailto:otakeesen@gmail.com" style="color: #667eea; text-decoration: none;">otakeesen@gmail.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

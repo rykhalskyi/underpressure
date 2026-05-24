@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnderPressure - Blood Pressure Tracking App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 20px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .section p {
+            margin-bottom: 10px;
+            color: #555;
+            line-height: 1.8;
+        }
+        
+        .links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 500;
+        }
+        
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+        }
+        
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-selector a {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 8px 15px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .language-selector a:hover {
+            background: #f0f0f0;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        <a href="../de/index.html">🇩🇪 Deutsch</a>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>UnderPressure</h1>
+            <p>Your Personal Blood Pressure Tracking App</p>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Welcome</h2>
+                <p>UnderPressure is a simple and privacy-focused mobile application for tracking your blood pressure and heart rate measurements on your Android device.</p>
+                <p>All your data stays on your device – we don't collect, store, or share any of your health information with third parties.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Features</h2>
+                <p>✓ Local data storage – all measurements remain on your device<br>
+                ✓ Easy-to-use interface for recording blood pressure and pulse<br>
+                ✓ No account required<br>
+                ✓ No ads or trackers<br>
+                ✓ Share your data only when you choose to</p>
+            </div>
+            
+            <div class="section">
+                <h2>Important Information</h2>
+                <p>Please review our policies and terms before using UnderPressure:</p>
+                <div class="links">
+                    <a href="privacy-policy.html" class="link-button">Privacy Policy</a>
+                    <a href="terms-of-service.html" class="link-button">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 Iaroslav Rykhalskyi. All rights reserved.</p>
+            <p>Contact: <a href="mailto:otakeesen@gmail.com" style="color: #667eea; text-decoration: none;">otakeesen@gmail.com</a></p>
+        </div>
+    </div>
+</body>
+</html>

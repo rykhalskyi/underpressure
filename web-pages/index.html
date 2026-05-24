@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnderPressure - Choose Language</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 60px 40px;
+            width: 100%;
+            max-width: 1000px;
+        }
+        
+        .header {
+            margin-bottom: 50px;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 0.95em;
+            color: #bbb;
+            font-style: italic;
+        }
+        
+        .language-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .language-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border: 2px solid #e8e8e8;
+            cursor: pointer;
+        }
+        
+        .language-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .language-btn:hover .flag {
+            font-size: 4em;
+        }
+        
+        .language-btn:hover .language-name {
+            color: white;
+        }
+        
+        .language-btn:hover .language-native {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .flag {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            transition: font-size 0.3s ease;
+        }
+        
+        .language-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .language-native {
+            font-size: 0.95em;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .footer p {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 25px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .language-options {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .language-btn {
+                padding: 30px 20px;
+            }
+            
+            .flag {
+                font-size: 2.5em;
+            }
+            
+            .language-name {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>UnderPressure</h1>
+            <p>Blood Pressure Tracking App</p>
+            <p class="subtitle">Select your language</p>
+        </div>
+        
+        <div class="language-options">
+            <a href="en/index.html" class="language-btn">
+                <div class="flag">EN</div>
+                <div class="language-name">English</div>
+                <div class="language-native">English</div>
+            </a>
+            
+            <a href="de/index.html" class="language-btn">
+                <div class="flag">DE</div>
+                <div class="language-name">Deutsch</div>
+                <div class="language-native">German</div>
+            </a>
+
+            <a href="uk/index.html" class="language-btn">
+                <div class="flag">UA</div>
+                <div class="language-name">Українська</div>
+                <div class="language-native">Ukrainian</div>
+            </a>
+            
+            <a href="pl/index.html" class="language-btn">
+                <div class="flag">PL</div>
+                <div class="language-name">Polski</div>
+                <div class="language-native">Polish</div>
+            </a>
+            
+            <a href="fr/index.html" class="language-btn">
+                <div class="flag">FR</div>
+                <div class="language-name">Français</div>
+                <div class="language-native">French</div>
+            </a>
+            
+            <a href="es/index.html" class="language-btn">
+                <div class="flag">ES</div>
+                <div class="language-name">Español</div>
+                <div class="language-native">Spanish</div>
+            </a>
+
+            <a href="ru/index.html" class="language-btn">
+                <div class="flag">RU</div>
+                <div class="language-name">Русский</div>
+                <div class="language-native">Russian</div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2026 Iaroslav Rykhalskyi</p>
+            <p><a href="mailto:otakeesen@gmail.com" style="color: #667eea; text-decoration: none;">Contact</a></p>
+        </div>
+    </div>
+</body>
+</html>
