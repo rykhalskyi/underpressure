@@ -175,11 +175,11 @@
     <string name="label_version">Version %1$s</string>
     <string name="label_repo">Source Code (GitHub)</string>
     <string name="label_privacy_policy">Privacy Policy</string>
-    <string name="url_privacy_policy">https://github.com/rykhalskyi/underpressure/blob/main/PRIVACYPOLICY.md</string>
+    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/en/privacy-policy.html</string>
     <string name="label_terms_of_service">Terms of Service</string>
-    <string name="url_terms_of_service">https://github.com/rykhalskyi/underpressure/blob/main/TERMOFSERVICE.md</string>
+    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/en/terms-of-service.html</string>
     <string name="label_impressum">Impressum</string>
-    <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
+    <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
 
     <string name="button_show_onboarding">Show Onboarding</string>
 

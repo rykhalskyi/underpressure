@@ -121,6 +121,8 @@
     <string name="label_version">Wersja %1$s</string>
     <string name="label_repo">Kod źródłowy (GitHub)</string>
     <string name="label_privacy_policy">Polityka prywatności</string>
+    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/pl/privacy-policy.html</string>
+    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/pl/terms-of-service.html</string>
     <string name="label_terms_of_service">Warunki korzystania</string>
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
@@ -269,4 +271,6 @@
     <string name="mapping_create_new">Utwórz nowy tracker</string>
     <string name="mapping_skip">Pomiń tę kolumnę</string>
     <string name="placeholder_select_tracker">Wybierz tracker</string>
+    <string name="label_impressum">Impressum</string>
+    <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
 </resources>
