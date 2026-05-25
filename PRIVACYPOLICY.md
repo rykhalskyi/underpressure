@@ -1,76 +1,74 @@
 # Privacy Policy for UnderPressure
-_Last updated: April 23, 2026_
+_Last updated: May 24, 2026_
 
-Your privacy is important. UnderPressure is designed to store your health‑related measurements privately on your device. This Privacy Policy explains what data is collected, how it is used, and your rights.
+Your privacy is important to us. UnderPressure has been designed to store your health‑related measurements **exclusively on your device**. This Privacy Policy explains what data is collected, how it is used, and what rights you have.
 
 ---
 
 ## 1. Data Collection
-UnderPressure does **not** automatically collect any personal data.
+UnderPressure collects **no** personal data automatically.
 
-All information is entered **manually** by the user by tapping the **“Add”** button.  
-The app does not access sensors, contacts, location, or any system data.
+All information is **manually entered** by you using the "Add" button. The app does not access sensors, contacts, location data, or other system data.
 
-You may choose to enter:
-- Blood pressure values  
-- Pulse values  
-- Measurement timestamps  
+You can enter the following data:
+- Blood pressure readings  
+- Heart rate (pulse) values  
+- Timestamps of measurements  
+- Custom tracker of your choice (text, number, checkbox)
 
 ---
 
 ## 2. Data Storage
-All data is stored **exclusively on your device**.
+All data is **stored exclusively on your device**.
 
-The app does **not**:
-- send data to any server  
-- synchronize data to cloud services  
-- use external databases  
-- share data with third parties  
+The app:
+- sends no data to servers  
+- synchronizes no data with cloud services  
+- uses no external databases  
+- shares no data with third parties  
 
-You have full control over your data at all times.
+You maintain full control over your data at all times.
 
 ---
 
 ## 3. Data Sharing
-The app includes an optional **Share** feature.
+The app includes an optional **share function**.
 
-Data is shared **only when you explicitly choose to do so** using your device’s share menu.  
-The app never sends or uploads data automatically.
+Data is **only shared** if you explicitly choose to do so via your device's share menu. The app never automatically uploads or sends data.
 
 ---
 
 ## 4. No Third‑Party Services
-UnderPressure does **not** use:
-- analytics tools  
-- advertising networks  
-- tracking libraries  
-- third‑party SDKs  
-- external links  
+UnderPressure uses **no**:
+- Analytics tools  
+- Ad networks  
+- Tracking libraries  
+- Third‑party SDKs  
+- External links  
 
 There are **no ads**, **no payments**, and **no subscriptions**.
 
 ---
 
 ## 5. Security
-Because all data stays on your device, its security depends on:
-- your device’s operating system  
-- your device’s lock screen and security settings  
+Since all data remains on your device, its security depends on:
+- Your device's operating system  
+- Your device's lock screen and security settings  
 
 The app does not transmit or expose your data externally.
 
 ---
 
 ## 6. Children’s Privacy
-UnderPressure does not target children and does not collect any data automatically.  
-All data is entered manually by the user.
+UnderPressure is not directed at children and collects no data automatically. All data is manually entered by the user.
 
 ---
 
 ## 7. Changes to This Policy
-If the Privacy Policy changes, the updated version will be published at this URL.
+If this Privacy Policy changes, the updated version will be published at this URL.
 
 ---
 
 ## 8. Contact
-If you have questions about this Privacy Policy, contact the developer at:  
+If you have questions about this Privacy Policy, please contact the developer:  
 **otakeesen@gmail.com**

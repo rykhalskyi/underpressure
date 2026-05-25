@@ -298,8 +298,9 @@ fun SettingsScreen(
                         HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
                     }
 
-                    // Impressum only for German locale
-                    if (context.resources.configuration.locales.get(0).language == "de") {
+                    // Impressum for German locale or region Germany
+                    val locale = androidx.compose.ui.text.intl.Locale.current
+                    if (locale.language == "de" || locale.region == "DE") {
                         item {
                             ListItem(
                                 headlineContent = { Text(stringResource(R.string.label_impressum)) },
@@ -320,6 +321,21 @@ fun SettingsScreen(
                                 context.startActivity(intent)
                             }
                         )
+                    }
+
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.label_copyright),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
 
                 }

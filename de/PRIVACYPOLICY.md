@@ -20,6 +20,7 @@ Sie können folgende Daten eingeben:
 - Blutdruckwerte
 - Pulswerte
 - Zeitstempel der Messungen
+- Benutzerdefinierter Tracker Ihrer Wahl (Text, Zahl, Kontrollkästchen)
 
 ---
 
