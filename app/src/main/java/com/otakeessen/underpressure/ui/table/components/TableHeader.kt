@@ -46,7 +46,7 @@ fun TableHeader(
                 weight = 1f,
                 textAlign = TextAlign.Center,
                 onClick = { onSlotClick(index) },
-                modifier = if (isActive) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier
+                isActive = isActive
             )
         }
     }
@@ -58,6 +58,7 @@ private fun RowScope.HeaderCell(
     weight: Float,
     textAlign: TextAlign,
     onClick: (() -> Unit)? = null,
+    isActive: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Text(
@@ -67,7 +68,8 @@ private fun RowScope.HeaderCell(
             .let { if (onClick != null) it.clickable(onClick = onClick) else it },
         style = MaterialTheme.typography.labelSmall.copy(
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            textDecoration = if (isActive) androidx.compose.ui.text.style.TextDecoration.Underline else null
         ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = textAlign,

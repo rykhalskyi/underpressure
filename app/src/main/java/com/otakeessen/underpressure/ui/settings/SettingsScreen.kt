@@ -16,9 +16,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,7 +32,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,32 +51,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.otakeessen.underpressure.R
+import com.otakeessen.underpressure.domain.BpGuidelines
+import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
 import com.otakeessen.underpressure.ui.settings.components.GlobalAlarmRow
+import com.otakeessen.underpressure.ui.settings.components.ImpressumDialog
+import com.otakeessen.underpressure.ui.settings.components.ImportMappingDialog
 import com.otakeessen.underpressure.ui.settings.components.SlotRow
 import com.otakeessen.underpressure.ui.settings.components.TimePickerDialog
 
-import androidx.compose.ui.res.stringResource
-import com.otakeessen.underpressure.R
-
 import android.content.pm.PackageManager
 import androidx.compose.foundation.clickable
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.ListItem
-import com.otakeessen.underpressure.domain.BpGuidelines
-import com.otakeessen.underpressure.ui.onboarding.OnboardingDialog
-import androidx.compose.material3.AlertDialog
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.ui.semantics.Role
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.LinearProgressIndicator
-import com.otakeessen.underpressure.ui.settings.components.ImportMappingDialog
-import com.otakeessen.underpressure.ui.settings.components.ImpressumDialog
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
 /**
  * Screen for configuring application settings, specifically measurement slot times and activity.
@@ -251,6 +258,27 @@ fun SettingsScreen(
                     }
 
                     item {
+                        ListItem(
+                            headlineContent = { 
+                                Text(
+                                    text = stringResource(R.string.button_delete_all_data),
+                                    color = MaterialTheme.colorScheme.error
+                                ) 
+                            },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = Icons.Default.Warning,
+                                    contentDescription = null
+                                )
+                            },
+                            modifier = Modifier.clickable {
+                                viewModel.showDeleteAllDialog()
+                            }
+                        )
+                        HorizontalDivider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+                    }
+
+                    item {
                         Text(
                             text = stringResource(R.string.header_about),
                             style = MaterialTheme.typography.titleLarge,
@@ -399,6 +427,13 @@ fun SettingsScreen(
             )
         }
 
+        if (uiState.showDeleteAllConfirmation) {
+            DeleteAllDataDialog(
+                onDismiss = { viewModel.dismissDeleteAllDialog() },
+                onConfirm = { viewModel.deleteAllData() }
+            )
+        }
+
         if (uiState.showImportStrategyDialog) {
             ImportDialog(
                 onDismiss = { viewModel.cancelImport() },
@@ -439,6 +474,69 @@ fun SettingsScreen(
             )
         }
     }
+}
+
+@Composable
+fun DeleteAllDataDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    val expectedPhrase = stringResource(R.string.delete_confirmation_phrase)
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    
+    val normalizedInput = text.text.lowercase().replace(" ", "")
+    val normalizedExpected = expectedPhrase.lowercase().replace(" ", "")
+    
+    val isConfirmEnabled = normalizedInput == normalizedExpected
+
+    val message = stringResource(R.string.dialog_message_delete_all, expectedPhrase)
+    val annotatedMessage = buildAnnotatedString {
+        val startIndex = message.indexOf(expectedPhrase)
+        if (startIndex != -1) {
+            append(message.substring(0, startIndex))
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(expectedPhrase)
+            }
+            append(message.substring(startIndex + expectedPhrase.length))
+        } else {
+            append(message)
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.dialog_title_delete_all)) },
+        text = {
+            Column {
+                Text(
+                    text = annotatedMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    label = { Text(stringResource(R.string.placeholder_type_confirmation)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.None),
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                enabled = isConfirmEnabled
+            ) {
+                Text(stringResource(R.string.button_delete))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.button_cancel))
+            }
+        }
+    )
 }
 
 @Composable

@@ -15,6 +15,7 @@ data class SettingsUiState(
     val isLoading: Boolean = false,
     val isImporting: Boolean = false,
     val showImportStrategyDialog: Boolean = false,
+    val showDeleteAllConfirmation: Boolean = false,
     val trackerDiscoveryResult: TrackerDiscoveryResult? = null,
     val importResult: String? = null,
     val error: String? = null

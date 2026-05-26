@@ -76,5 +76,9 @@ class MeasurementRepositoryImpl(
     override suspend fun getMaxDate(): String? {
         return measurementDao.getMaxDate()
     }
+
+    override suspend fun deleteAllMeasurements() {
+        measurementDao.deleteAll()
+    }
 }
 

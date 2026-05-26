@@ -192,6 +192,11 @@
 
     <string name="header_data_management">Gestión de datos</string>
     <string name="button_import_csv">Importar CSV</string>
+    <string name="button_delete_all_data">Eliminar todos los datos</string>
+    <string name="dialog_title_delete_all">Eliminar todos los datos</string>
+    <string name="dialog_message_delete_all">Esto eliminará permanentemente todas las mediciones y rastreadores personalizados. Para confirmar, escribe "%1$s" a continuación.</string>
+    <string name="delete_confirmation_phrase">sí, eliminar</string>
+    <string name="placeholder_type_confirmation">Escribe la confirmación aquí</string>
     <string name="dialog_title_import">Importar datos</string>
     <string name="label_import_strategy">Gestión de colisiones (misma fecha/intervalo):</string>
     <string name="option_overwrite">Sobrescribir existente</string>
@@ -277,4 +282,5 @@
     <string name="mapping_create_new">Crear nuevo rastreador</string>
     <string name="mapping_skip">Saltar esta columna</string>
     <string name="placeholder_select_tracker">Seleccionar rastreador</string>
+    <string name="contact_developer">Contactar al desarrollador</string>
 </resources>

@@ -79,5 +79,9 @@ interface MeasurementRepository {
      * Retrieves the latest measurement date in the database.
      */
     suspend fun getMaxDate(): String?
+    /**
+     * Deletes all measurements.
+     */
+    suspend fun deleteAllMeasurements()
 }
 
