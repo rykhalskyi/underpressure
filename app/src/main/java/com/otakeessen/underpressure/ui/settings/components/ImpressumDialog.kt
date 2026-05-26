@@ -44,7 +44,7 @@ fun ImpressumDialog(
                     context.startActivity(Intent.createChooser(intent, "Send email"))
                 }
             ) {
-                Text("Contact Developer")
+                Text(stringResource(R.string.contact_developer))
             }
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.button_ok))

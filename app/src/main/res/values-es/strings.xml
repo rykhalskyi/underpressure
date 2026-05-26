@@ -282,4 +282,5 @@
     <string name="mapping_create_new">Crear nuevo rastreador</string>
     <string name="mapping_skip">Saltar esta columna</string>
     <string name="placeholder_select_tracker">Seleccionar rastreador</string>
+    <string name="contact_developer">Contactar al desarrollador</string>
 </resources>

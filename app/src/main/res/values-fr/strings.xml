@@ -282,4 +282,5 @@
     <string name="mapping_create_new">Créer un nouveau suivi</string>
     <string name="mapping_skip">Ignorer cette colonne</string>
     <string name="placeholder_select_tracker">Sélectionner un suivi</string>
+    <string name="contact_developer">Contacter le développeur</string>
 </resources>

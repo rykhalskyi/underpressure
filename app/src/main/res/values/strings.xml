@@ -284,6 +284,7 @@
     <string name="mapping_create_new">Create New Tracker</string>
     <string name="mapping_skip">Skip this column</string>
     <string name="placeholder_select_tracker">Select tracker</string>
+    <string name="contact_developer">Entwickler kontaktieren</string>
 
 </resources>
 
