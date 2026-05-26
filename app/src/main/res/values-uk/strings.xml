@@ -166,6 +166,11 @@
     <string name="label_classification_all_time">За весь час</string>
     <string name="header_data_management">Керування даними</string>
     <string name="button_import_csv">Імпортувати CSV</string>
+    <string name="button_delete_all_data">Видалити всі дані</string>
+    <string name="dialog_title_delete_all">Видалити всі дані</string>
+    <string name="dialog_message_delete_all">Це безповоротно видалить усі вимірювання та користувацькі трекери. Щоб підтвердити, введіть "%1$s" нижче.</string>
+    <string name="delete_confirmation_phrase">так, видалити</string>
+    <string name="placeholder_type_confirmation">Введіть підтвердження тут</string>
     <string name="dialog_title_import">Імпорт даних</string>
     <string name="label_import_strategy">Обробка колізій (однакова дата/слот):</string>
     <string name="option_overwrite">Перезаписати існуючі</string>
@@ -191,41 +196,22 @@
 
     <!-- Guidance Popup -->
     <string name="hint_edit_slot">Ви можете змінити значення слота %1$d, натиснувши на нього.</string>
-    <string name="warning_large_date_range">Вибрано великий діапазон дат. Читабельність та продуктивність можуть постраждати.</string>
-
-    <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Систолічний</string>
-    <string name="chart_legend_diastolic">Діастолічний</string>
-    <string name="chart_legend_pulse">Пульс</string>
+    <string name="hint_cannot_create_slot">Не вдається створити слот. Він має бути як мінімум за 30 хвилин від сусідніх слотів. Використовуйте наступний слот о %1$s.</string>
 
     <!-- View Mode Toggle -->
     <string name="view_scheduled">Заплановані</string>
     <string name="view_all">Всі</string>
 
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Систолічний</string>
+    <string name="chart_legend_diastolic">Діастолічний</string>
+    <string name="chart_legend_pulse">Пульс</string>
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Позапланові</string>
     <string name="label_anytime_reading">Позапланове вимірювання</string>
     <string name="label_anytime_count">%1$d позапланових</string>
     <string name="hint_anytime_confirmation">Заплановане вимірювання зовсім близько о %1$s. Зачекаємо чи додати як позапланове?</string>
     <string name="button_anytime_yes">Так, позапланово</string>
-    <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Інформація про артеріальний тиск</string>
-    <string name="bp_info_what_is_title">Що таке артеріальний тиск?</string>
-    <string name="bp_info_what_is_desc">Сила, з якою кров тисне на стінки артерій. Вимірюється двома числами:</string>
-    <string name="bp_info_systolic_title">Систолічний (Верхній/Перший)</string>
-    <string name="bp_info_systolic_desc">Тиск, коли ваше серце б\'ється.</string>
-    <string name="bp_info_diastolic_title">Діастолічний (Нижній/Другий)</string>
-    <string name="bp_info_diastolic_desc">Тиск, коли ваше серце відпочиває між ударами.</string>
-    <string name="bp_info_why_matters_title">Чому це важливо</string>
-    <string name="bp_info_why_matters_desc">Обидва числа критично важливі. Постійно високий тиск може з часом пошкодити артерії, що призведе до хвороб серця або інсульту.</string>
-    <string name="bp_info_silent_killer_title">\"Тихий вбивця\"</string>
-    <string name="bp_info_silent_killer_desc">Гіпертонія часто протікає безсимптомно. Регулярне відстеження — єдиний спосіб дізнатися, чи здорові ваші показники.</string>
-    <string name="bp_info_when_to_see_doctor_title">Коли звернутися до лікаря</string>
-    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище цільового діапазону (наприклад, 130/80 або 140/90).</string>
-    <string name="bp_info_emergency_title">Надзвичайна ситуація</string>
-    <string name="bp_info_emergency_desc">Якщо ви досягли \"Гіпертонічного кризу\" (180/120 або вище), зачекайте 5 хвилин і переміряйте. Якщо тиск залишається високим, негайно зв\'яжіться з екстреними службами.</string>
-    <string name="cd_bp_info">Інформація про артеріальний тиск</string>
-    <string name="label_source_prefix">Джерело:</string>
     <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Якщо ваш артеріальний тиск постійно такий же високий або вищий:</string>
     <string name="_1_pause_and_re_test">1. Зробіть паузу та повторіть замірювання</string>
     <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Зачекайте 5 хвилин, посидьте спокійно та повторіть замірювання. Якщо тиск залишається високим, зверніться до лікаря.</string>
@@ -233,7 +219,6 @@
     <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Якщо у вас високий тиск та такі симптоми, як біль у грудях, задишка, оніміння, сплутаність свідомості або сильний головний біль, негайно зверніться за екстреною медичною допомогою.</string>
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильне підвищення артеріального тиску (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Сильне підвищення артеріального тиску (≥ 180/110)</string>
-    <string name="hint_cannot_create_slot">Не вдається створити слот. Він має бути як мінімум за 30 хвилин від сусідніх слотів. Використовуйте наступний слот о %1$s.</string>
     <string name="custom_trackers">Користувацькі трекери</string>
     <string name="no_trackers_defined">Трекери не визначено</string>
     <string name="weight">Вага</string>
@@ -255,12 +240,11 @@
     <string name="button_add">Додати</string>
     <string name="button_edit">Редагувати</string>
     <string name="dialog_title_edit_tracker">Редагувати трекер</string>
-    <string name="invalid_number_format">Неправильний формат числа</string>                                                                                                                         connect. Is the computer able to
-    <string name="must_be_between_and">Має бути між %1$s і %2$s</string>                                                                                                                            access the url?
+    <string name="invalid_number_format">Неправильний формат числа</string>
+    <string name="must_be_between_and">Має бути між %1$s і %2$s</string>
     <string name="additional_info">Додаткова інформація</string>
-    <string name="tap_to_show_hide_custom_readings">Натисніть, щоб показати/сховати користувацькі показники</string>                                                                              LSP
+    <string name="tap_to_show_hide_custom_readings">Натисніть, щоб показати/сховати користувацькі показники</string>
     <string name="active_custom_reading_s">%1$d активне(і) користувацьке(і) показник(и)</string>
-
     <string name="import_title">Імпорт трекерів</string>
     <string name="import_description">Ми знайшли користувацькі трекери у вашому CSV. Виберіть, як їх зіставити:</string>
     <string name="overwrite_existing_data">Перезаписати існуючі дані</string>
@@ -270,8 +254,6 @@
     <string name="mapping_create_new">Створити новий трекер</string>
     <string name="mapping_skip">Пропустити цей стовпець</string>
     <string name="placeholder_select_tracker">Виберіть трекер</string>
-    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/uk/privacy-policy.html</string>
-    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/uk/terms-of-service.html</string>
     <string name="label_impressum">Impressum</string>
     <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
     <string name="label_copyright">© 2026 Ярослав Рихальський</string>

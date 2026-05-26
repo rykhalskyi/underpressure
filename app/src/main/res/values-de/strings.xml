@@ -171,6 +171,11 @@
     <string name="label_classification_all_time">Gesamt</string>
     <string name="header_data_management">Datenverwaltung</string>
     <string name="button_import_csv">CSV importieren</string>
+    <string name="button_delete_all_data">Alle Daten löschen</string>
+    <string name="dialog_title_delete_all">Alle Daten löschen</string>
+    <string name="dialog_message_delete_all">Dies löscht dauerhaft alle Messungen und benutzerdefinierten Tracker. Zur Bestätigung bitte "%1$s" eingeben.</string>
+    <string name="delete_confirmation_phrase">ja, löschen</string>
+    <string name="placeholder_type_confirmation">Bestätigung hier eingeben</string>
     <string name="dialog_title_import">Daten importieren</string>
     <string name="label_import_strategy">Umgang mit Kollisionen (gleiches Datum/Slot):</string>
     <string name="option_overwrite">Vorhandene überschreiben</string>
@@ -259,11 +264,11 @@
     <string name="label_tracker_max">Max</string>
     <string name="button_add">Hinzufügen</string>
     <string name="button_edit">Bearbeiten</string>
-    <string name="dialog_title_edit_tracker">Tracker bearbeiten</string>  ┃
-    <string name="invalid_number_format">Ungültiges Zahlenformat</string>                                                                                                                           connect. Is the computer able to
-    <string name="must_be_between_and">Muss zwischen %1$s und %2$s liegen</string>                                                                                                                  access the url?
+    <string name="dialog_title_edit_tracker">Tracker bearbeiten</string>
+    <string name="invalid_number_format">Ungültiges Zahlenformat</string>
+    <string name="must_be_between_and">Muss zwischen %1$s und %2$s liegen</string>
     <string name="additional_info">Zusätzliche Informationen</string>
-    <string name="tap_to_show_hide_custom_readings">Tippen, um benutzerdefinierte Messwerte anzuzeigen/auszublenden</string>                                                                      LSP
+    <string name="tap_to_show_hide_custom_readings">Tippen, um benutzerdefinierte Messwerte anzuzeigen/auszublenden</string>
     <string name="active_custom_reading_s">%1$d aktive benutzerdefinierte(s) Messwert(e)</string>
     <string name="import_title">Tracker importieren</string>
     <string name="import_description">Wir haben benutzerdefinierte Tracker in Ihrer CSV gefunden. Wählen Sie aus, wie diese zugeordnet werden sollen:</string>

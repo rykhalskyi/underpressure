@@ -55,4 +55,7 @@ interface MeasurementDao {
 
     @Query("SELECT MAX(date) FROM measurements")
     suspend fun getMaxDate(): String?
+
+    @Query("DELETE FROM measurements")
+    suspend fun deleteAll()
 }

@@ -21,15 +21,18 @@ interface TrackerRepository {
 
     suspend fun deleteTrackerDefinition(tracker: TrackerDefinition)
 
+    suspend fun deleteAllTrackerDefinitions()
+
     // --- Tracker Values ---
 
     fun getTrackerValuesByMeasurementId(measurementId: Long): Flow<List<TrackerValue>>
-    
+
     fun getAllTrackerValues(): Flow<List<TrackerValue>>
 
     suspend fun saveTrackerValue(value: TrackerValue): Long
 
     suspend fun deleteTrackerValuesForMeasurement(measurementId: Long)
-    
+
     suspend fun getTrackerValueByMeasurementAndTracker(measurementId: Long, trackerId: Long): TrackerValue?
 }
+

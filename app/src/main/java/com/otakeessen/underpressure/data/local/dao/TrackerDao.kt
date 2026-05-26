@@ -27,6 +27,9 @@ interface TrackerDao {
     @Delete
     suspend fun deleteTrackerDefinition(tracker: TrackerDefinitionEntity)
 
+    @Query("DELETE FROM tracker_definitions")
+    suspend fun deleteAllTrackerDefinitions()
+
     @Query("SELECT * FROM tracker_definitions")
     fun getAllTrackerDefinitions(): Flow<List<TrackerDefinitionEntity>>
 

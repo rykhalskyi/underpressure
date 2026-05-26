@@ -192,6 +192,11 @@
 
     <string name="header_data_management">Gestion des données</string>
     <string name="button_import_csv">Importer un CSV</string>
+    <string name="button_delete_all_data">Supprimer toutes les données</string>
+    <string name="dialog_title_delete_all">Supprimer toutes les données</string>
+    <string name="dialog_message_delete_all">Ceci supprimera définitivement toutes les mesures et suivis personnalisés. Pour confirmer, tapez \"%1$s\" ci-dessous.</string>
+    <string name="delete_confirmation_phrase">oui, supprimer</string>
+    <string name="placeholder_type_confirmation">Tapez la confirmation ici</string>
     <string name="dialog_title_import">Importer des données</string>
     <string name="label_import_strategy">Gestion des collisions (même date/créneau) :</string>
     <string name="option_overwrite">Écraser l\'existant</string>

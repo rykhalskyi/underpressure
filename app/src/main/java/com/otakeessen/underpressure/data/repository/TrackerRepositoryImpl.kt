@@ -45,6 +45,10 @@ class TrackerRepositoryImpl(
         trackerDao.deleteTrackerDefinition(tracker.toEntity())
     }
 
+    override suspend fun deleteAllTrackerDefinitions() {
+        trackerDao.deleteAllTrackerDefinitions()
+    }
+
     override fun getTrackerValuesByMeasurementId(measurementId: Long): Flow<List<TrackerValue>> {
         return trackerDao.getTrackerValuesByMeasurementId(measurementId).map { entities ->
             entities.map { it.toDomain() }

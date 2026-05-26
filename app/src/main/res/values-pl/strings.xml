@@ -168,6 +168,11 @@
     <string name="label_classification_all_time">Cały czas</string>
     <string name="header_data_management">Zarządzanie danymi</string>
     <string name="button_import_csv">Importuj CSV</string>
+    <string name="button_delete_all_data">Usuń wszystkie dane</string>
+    <string name="dialog_title_delete_all">Usuń wszystkie dane</string>
+    <string name="dialog_message_delete_all">To działanie trwale usunie wszystkie pomiary i niestandardowe trackery. Aby potwierdzić, wpisz \"%1$s\" poniżej.</string>
+    <string name="delete_confirmation_phrase">tak, usuń</string>
+    <string name="placeholder_type_confirmation">Wpisz potwierdzenie tutaj</string>
     <string name="dialog_title_import">Importuj dane</string>
     <string name="label_import_strategy">Obsługa kolizji (ta sama data/miejsce):</string>
     <string name="option_overwrite">Nadpisz istniejące</string>

@@ -9,6 +9,7 @@ import com.otakeessen.underpressure.data.export.TableImportManager
 import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.TrackerDefinition
 import com.otakeessen.underpressure.domain.export.TrackerMappingAction
+import com.otakeessen.underpressure.domain.repository.MeasurementRepository
 import com.otakeessen.underpressure.domain.repository.SettingsRepository
 import com.otakeessen.underpressure.domain.repository.TrackerRepository
 import com.otakeessen.underpressure.util.Constants.MIN_SLOT_DIFFERENCE_MINUTES
@@ -33,7 +34,8 @@ class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val alarmScheduler: AlarmScheduler,
     private val importManager: TableImportManager,
-    private val trackerRepository: TrackerRepository
+    private val trackerRepository: TrackerRepository,
+    private val measurementRepository: MeasurementRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState(isLoading = true))
@@ -210,6 +212,28 @@ class SettingsViewModel(
      */
     fun clearImportResult() {
         _uiState.update { it.copy(importResult = null) }
+    }
+
+    fun showDeleteAllDialog() {
+        _uiState.update { it.copy(showDeleteAllConfirmation = true) }
+    }
+
+    fun dismissDeleteAllDialog() {
+        _uiState.update { it.copy(showDeleteAllConfirmation = false) }
+    }
+
+    fun deleteAllData() {
+        viewModelScope.launch {
+            try {
+                // Delete all trackers and measurements
+                trackerRepository.deleteAllTrackerDefinitions()
+                measurementRepository.deleteAllMeasurements()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = "Failed to delete all data: ${e.message}") }
+            } finally {
+                dismissDeleteAllDialog()
+            }
+        }
     }
 
     private fun saveSettings(settings: AppSettingsEntity) {

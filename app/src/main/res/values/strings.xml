@@ -194,6 +194,11 @@
 
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
+    <string name="button_delete_all_data">Delete All Data</string>
+    <string name="dialog_title_delete_all">Delete All Data</string>
+    <string name="dialog_message_delete_all">This will permanently delete all measurements and custom trackers. To confirm, please type "%1$s" below.</string>
+    <string name="delete_confirmation_phrase">yes, delete</string>
+    <string name="placeholder_type_confirmation">Type confirmation here</string>
     <string name="dialog_title_import">Import Data</string>
     <string name="label_import_strategy">Handling collisions (same date/slot):</string>
     <string name="option_overwrite">Overwrite existing</string>
