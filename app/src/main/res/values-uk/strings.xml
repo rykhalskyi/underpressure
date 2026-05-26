@@ -212,6 +212,24 @@
     <string name="label_anytime_count">%1$d позапланових</string>
     <string name="hint_anytime_confirmation">Заплановане вимірювання зовсім близько о %1$s. Зачекаємо чи додати як позапланове?</string>
     <string name="button_anytime_yes">Так, позапланово</string>
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Інформація про артеріальний тиск</string>
+    <string name="bp_info_what_is_title">Що таке артеріальний тиск?</string>
+    <string name="bp_info_what_is_desc">Сила, з якою кров тисне на стінки артерій. Вимірюється двома числами:</string>
+    <string name="bp_info_systolic_title">Систолічний (Верхній/Перший)</string>
+    <string name="bp_info_systolic_desc">Тиск, коли ваше серце б\'ється.</string>
+    <string name="bp_info_diastolic_title">Діастолічний (Нижній/Другий)</string>
+    <string name="bp_info_diastolic_desc">Тиск, коли ваше серце відпочиває між ударами.</string>
+    <string name="bp_info_why_matters_title">Чому це важливо</string>
+    <string name="bp_info_why_matters_desc">Обидва числа критично важливі. Постійно високий тиск може з часом пошкодити артерії, що призведе до хвороб серця або інсульту.</string>
+    <string name="bp_info_silent_killer_title">\"Тихий вбивця\"</string>
+    <string name="bp_info_silent_killer_desc">Гіпертонія часто протікає безсимптомно. Регулярне відстеження — єдиний спосіб дізнатися, чи здорові ваші показники.</string>
+    <string name="bp_info_when_to_see_doctor_title">Коли звернутися до лікаря</string>
+    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище цільового діапазону (наприклад, 130/80 або 140/90).</string>
+    <string name="bp_info_emergency_title">Надзвичайна ситуація</string>
+    <string name="bp_info_emergency_desc">Якщо ви досягли \"Гіпертонічного кризу\" (180/120 або вище), зачекайте 5 хвилин і переміряйте. Якщо тиск залишається високим, негайно зв\'яжіться з екстреними службами.</string>
+    <string name="cd_bp_info">Інформація про артеріальний тиск</string>
+    <string name="label_source_prefix">Джерело:</string>
     <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Якщо ваш артеріальний тиск постійно такий же високий або вищий:</string>
     <string name="_1_pause_and_re_test">1. Зробіть паузу та повторіть замірювання</string>
     <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Зачекайте 5 хвилин, посидьте спокійно та повторіть замірювання. Якщо тиск залишається високим, зверніться до лікаря.</string>
@@ -258,4 +276,9 @@
     <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
     <string name="label_copyright">© 2026 Ярослав Рихальський</string>
     <string name="contact_developer">Зв’язатися з розробником</string>
+    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/uk/privacy-policy.html</string>
+    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/uk/terms-of-service.html</string>
+    <string name="label_select_trackers">Вибрати трекери</string>
+    <string name="warning_large_date_range">Вибрано великий діапазон дат. Це може вплинути на читабельність і продуктивність.</string>
+
 </resources>

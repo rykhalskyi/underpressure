@@ -275,4 +275,11 @@
     <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
     <string name="label_copyright">© 2026 Ярослав Рыхальский</string>
     <string name="contact_developer">Связаться с разработчиком</string>
+    <string name="label_select_trackers">Выбрать трекеры</string>
+    <string name="button_delete_all_data">Удалить все данные</string>
+    <string name="dialog_title_delete_all">Удалить все данные</string>
+    <string name="dialog_message_delete_all">Это действие навсегда удалит все измерения и пользовательские трекеры. Чтобы подтвердить, введите ниже «%1$s».</string>
+    <string name="delete_confirmation_phrase">да, удалить</string>
+    <string name="placeholder_type_confirmation">Введите подтверждение здесь</string>
+
 </resources>
