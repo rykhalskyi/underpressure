@@ -167,5 +167,13 @@ fun ClassificationSummary(
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             modifier = Modifier.padding(top = 16.dp)
         )
+
+        // Medical Disclaimer
+        Text(
+            text = stringResource(R.string.classification_disclaimer),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }

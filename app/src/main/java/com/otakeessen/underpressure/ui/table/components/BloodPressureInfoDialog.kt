@@ -93,17 +93,6 @@ fun BloodPressureInfoDialog(
                     description = stringResource(R.string.if_your_blood_pressure_is_consistently_this_high_or_higher)
                 )
 
-                SubSection(
-                    title = stringResource(R.string._1_pause_and_re_test),
-                    description = stringResource(R.string.wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor)
-                )
-
-                SubSection(
-                    title = stringResource(R.string._2_check_for_emergency_symptoms),
-                    description = stringResource(R.string.if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately),
-                    isEmergency = true
-                )
-
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(8.dp))

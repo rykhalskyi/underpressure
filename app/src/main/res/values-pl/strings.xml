@@ -9,13 +9,13 @@
     <string name="button_confirm">Potwierdź</string>
     <string name="button_clear">Wyczyść</string>
     <string name="button_close">Zamknij</string>
-    <string name="button_grant">ZEZWÓL</string>
+    <string name="button_grant">UDZIEL</string>
 
     <!-- Table Screen Headers -->
     <string name="header_date">Data</string>
     <string name="header_systolic">Syc</string>
     <string name="header_diastolic">Roz</string>
-    <string name="header_pulse">Tętno</string>
+    <string name="header_pulse">Puls</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Przełącz alarmy</string>
@@ -23,108 +23,33 @@
     <string name="cd_share">Udostępnij</string>
     <string name="cd_settings">Otwórz ustawienia</string>
     <string name="cd_add_measurement">Dodaj pomiar</string>
-    <string name="hint_fab_disabled">Pomiary można zapisywać w ciągu ±15 minut od zaplanowanego czasu.</string>
+    <string name="hint_fab_disabled">Pomiary można rejestrować w ciągu ±15 minut od zaplanowanego czasu.</string>
     <string name="cd_go_back">Wróć</string>
 
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Edytuj pomiar</string>
     <string name="dialog_title_add">Dodaj pomiar</string>
-    <string name="label_measurement_format">SYC/ROZ @TĘTNO</string>
+    <string name="label_measurement_format">SYC/ROZ @PULS</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Nieprawidłowy format. Użyj: SYC/ROZ @TĘTNO</string>
+    <string name="error_invalid_format">Nieprawidłowy format. Użyj: SYC/ROZ @PULS</string>
     <string name="error_syntax_format">Nieprawidłowy format. Użyj: 120/80 @72</string>
-    <string name="error_logic_sys_dia">Ciśnienie skurczowe musi być wyższe niż rozkurczowe</string>
-    <string name="error_range_out_of_human">Wartość spoza zakresu ludzkiego (np. 40-300)</string>
-    <string name="error_incorrect_measurements">Nieprawidłowe wymiary</string>
+    <string name="error_logic_sys_dia">Wartość górna musi być wyższa niż dolna</string>
+    <string name="error_range_out_of_human">Wartość poza ludzkim zakresem (np. 40-300)</string>
+    <string name="error_incorrect_measurements">Nieprawidłowe pomiary</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
-    <string name="dialog_measurement_slot_info">Miejsce %1$d (%2$s)</string>
-    <string name="hypertension_warning">Ostrzeżenie o nadciśnieniu</string>
+    <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
+    <string name="hypertension_warning">Ostrzeżenie o Wysokim Wyniku</string>
 
-    <!-- Search Dialog -->
-    <string name="dialog_title_search">Szukaj pomiarów</string>
-    <string name="label_search">Szukaj</string>
-    <string name="helper_search_hint">RRRR, RRRR-MM-DD lub 140 90 60</string>
-    <string name="message_no_results">Nie znaleziono wyników</string>
-    <string name="button_jump_to_date">Skocz do daty: %1$s</string>
-    <string name="label_measurement_details">Skurczowe: %1$d, Rozkurczowe: %2$d, Tętno: %3$d</string>
-    <string name="error_invalid_date">Nieprawidłowy format daty (RRRR-MM-DD)</string>
-
-    <!-- Share Dialog -->
-    <string name="dialog_title_share">Udostępnij pomiary</string>
-    <string name="label_select_date_range">Wybierz zakres dat (opcjonalnie)</string>
-    <string name="label_date_from">Od</string>
-    <string name="label_date_to">Do</string>
-    <string name="button_share_message">Udostępnij jako wiadomość</string>
-    <string name="button_export_csv">Eksportuj do CSV</string>
-    <string name="share_chooser_title">Udostępnij dziennik ciśnienia krwi</string>
-    <string name="export_chooser_title">Eksportuj CSV</string>
-
-    <!-- Settings Screen -->
-    <string name="title_settings">Ustawienia</string>
-    <string name="header_measurement_slots">Miejsca pomiarowe</string>
-    <string name="label_slot_number">Miejsce %1$d</string>
-    <string name="label_global_alarm">Globalne przypomnienia o alarmach</string>
-    <string name="label_active">Aktywny</string>
-    <string name="label_alarm">Przypomnij</string>
-    <string name="dialog_title_select_time">Wybierz czas</string>
-    <string name="dialog_title_invalid_time">Nieprawidłowy przedział czasowy</string>
-    <string name="dialog_title_delete_tracker">Usuń tracker</string>
-    <string name="dialog_message_delete_tracker">Czy na pewno chcesz usunąć tracker \"%1$s\"? Spowoduje to również usunięcie wszystkich zapisanych wartości.</string>
-    <string name="button_delete">Usuń</string>
-    <string name="error_loading_settings">Błąd podczas ładowania ustawień</string>
-
-    <!-- Exact Alarm Warning -->
-    <string name="warning_exact_alarms_title">Dokładne alarmy wyłączone</string>
-    <string name="warning_exact_alarms_body">Alarmy mogą być opóźnione do godziny. Proszę udzielić pozwolenia na precyzyjny pomiar czasu.</string>
-
-    <!-- Notifications -->
-    <string name="notification_channel_name">Przypomnienia o pomiarach</string>
-    <string name="notification_title">Czas na pomiar</string>
-    <string name="notification_message">Nadszedł czas na zapisanie ciśnienia krwi dla miejsca %1$d.</string>
-
-    <!-- Chart Screen -->
-    <string name="title_chart">Wykres ciśnienia krwi</string>
-    <string name="cd_chart">Wykres ciśnienia krwi</string>
-    <string name="button_configure">Konfiguruj</string>
-    <string name="dialog_title_chart_config">Konfiguracja wykresu</string>
-    <string name="label_select_slots">Wybierz miejsca</string>
-    <string name="label_select_types">Wybierz typy pomiarów</string>
-    <string name="button_apply">Zastosuj</string>
-    <string name="error_no_slots_selected">Proszę wybrać co najmniej jedno miejsce i jeden typ.</string>
-    <string name="error_no_data">Brak dostępnych danych</string>
-    <string name="error_no_data_in_range">Brak danych w wybranym zakresie dat</string>
-    <string name="error_failed_to_export">Nie udało się wyeksportować wykresu: %1$s</string>
-    <string name="label_chart_combined_format">%1$s - %2$s</string>
-    <string name="error_invalid_date_format">Nieprawidłowy format daty</string>
-    <string name="error_from_after_to">Data początkowa nie może być późniejsza niż końcowa</string>
-    <string name="placeholder_date">RRRR-MM-DD</string>
-    <string name="label_chart_mode_trend_by_slot">Wg slotu</string>
-    <string name="label_chart_mode_chronological">Oś czasu</string>
-    <string name="label_chart_mode_summary">Podsumowanie</string>
-    <string name="label_distribution_bar_chart">Częstotliwość (Słupkowy)</string>
-    <string name="label_distribution_pie_chart">Częstotliwość (Kołowy)</string>
-    <string name="label_date_preset_7d">Ostatnie 7 dni</string>
-    <string name="label_date_preset_30d">Ostatnie 30 dni</string>
-    <string name="label_date_preset_month">W tym miesiącu</string>
-    <string name="label_date_preset_custom">Niestandardowe</string>
-    <string name="label_all_time">Cały czas</string>
-    <string name="label_show_risk_zones">Pokaż strefy ryzyka</string>
-    <string name="label_show_rolling_average">Pokaż średnią 7-dniową</string>
-    <string name="label_bar_frequency">Częstotliwość</string>
-    <string name="label_pie_distribution">Rozkład</string>
-    <string name="label_show_slot_chips">Pokaż znaczki slotów</string>
-    <string name="label_visual_features">Funkcje wizualne</string>
-    <string name="label_filter_summary">%1$s, %2$d miejsc</string>
-    <!-- About Section -->
-    <string name="onboarding_version_label">Wersja: %1$s</string>
-    <string name="header_about">O aplikacji</string>
-    <string name="label_version">Wersja %1$s</string>
-    <string name="label_repo">Kod źródłowy (GitHub)</string>
-    <string name="label_privacy_policy">Polityka prywatności</string>
-    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/pl/privacy-policy.html</string>
-    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/pl/terms-of-service.html</string>
-    <string name="label_terms_of_service">Warunki korzystania</string>
-    <string name="button_show_onboarding">Pokaż wprowadzenie</string>
+    <!-- BP Levels -->
+    <string name="bp_level_hypotension">Niski Zakres*</string>
+    <string name="bp_level_normal">Zakres Optymalny*</string>
+    <string name="bp_level_elevated">Zakres Podwyższony*</string>
+    <string name="bp_level_high_normal">Zakres Wysoki Optymalny*</string>
+    <string name="bp_level_stage1">Zakres 1 (Wysoki)*</string>
+    <string name="bp_level_grade1">Zakres 1 (Wysoki)*</string>
+    <string name="bp_level_stage2">Zakres 2 (Bardzo Wysoki)*</string>
+    <string name="bp_level_grade2">Zakres 2 (Bardzo Wysoki)*</string>
+    <string name="bp_level_crisis">Alarm Krytyczny*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -142,39 +67,141 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
+    <string name="label_source_prefix">Źródło:</string>
     <string name="label_source_aha">Źródło: Wytyczne AHA/ACC 2017</string>
     <string name="label_source_esc">Źródło: Wytyczne ESC/ESH 2018</string>
+    <string name="classification_disclaimer">*Zakresy są podawane jako odniesienie ogólne na podstawie wytycznych zdrowia publicznego i nie stanowią diagnozy medycznej</string>
     <string name="label_classification_stats_format">%1$d pomiarów (%2$d%%)</string>
 
-    <!-- BP Levels -->
-    <string name="bp_level_hypotension">Niedociśnienie</string>
-    <string name="bp_level_normal">Prawidłowe</string>
-    <string name="bp_level_elevated">Podwyższone</string>
-    <string name="bp_level_high_normal">Wysokie prawidłowe</string>
-    <string name="bp_level_stage1">Nadciśnienie 1 stopnia</string>
-    <string name="bp_level_grade1">Nadciśnienie 1 stopnia</string>
-    <string name="bp_level_stage2">Nadciśnienie 2 stopnia</string>
-    <string name="bp_level_grade2">Nadciśnienie 2 stopnia</string>
-    <string name="bp_level_crisis">Przełom nadciśnieniowy</string>
+    <string name="header_classification_summary">Podsumowanie Zakresów</string>
+    <string name="label_classification_all_time">cały czas</string>
 
-    <string name="header_classification_guidelines">Wytyczne klasyfikacji</string>
-    <string name="label_guideline_aha_title">Amerykańskie (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Nadciśnienie od 130/80</string>
-    <string name="label_guideline_esc_title">Europejskie (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Nadciśnienie od 140/90</string>
+    <!-- Search Dialog -->
+    <string name="dialog_title_search">Szukaj pomiarów</string>
+    <string name="label_search">Szukaj</string>
+    <string name="helper_search_hint">RRRR, RRRR-MM-DD lub 140 90 60</string>
+    <string name="message_no_results">Nie znaleziono wyników</string>
+    <string name="button_jump_to_date">Skocz do daty: %1$s</string>
+    <string name="label_measurement_details">Górne: %1$d, Dolne: %2$d, Puls: %3$d</string>
+    <string name="error_invalid_date">Nieprawidłowy format daty (RRRR-MM-DD)</string>
+
+    <!-- Share Dialog -->
+    <string name="dialog_title_share">Udostępnij pomiary</string>
+    <string name="label_select_date_range">Wybierz zakres dat (opcjonalnie)</string>
+    <string name="label_date_from">Od</string>
+    <string name="label_date_to">Do</string>
+    <string name="button_share_message">Udostępnij jako wiadomość</string>
+    <string name="button_export_csv">Eksportuj do CSV</string>
+    <string name="share_chooser_title">Udostępnij dziennik ciśnienia tętniczego</string>
+    <string name="export_chooser_title">Eksportuj CSV</string>
+
+    <!-- Settings Screen -->
+    <string name="title_settings">Ustawienia</string>
+    <string name="header_measurement_slots">Sloty pomiarowe</string>
+    <string name="label_slot_number">Slot %1$d</string>
+    <string name="label_global_alarm">Globalne przypomnienia</string>
+
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Informacje o Ciśnieniu Tętniczym</string>
+    <string name="bp_info_what_is_title">Co to jest ciśnienie tętnicze?</string>
+    <string name="bp_info_what_is_desc">Siła krwi napierającej na ściany tętnic. Mierzy się ją dwiema liczbami:</string>
+    <string name="bp_info_systolic_title">Skurczowe (Górne/Pierwsza)</string>
+    <string name="bp_info_systolic_desc">Ciśnienie, gdy serce bije.</string>
+    <string name="bp_info_diastolic_title">Rozkurczowe (Dolne/Druga)</string>
+    <string name="bp_info_diastolic_desc">Ciśnienie, gdy serce odpoczywa między uderzeniami.</string>
+    <string name="bp_info_why_matters_title">Dlaczego to ważne</string>
+    <string name="bp_info_why_matters_desc">Obie liczby są ważne. Stałe wysokie ciśnienie może z czasem uszkodzić tętnice i wpływać na Twoje długoterminowe samopoczucie.</string>
+    <string name="bp_info_silent_killer_title">Osobista Świadomość</string>
+    <string name="bp_info_silent_killer_desc">Wysokie wyniki często nie dają objawów. Regularne śledzenie pomaga zrozumieć Twoje osobiste trendy.</string>
+    <string name="bp_info_when_to_see_doctor_title">Kiedy skonsultować się ze Specjalistą</string>
+    <string name="bp_info_when_to_see_doctor_desc">Jeśli Twoje wyniki są stale powyżej zakresu docelowego (np. 130/80 lub 140/90).</string>
+    <string name="bp_info_emergency_title">Sytuacje Krytyczne</string>
+    <string name="cd_bp_info">Ciśnienie Tętnicze</string>
+    <string name="label_active">Aktywny</string>
+    <string name="label_alarm">Przypomnij</string>
+    <string name="dialog_title_select_time">Wybierz godzinę</string>
+    <string name="dialog_title_invalid_time">Nieprawidłowy slot czasowy</string>
+    <string name="dialog_title_delete_tracker">Usuń tracker</string>
+    <string name="dialog_message_delete_tracker">Czy na pewno chcesz usunąć tracker \"%1$s\"? To usunie również wszystkie zapisane wartości.</string>
+    <string name="button_delete">Usuń</string>
+    <string name="error_loading_settings">Błąd ładowania ustawień</string>
+
+    <!-- Exact Alarm Warning -->
+    <string name="warning_exact_alarms_title">Dokładne alarmy wyłączone</string>
+    <string name="warning_exact_alarms_body">Alarmy mogą być opóźnione do godziny. Proszę udzielić uprawnień do dokładnego odmierzania czasu.</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Przypomnienia o pomiarach</string>
+    <string name="notification_title">Czas na pomiar</string>
+    <string name="notification_message">Czas zarejestrować wynik dla slotu %1$d.</string>
+
+    <!-- Chart Screen -->
+    <string name="title_chart">Wykres Trendów</string>
+    <string name="cd_chart">Wykres Trendów</string>
+    <string name="button_configure">Konfiguruj</string>
+    <string name="dialog_title_chart_config">Konfiguracja wykresu</string>
+    <string name="label_select_slots">Wybierz sloty</string>
+    <string name="label_select_types">Wybierz typy pomiarów</string>
+    <string name="label_select_trackers">Wybierz trackery</string>
+    <string name="button_apply">Zastosuj</string>
+    <string name="error_no_slots_selected">Wybierz co najmniej jeden slot i jeden typ.</string>
+    <string name="error_no_data">Brak dostępnych danych</string>
+    <string name="error_no_data_in_range">Brak danych w wybranym zakresie dat</string>
+    <string name="error_failed_to_export">Nie udało się wyeksportować wykresu: %1$s</string>
+    <string name="chart_disclaimer">*Wykresy służą do wizualizacji trendów i śledzenia fitnessu. Nie są przeznaczone do diagnozy ani użytku klinicznego.</string>
+    <string name="label_chart_combined_format">%1$s - %2$s</string>
+    <string name="error_invalid_date_format">Nieprawidłowy format daty</string>
+    <string name="error_from_after_to">Data „Od” nie może być późniejsza niż data „Do”</string>
+    <string name="placeholder_date">RRRR-MM-DD</string>
+    <string name="label_chart_mode_trend_by_slot">Według slotu</string>
+    <string name="label_chart_mode_chronological">Oś czasu</string>
+    <string name="label_chart_mode_summary">Podsumowanie</string>
+    <string name="label_distribution_bar_chart">Częstotliwość (Słupkowy)</string>
+    <string name="label_distribution_pie_chart">Częstotliwość (Kołowy)</string>
+    <string name="label_date_preset_7d">Ostatnie 7 dni</string>
+    <string name="label_date_preset_30d">Ostatnie 30 dni</string>
+    <string name="label_date_preset_month">Ten miesiąc</string>
+    <string name="label_date_preset_custom">Niestandardowy</string>
+    <string name="label_all_time">Cały czas</string>
+    <string name="label_show_risk_zones">Pokaż strefy ryzyka</string>
+    <string name="label_show_rolling_average">Pokaż średnią z 7 dni</string>
+    <string name="label_bar_frequency">Częstotliwość</string>
+    <string name="label_pie_distribution">Rozkład</string>
+    <string name="label_show_slot_chips">Pokaż etykiety slotów</string>
+    <string name="label_visual_features">Funkcje wizualne</string>
+    <string name="label_filter_summary">%1$s, %2$d sloty</string>
+    <string name="warning_large_date_range">Wybrano duży zakres dat. Czytelność i wydajność mogą zostać obniżone.</string>
+    <string name="onboarding_version_label">Wersja: %1$s</string>
+    <string name="header_about">O aplikacji</string>
+    <string name="label_version">Wersja %1$s</string>
+    <string name="label_repo">Kod źródłowy (GitHub)</string>
+    <string name="label_privacy_policy">Polityka prywatności</string>
+    <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/pl/privacy-policy.html</string>
+    <string name="label_terms_of_service">Regulamin</string>
+    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/pl/terms-of-service.html</string>
+    <string name="label_impressum">Impressum</string>
+    <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
+
+    <string name="label_copyright">© 2026 Iaroslav Rykhalskyi</string>
+
+    <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
     <!-- Data Management Section -->
-    <string name="header_classification_summary">Podsumowanie klasyfikacji</string>
-    <string name="label_classification_all_time">Cały czas</string>
+    <string name="header_classification_guidelines">Wytyczne klasyfikacji</string>
+    <string name="label_guideline_aha_title">Amerykańskie (AHA/ACC)</string>
+    <string name="label_guideline_aha_subtitle">Wysoki Zakres zaczyna się od 130/80</string>
+    <string name="label_guideline_esc_title">Europejskie (ESC/ESH)</string>
+    <string name="label_guideline_esc_subtitle">Wysoki Zakres zaczyna się od 140/90</string>
+
     <string name="header_data_management">Zarządzanie danymi</string>
     <string name="button_import_csv">Importuj CSV</string>
     <string name="button_delete_all_data">Usuń wszystkie dane</string>
     <string name="dialog_title_delete_all">Usuń wszystkie dane</string>
-    <string name="dialog_message_delete_all">To działanie trwale usunie wszystkie pomiary i niestandardowe trackery. Aby potwierdzić, wpisz \"%1$s\" poniżej.</string>
+    <string name="dialog_message_delete_all">To na stałe usunie wszystkie pomiary i niestandardowe trackery. Aby potwierdzić, wpisz poniżej „%1$s”.</string>
     <string name="delete_confirmation_phrase">tak, usuń</string>
     <string name="placeholder_type_confirmation">Wpisz potwierdzenie tutaj</string>
-    <string name="dialog_title_import">Importuj dane</string>
-    <string name="label_import_strategy">Obsługa kolizji (ta sama data/miejsce):</string>
+    <string name="dialog_title_import">Import danych</string>
+    <string name="label_import_strategy">Obsługa kolizji (ta sama data/slot):</string>
     <string name="option_overwrite">Nadpisz istniejące</string>
     <string name="option_skip">Pomiń (zachowaj istniejące)</string>
     <string name="message_import_success">Pomyślnie zaimportowano %1$d pomiarów.</string>
@@ -182,73 +209,48 @@
     <string name="import_chooser_title">Wybierz plik CSV</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_slide1_caption">Licznik UnderPressure</string>
-    <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia krwi i tętna, który przechowuje wszystkie dane wyłącznie na telefonie. Bez serwerów, bez zbierania danych, bez reklam, bez opłat.</string>
-    <string name="onboarding_slide2_caption">Zaplanowane i dowolne pomiary</string>
-    <string name="onboarding_slide2_description">Skonfiguruj do 4 przedziałów czasowych dla zaplanowanych pomiarów lub dodawaj pomiary w dowolnym momencie za pomocą przycisku +. Przełączaj się między widokami Zaplanowane i Wszystkie, aby zobaczyć swoje dane.</string>
+    <string name="onboarding_slide0_caption">Zastrzeżenie</string>
+    <string name="onboarding_slide0_description">Ta aplikacja jest cyfrowym dziennikiem do śledzenia trendów ciśnienia tętniczego i jest przeznaczona wyłącznie do celów informacyjnych i edukacyjnych. Nie zastępuje profesjonalnej porady, oceny ani leczenia. Nie mierzy ciśnienia krwi, nie zarządza stanami zdrowia ani nie zmienia rutyn.</string>
+    <string name="onboarding_slide1_caption">Tracker UnderPressure</string>
+    <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia tętniczego i pulsu, który przechowuje wszystkie dane tylko na Twoim telefonie. Brak serwerów, gromadzenia danych, reklam czy opłat.</string>
+    <string name="onboarding_slide2_caption">Pomiary zaplanowane i elastyczne</string>
+    <string name="onboarding_slide2_description">Ustaw do 4 slotów czasowych dla zaplanowanych pomiarów lub rejestruj je w dowolnym momencie za pomocą przycisku +. Przełączaj się między widokami Zaplanowane i Wszystkie.</string>
     <string name="onboarding_slide3_caption">Wykres pomiarów</string>
-    <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Skonfiguruj wykresy dla potrzebnych miejsc i danych.</string>
+    <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Konfiguruj wykresy dla potrzebnych slotów i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
-    <string name="onboarding_slide4_description">Możesz udostępniać dane, jeśli chcesz. W każdym innym przypadku dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnych danych telemetrycznych ani logów.</string>
+    <string name="onboarding_slide4_description">Możesz udostępnić dane, jeśli chcesz. W każdym innym przypadku Twoje dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnej telemetrii ani logów.</string>
     <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
-    <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do zaleceń lekarza.</string>
+    <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do porad Twojego specjalisty.</string>
     <string name="onboarding_slide6_caption">Niestandardowe trackery</string>
-    <string name="onboarding_slide6_description">Dodawaj niestandardowe trackery, takie jak waga, nastrój czy przyjmowanie leków do swoich pomiarów. Śledź więcej niż tylko ciśnienie krwi, aby uzyskać głębszy wgląd w swoje zdrowie.</string>
+    <string name="onboarding_slide6_description">Dodaj niestandardowe trackery, takie jak waga, nastrój lub kontrole rutyny do swoich pomiarów. Śledź więcej niż tylko jedną wartość, aby uzyskać głębszy wgląd w swoje zdrowie.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
     <string name="hint_edit_slot">Możesz zmienić wartość slotu %1$d, dotykając go.</string>
-    <string name="warning_large_date_range">Wybrano duzy zakres dat. Moze to wplynac na czytelnosc i wydajnosc.</string>
-
-    <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Skurczowe</string>
-    <string name="chart_legend_diastolic">Rozkurczowe</string>
-    <string name="chart_legend_pulse">Tętno</string>
+    <string name="hint_cannot_create_slot">Nie można teraz utworzyć slotu. Musi on być oddalony o co najmniej 30 minut od sąsiednich slotów. Użyj następnego slotu o %1$s.</string>
 
     <!-- View Mode Toggle -->
     <string name="view_scheduled">Zaplanowane</string>
     <string name="view_all">Wszystkie</string>
 
+    <!-- Chart Legend -->
+    <string name="chart_legend_systolic">Górne</string>
+    <string name="chart_legend_diastolic">Dolne</string>
+    <string name="chart_legend_pulse">Puls</string>
     <!-- Anytime Readings -->
-    <string name="label_anytime_readings">Dodatkowe</string>
-    <string name="label_anytime_reading">Pomiar dodatkowy</string>
-    <string name="label_anytime_count">%1$d dodatkowych</string>
-    <string name="hint_anytime_confirmation">Planowany pomiar jest bardzo blisko o %1$s. Zaczekać czy dodać jako dodatkowy pomiar?</string>
-    <string name="button_anytime_yes">Tak, dodatkowy</string>
-    <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Informacje o ciśnieniu krwi</string>
-    <string name="bp_info_what_is_title">Czym jest ciśnienie krwi?</string>
-    <string name="bp_info_what_is_desc">Siła, z jaką krew napiera na ściany tętnic. Mierzy się je dwiema liczbami:</string>
-    <string name="bp_info_systolic_title">Skurczowe (Górna/Pierwsza)</string>
-    <string name="bp_info_systolic_desc">Ciśnienie, gdy serce bije.</string>
-    <string name="bp_info_diastolic_title">Rozkurczowe (Dolna/Druga)</string>
-    <string name="bp_info_diastolic_desc">Ciśnienie, gdy serce odpoczywa między uderzeniami.</string>
-    <string name="bp_info_why_matters_title">Dlaczego to ważne</string>
-    <string name="bp_info_why_matters_desc">Obie liczby są krytyczne. Konsekwentnie wysokie ciśnienie może z czasem uszkodzić tętnice, prowadząc do chorób serca lub udaru.</string>
-    <string name="bp_info_silent_killer_title">"Cichy zabójca"</string>
-    <string name="bp_info_silent_killer_desc">Nadciśnienie często nie daje objawów. Regularne śledzenie to jedyny sposób, aby dowiedzieć się, czy Twoje poziomy są zdrowe.</string>
-    <string name="bp_info_when_to_see_doctor_title">Kiedy udać się do lekarza</string>
-    <string name="bp_info_when_to_see_doctor_desc">Jeśli Twoje odczyty są stale powyżej zakresu docelowego (np. 130/80 lub 140/90).</string>
-    <string name="bp_info_emergency_title">Nagły wypadek</string>
-    <string name="bp_info_emergency_desc">Jeśli osiągniesz "Przełom nadciśnieniowy" (180/120 lub wyższy), odczekaj 5 minut i zmierz ponownie. Jeśli pozostanie wysoki, natychmiast skontaktuj się ze służbami medycznymi.</string>
-    <string name="cd_bp_info">Informacje o ciśnieniu krwi</string>
-    <string name="label_source_prefix">Źródło:</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Jeśli Twoje ciśnienie krwi jest stale tak wysokie lub wyższe:</string>
-    <string name="_1_pause_and_re_test">1. Odczekaj i powtórz badanie</string>
-    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Odczekaj 5 minut, usiądź spokojnie i powtórz badanie. Jeśli nadal będzie wysokie, skonsultuj się z lekarzem.</string>
-    <string name="_2_check_for_emergency_symptoms">2. Sprawdź, czy występują objawy alarmowe</string>
-    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Jeśli masz wysokie ciśnienie krwi oraz objawy takie jak ból w klatce piersiowej, duszność, drętwienie, dezorientacja lub silny ból głowy, natychmiast wezwij pomoc medyczną.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Silne podwyższenie ciśnienia krwi (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Silne podwyższenie ciśnienia krwi (≥ 180/110)</string>
-    <string name="hint_cannot_create_slot">Nie można teraz utworzyć miejsca. Musi ono być oddalone o co najmniej 30 minut od sąsiednich miejsc. Użyj następnego miejsca o %1$s.</string>
+    <string name="label_anytime_readings">Elastyczne</string>
+    <string name="label_anytime_reading">Pomiar elastyczny</string>
+    <string name="label_anytime_count">%1$d elastycznych</string>
+    <string name="hint_anytime_confirmation">Zaplanowany pomiar jest bardzo blisko o %1$s. Czy chcesz poczekać, czy dodać jako pomiar elastyczny?</string>
+    <string name="button_anytime_yes">Tak, elastyczny</string>
     <string name="custom_trackers">Niestandardowe trackery</string>
     <string name="no_trackers_defined">Brak zdefiniowanych trackerów</string>
     <string name="weight">Waga</string>
     <string name="temperature">Temperatura</string>
     <string name="notes">Notatki</string>
-    <string name="took_medication">Przyjęto leki</string>
+    <string name="took_medication">Codzienna Rutyna Sprawdzona</string>
     <string name="add_tracker">Dodaj tracker</string>
-    <string name="back">Wróć</string>
+    <string name="back">Wstecz</string>
     <string name="button_add_default_trackers">Dodaj domyślne trackery</string>
     <string name="dialog_title_add_tracker">Dodaj nowy tracker</string>
     <string name="label_tracker_name">Nazwa (np. Waga)</string>
@@ -265,19 +267,21 @@
     <string name="invalid_number_format">Nieprawidłowy format liczby</string>
     <string name="must_be_between_and">Musi być między %1$s a %2$s</string>
     <string name="additional_info">Dodatkowe informacje</string>
-    <string name="tap_to_show_hide_custom_readings">Dotknij, aby pokazać/ukryć niestandardowe odczyty</string>
-    <string name="active_custom_reading_s">%1$d aktywny(e) niestandardowy(e) odczyt(y)</string>
+    <string name="tap_to_show_hide_custom_readings">Dotknij, aby pokazać/ukryć własne odczyty</string>
+    <string name="active_custom_reading_s">%1$d aktywnych własnych odczytów</string>
+
+    <!-- Import Mapping -->
     <string name="import_title">Importuj trackery</string>
-    <string name="import_description">Znaleźliśmy niestandardowe trackery w Twoim pliku CSV. Wybierz, jak mają zostać zmapowane:</string>
+    <string name="import_description">Znaleźliśmy niestandardowe trackery w Twoim pliku CSV. Wybierz, jak je przypisać:</string>
     <string name="overwrite_existing_data">Nadpisz istniejące dane</string>
-    <string name="overwrite_hint">Jeśli nie zaznaczono, istniejące pomiary dla tej samej daty/godziny zostaną pominięte.</string>
+    <string name="overwrite_hint">Jeśli odznaczone, istniejące odczyty dla tej samej daty/godziny zostaną pominięte.</string>
     <string name="button_start_import">Rozpocznij import</string>
-    <string name="mapping_map_to_existing">Mapuj do istniejącego</string>
+    <string name="mapping_map_to_existing">Przypisz do istniejącego</string>
     <string name="mapping_create_new">Utwórz nowy tracker</string>
     <string name="mapping_skip">Pomiń tę kolumnę</string>
     <string name="placeholder_select_tracker">Wybierz tracker</string>
-    <string name="label_impressum">Impressum</string>
-    <string name="url_impressum">https://rykhalskyi.github.io/underpressure/de/impressum.html</string>
-    <string name="contact_developer">Skontaktuj się z programistą</string>
-    <string name="label_select_trackers">Wybierz trackery</string>
+    <string name="contact_developer">Skontaktuj się z deweloperem</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Zgodnie ze standardowymi wytycznymi zdrowotnymi, odczyty w tym zakresie są uważane za znacznie podwyższone.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Zakresy Referencyjne (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Zakresy Referencyjne (≥ 180/110)</string>
 </resources>

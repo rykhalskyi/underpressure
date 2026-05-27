@@ -33,23 +33,23 @@
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Formato no válido. Use: SIS/DIA @PULSO</string>
     <string name="error_syntax_format">Formato no válido. Use: 120/80 @72</string>
-    <string name="error_logic_sys_dia">La sistólica debe ser mayor que la diastólica</string>
+    <string name="error_logic_sys_dia">El valor superior debe ser mayor que el inferior</string>
     <string name="error_range_out_of_human">Valor fuera del rango humano (p. ej., 40-300)</string>
     <string name="error_incorrect_measurements">Mediciones incorrectas</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Intervalo %1$d (%2$s)</string>
-    <string name="hypertension_warning">Advertencia de hipertensión</string>
+    <string name="hypertension_warning">Alerta de Lectura Alta</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Hipotensión</string>
-    <string name="bp_level_normal">Normal</string>
-    <string name="bp_level_elevated">Elevada</string>
-    <string name="bp_level_high_normal">Alta normal</string>
-    <string name="bp_level_stage1">Hipertensión Etapa 1</string>
-    <string name="bp_level_grade1">Hipertensión Grado 1</string>
-    <string name="bp_level_stage2">Hipertensión Etapa 2</string>
-    <string name="bp_level_grade2">Hipertensión Grado 2</string>
-    <string name="bp_level_crisis">Crisis hipertensiva</string>
+    <string name="bp_level_hypotension">Rango Bajo*</string>
+    <string name="bp_level_normal">Rango Óptimo*</string>
+    <string name="bp_level_elevated">Rango Elevado*</string>
+    <string name="bp_level_high_normal">Rango Óptimo Alto*</string>
+    <string name="bp_level_stage1">Rango 1 (Alto)*</string>
+    <string name="bp_level_grade1">Rango 1 (Alto)*</string>
+    <string name="bp_level_stage2">Rango 2 (Muy Alto)*</string>
+    <string name="bp_level_grade2">Rango 2 (Muy Alto)*</string>
+    <string name="bp_level_crisis">Alerta Crítica*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -70,10 +70,11 @@
     <string name="label_source_prefix">Fuente:</string>
     <string name="label_source_aha">Fuente: Guías AHA/ACC 2017</string>
     <string name="label_source_esc">Fuente: Guías ESC/ESH 2018</string>
+    <string name="classification_disclaimer">*Los rangos se proporcionan como una referencia general basada en las directrices de salud pública y no son un diagnóstico médico</string>
     <string name="label_classification_stats_format">%1$d mediciones (%2$d%%)</string>
 
-    <string name="header_classification_summary">Resumen de clasificación</string>
-    <string name="label_classification_all_time">Desde siempre</string>
+    <string name="header_classification_summary">Resumen de Rangos</string>
+    <string name="label_classification_all_time">todo el tiempo</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Buscar mediciones</string>
@@ -81,7 +82,7 @@
     <string name="helper_search_hint">AAAA, AAAA-MM-DD o 140 90 60</string>
     <string name="message_no_results">No se encontraron resultados</string>
     <string name="button_jump_to_date">Ir a la fecha: %1$s</string>
-    <string name="label_measurement_details">Sistólica: %1$d, Diastólica: %2$d, Pulso: %3$d</string>
+    <string name="label_measurement_details">Superior: %1$d, Inferior: %2$d, Pulso: %3$d</string>
     <string name="error_invalid_date">Formato de fecha no válido (AAAA-MM-DD)</string>
 
     <!-- Share Dialog -->
@@ -101,22 +102,21 @@
     <string name="label_global_alarm">Recordatorios de alarma globales</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Información sobre presión arterial</string>
+    <string name="dialog_title_bp_info">Información de Presión Arterial</string>
     <string name="bp_info_what_is_title">¿Qué es la presión arterial?</string>
     <string name="bp_info_what_is_desc">La fuerza de la sangre empujando contra las paredes de las arterias. Se mide con dos números:</string>
-    <string name="bp_info_systolic_title">Sistólica (superior/primero)</string>
+    <string name="bp_info_systolic_title">Sistólica (Superior/Primero)</string>
     <string name="bp_info_systolic_desc">Presión cuando late tu corazón.</string>
-    <string name="bp_info_diastolic_title">Diastólica (inferior/segundo)</string>
+    <string name="bp_info_diastolic_title">Diastólica (Inferior/Segundo)</string>
     <string name="bp_info_diastolic_desc">Presión cuando tu corazón descansa entre latidos.</string>
     <string name="bp_info_why_matters_title">Por qué es importante</string>
-    <string name="bp_info_why_matters_desc">Ambos números son críticos. Una presión alta constante puede dañar las arterias con el tiempo, lo que lleva a enfermedades cardíacas o un derrame cerebral.</string>
-    <string name="bp_info_silent_killer_title">El «asesino silencioso»</string>
-    <string name="bp_info_silent_killer_desc">La hipertensión a menudo no presenta síntomas. El seguimiento regular es la única forma de saber si tus niveles son saludables.</string>
-    <string name="bp_info_when_to_see_doctor_title">Cuándo ver a un médico</string>
+    <string name="bp_info_why_matters_desc">Ambos números son importantes. Una presión alta constante puede dañar las arterias con el tiempo e influir en tu bienestar a largo plazo.</string>
+    <string name="bp_info_silent_killer_title">Conciencia Personal</string>
+    <string name="bp_info_silent_killer_desc">Las lecturas altas a menudo no presentan síntomas. El seguimiento regular ayuda a comprender tus tendencias personales.</string>
+    <string name="bp_info_when_to_see_doctor_title">Cuándo ver a un Especialista</string>
     <string name="bp_info_when_to_see_doctor_desc">Si tus lecturas están constantemente por encima de tu rango objetivo (p. ej., 130/80 o 140/90).</string>
-    <string name="bp_info_emergency_title">Emergencia</string>
-    <string name="bp_info_emergency_desc">Si alcanzas una «crisis hipertensiva» (180/120 o superior), espera 5 minutos y vuelve a realizar la prueba. Si sigue siendo alta, contacta inmediatamente con los servicios médicos.</string>
-    <string name="cd_bp_info">Información sobre presión arterial</string>
+    <string name="bp_info_emergency_title">Situaciones Críticas</string>
+    <string name="cd_bp_info">Presión Arterial</string>
     <string name="label_active">Activo</string>
     <string name="label_alarm">Recordar</string>
     <string name="dialog_title_select_time">Seleccionar hora</string>
@@ -133,11 +133,11 @@
     <!-- Notifications -->
     <string name="notification_channel_name">Recordatorios de medición</string>
     <string name="notification_title">Hora de medir</string>
-    <string name="notification_message">Es hora de registrar tu presión arterial para el intervalo %1$d.</string>
+    <string name="notification_message">Es hora de registrar tu lectura para el intervalo %1$d.</string>
 
     <!-- Chart Screen -->
-    <string name="title_chart">Gráfico de presión arterial</string>
-    <string name="cd_chart">Gráfico de presión arterial</string>
+    <string name="title_chart">Gráfico de Tendencias</string>
+    <string name="cd_chart">Gráfico de Tendencias</string>
     <string name="button_configure">Configurar</string>
     <string name="dialog_title_chart_config">Configuración del gráfico</string>
     <string name="label_select_slots">Seleccionar intervalos</string>
@@ -148,6 +148,7 @@
     <string name="error_no_data">No hay datos disponibles</string>
     <string name="error_no_data_in_range">No hay datos en el rango de fechas seleccionado</string>
     <string name="error_failed_to_export">Error al exportar gráfico: %1$s</string>
+    <string name="chart_disclaimer">*Los gráficos son para visualización de tendencias y seguimiento de fitness. No están destinados al diagnóstico o uso clínico.</string>
     <string name="label_chart_combined_format">%1$s - %2$s</string>
     <string name="error_invalid_date_format">Formato de fecha no válido</string>
     <string name="error_from_after_to">La fecha de inicio no puede ser posterior a la fecha de fin</string>
@@ -161,7 +162,7 @@
     <string name="label_date_preset_30d">Últimos 30 días</string>
     <string name="label_date_preset_month">Este mes</string>
     <string name="label_date_preset_custom">Personalizado</string>
-    <string name="label_all_time">Desde siempre</string>
+    <string name="label_all_time">Todo el tiempo</string>
     <string name="label_show_risk_zones">Mostrar zonas de riesgo</string>
     <string name="label_show_rolling_average">Mostrar media de 7 días</string>
     <string name="label_bar_frequency">Frecuencia</string>
@@ -186,9 +187,9 @@
     <!-- Data Management Section -->
     <string name="header_classification_guidelines">Guías de clasificación</string>
     <string name="label_guideline_aha_title">Americana (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">La hipertensión comienza en 130/80</string>
+    <string name="label_guideline_aha_subtitle">El Rango Alto comienza en 130/80</string>
     <string name="label_guideline_esc_title">Europea (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">La hipertensión comienza en 140/90</string>
+    <string name="label_guideline_esc_subtitle">El Rango Alto comienza en 140/90</string>
 
     <string name="header_data_management">Gestión de datos</string>
     <string name="button_import_csv">Importar CSV</string>
@@ -206,18 +207,20 @@
     <string name="import_chooser_title">Seleccionar archivo CSV</string>
 
     <!-- Onboarding -->
+    <string name="onboarding_slide0_caption">Aviso de Seguimiento</string>
+    <string name="onboarding_slide0_description">Esta aplicación es un cuaderno digital para seguir la evolución de la presión arterial y está destinada únicamente a fines informativos y educativos. No sustituye el consejo profesional, la evaluación ni el tratamiento. No mide la presión arterial, no gestiona condiciones de salud ni modifica rutinas.</string>
     <string name="onboarding_slide1_caption">Rastreador UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure es un rastreador simple y privado de presión arterial y pulso que mantiene todos tus datos solo en tu teléfono. Sin servidores, sin recopilación de datos, sin anuncios, sin pagos.</string>
-    <string name="onboarding_slide2_caption">Lecturas programadas &amp; en cualquier momento</string>
+    <string name="onboarding_slide2_caption">Lecturas programadas &amp; flexibles</string>
     <string name="onboarding_slide2_description">Configura hasta 4 intervalos de tiempo para lecturas programadas, o registra lecturas en cualquier momento usando el botón +. Alterna entre las vistas Programado y Todo para ver tus datos.</string>
     <string name="onboarding_slide3_caption">Gráfico de mediciones</string>
     <string name="onboarding_slide3_description">Puedes ver y compartir gráficos de mediciones. Configura gráficos para los intervalos y datos que necesites.</string>
     <string name="onboarding_slide4_caption">Compartir datos</string>
     <string name="onboarding_slide4_description">Puedes compartir datos si lo deseas. En cualquier otro caso, tus datos no saldrán de tu teléfono. Tampoco recopilamos telemetría ni registros.</string>
     <string name="onboarding_slide5_caption">Guías de clasificación</string>
-    <string name="onboarding_slide5_description">UnderPressure es compatible con las guías de clasificación ACC/AHA y ESC/ESH. Cambia entre ellas en los ajustes para que coincidan con los consejos de tu médico.</string>
+    <string name="onboarding_slide5_description">UnderPressure es compatible con las guías de clasificación ACC/AHA y ESC/ESH. Cambia entre ellas en los ajustes para que coincidan con los consejos de tu especialista.</string>
     <string name="onboarding_slide6_caption">Rastreadores personalizados</string>
-    <string name="onboarding_slide6_description">Añade rastreadores personalizados como peso, estado de ánimo o medicamentos a tus mediciones. Rastrea más que solo la presión arterial para obtener información más profunda sobre tu salud.</string>
+    <string name="onboarding_slide6_description">Añade rastreadores personalizados como peso, estado de ánimo o chequeos de rutina a tus mediciones. Rastrea más que solo un valor para obtener información más profunda sobre tu salud.</string>
     <string name="button_onboarding_close">Comenzar</string>
 
     <!-- Guidance Popup -->
@@ -229,28 +232,21 @@
     <string name="view_all">Todo</string>
 
     <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Sistólica</string>
-    <string name="chart_legend_diastolic">Diastólica</string>
+    <string name="chart_legend_systolic">Superior</string>
+    <string name="chart_legend_diastolic">Inferior</string>
     <string name="chart_legend_pulse">Pulso</string>
     <!-- Anytime Readings -->
-    <string name="label_anytime_readings">En cualquier momento</string>
-    <string name="label_anytime_reading">Lectura en cualquier momento</string>
-    <string name="label_anytime_count">%1$d en cualquier momento</string>
-    <string name="hint_anytime_confirmation">La medición programada es muy cercana a las %1$s. ¿Deberíamos esperar o añadir como una lectura en cualquier momento?</string>
-    <string name="button_anytime_yes">Sí, en cualquier momento</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Si tu presión arterial es constantemente así de alta o más:</string>
-    <string name="_1_pause_and_re_test">1. Haz una pausa y vuelve a probar</string>
-    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Espera 5 minutos, siéntate tranquilamente y vuelve a probar. Si sigue siendo alta, consulta a tu médico.</string>
-    <string name="_2_check_for_emergency_symptoms">2. Comprueba si hay síntomas de emergencia</string>
-    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Si tienes presión arterial alta y síntomas como dolor en el pecho, dificultad para respirar, entumecimiento, confusión o dolor de cabeza intenso, busca atención médica de emergencia inmediatamente.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Elevación severa de presión arterial (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Elevación severa de presión arterial (≥ 180/110)</string>
+    <string name="label_anytime_readings">Flexible</string>
+    <string name="label_anytime_reading">Lectura flexible</string>
+    <string name="label_anytime_count">%1$d flexible</string>
+    <string name="hint_anytime_confirmation">La medición programada es muy cercana a las %1$s. ¿Deberíamos esperar o añadir como una lectura flexible?</string>
+    <string name="button_anytime_yes">Sí, flexible</string>
     <string name="custom_trackers">Rastreadores personalizados</string>
     <string name="no_trackers_defined">No hay rastreadores definidos</string>
     <string name="weight">Peso</string>
     <string name="temperature">Temperatura</string>
     <string name="notes">Notas</string>
-    <string name="took_medication">Tomó medicación</string>
+    <string name="took_medication">Chequeo de Rutina Diaria</string>
     <string name="add_tracker">Añadir rastreador</string>
     <string name="back">Atrás</string>
     <string name="button_add_default_trackers">Añadir rastreadores predeterminados</string>
@@ -259,7 +255,7 @@
     <string name="label_tracker_type">Tipo</string>
     <string name="tracker_type_number">Número</string>
     <string name="tracker_type_boolean">sí/no</string>
-    <string name="tracker_type_text">Texto</string>
+    <string name="tracker_type_text">Text</string>
     <string name="label_tracker_unit">Unidad (p. ej. kg)</string>
     <string name="label_tracker_min">Mín</string>
     <string name="label_tracker_max">Máx</string>
@@ -283,4 +279,7 @@
     <string name="mapping_skip">Saltar esta columna</string>
     <string name="placeholder_select_tracker">Seleccionar rastreador</string>
     <string name="contact_developer">Contactar al desarrollador</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">De acuerdo con las pautas de salud estándar, las lecturas en este rango se consideran severamente elevadas.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Rangos de Referencia (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Rangos de Referencia (≥ 180/110)</string>
 </resources>

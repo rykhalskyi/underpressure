@@ -9,7 +9,7 @@
     <string name="button_confirm">Confirmer</string>
     <string name="button_clear">Effacer</string>
     <string name="button_close">Fermer</string>
-    <string name="button_grant">ACCORDER</string>
+    <string name="button_grant">AUTORISER</string>
 
     <!-- Table Screen Headers -->
     <string name="header_date">Date</string>
@@ -19,11 +19,11 @@
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Basculer les alarmes</string>
-    <string name="cd_search">Rechercher</string>
+    <string name="cd_search">Recherche</string>
     <string name="cd_share">Partager</string>
     <string name="cd_settings">Ouvrir les paramètres</string>
     <string name="cd_add_measurement">Ajouter une mesure</string>
-    <string name="hint_fab_disabled">Les mesures peuvent être enregistrées dans les ±15 minutes suivant un créneau prévu.</string>
+    <string name="hint_fab_disabled">Les mesures peuvent être enregistrées dans les ±15 minutes d\'un créneau prévu.</string>
     <string name="cd_go_back">Retour</string>
 
     <!-- Measurement Edit Dialog -->
@@ -31,25 +31,25 @@
     <string name="dialog_title_add">Ajouter une mesure</string>
     <string name="label_measurement_format">SYS/DIA @POULS</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Format invalide. Utilisez: SYS/DIA @POULS</string>
-    <string name="error_syntax_format">Format invalide. Utilisez: 120/80 @72</string>
+    <string name="error_invalid_format">Format invalide. Utilisez : SYS/DIA @POULS</string>
+    <string name="error_syntax_format">Format invalide. Utilisez : 120/80 @72</string>
     <string name="error_logic_sys_dia">La systolique doit être supérieure à la diastolique</string>
-    <string name="error_range_out_of_human">Valeur hors de la plage humaine (ex. 40-300)</string>
+    <string name="error_range_out_of_human">Valeur hors de la plage humaine (ex. : 40-300)</string>
     <string name="error_incorrect_measurements">Mesures incorrectes</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Créneau %1$d (%2$s)</string>
-    <string name="hypertension_warning">Avertissement d\'hypertension</string>
+    <string name="hypertension_warning">Alerte de Lecture Haute</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Hypotension</string>
-    <string name="bp_level_normal">Normal</string>
-    <string name="bp_level_elevated">Élevé</string>
-    <string name="bp_level_high_normal">Haut Normal</string>
-    <string name="bp_level_stage1">Hypertension Stade 1</string>
-    <string name="bp_level_grade1">Hypertension Grade 1</string>
-    <string name="bp_level_stage2">Hypertension Stade 2</string>
-    <string name="bp_level_grade2">Hypertension Grade 2</string>
-    <string name="bp_level_crisis">Crise hypertensive</string>
+    <string name="bp_level_hypotension">Zone Basse*</string>
+    <string name="bp_level_normal">Zone Optimale*</string>
+    <string name="bp_level_elevated">Zone Élevée*</string>
+    <string name="bp_level_high_normal">Zone Optimale Haute*</string>
+    <string name="bp_level_stage1">Zone 1 (Haute)*</string>
+    <string name="bp_level_grade1">Zone 1 (Haute)*</string>
+    <string name="bp_level_stage2">Zone 2 (Très Haute)*</string>
+    <string name="bp_level_grade2">Zone 2 (Très Haute)*</string>
+    <string name="bp_level_crisis">Alerte Critique*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -67,28 +67,29 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
-    <string name="label_source_prefix">Source:</string>
-    <string name="label_source_aha">Source: Lignes directrices AHA/ACC 2017</string>
-    <string name="label_source_esc">Source: Lignes directrices ESC/ESH 2018</string>
-    <string name="label_classification_stats_format">%1$d mesures (%2$d%%)</string>
+    <string name="label_source_prefix">Source :</string>
+    <string name="label_source_aha">Source : Directives AHA/ACC 2017</string>
+    <string name="label_source_esc">Source : Directives ESC/ESH 2018</string>
+    <string name="classification_disclaimer">*Les zones sont fournies à titre de référence générale sur la base des directives de santé publique et ne constituent pas un diagnostic médical</string>
+    <string name="label_classification_stats_format">%1$d mesures (%2$d %%)</string>
 
-    <string name="header_classification_summary">Résumé de la classification</string>
-    <string name="label_classification_all_time">Depuis toujours</string>
+    <string name="header_classification_summary">Résumé des Zones</string>
+    <string name="label_classification_all_time">tout le temps</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Rechercher des mesures</string>
     <string name="label_search">Rechercher</string>
     <string name="helper_search_hint">AAAA, AAAA-MM-JJ ou 140 90 60</string>
     <string name="message_no_results">Aucun résultat trouvé</string>
-    <string name="button_jump_to_date">Aller à la date: %1$s</string>
-    <string name="label_measurement_details">Systolique: %1$d, Diastolique: %2$d, Pouls: %3$d</string>
+    <string name="button_jump_to_date">Aller à la date : %1$s</string>
+    <string name="label_measurement_details">Supérieur : %1$d, Inférieur : %2$d, Pouls : %3$d</string>
     <string name="error_invalid_date">Format de date invalide (AAAA-MM-JJ)</string>
 
     <!-- Share Dialog -->
     <string name="dialog_title_share">Partager les mesures</string>
-    <string name="label_select_date_range">Sélectionner la plage de dates (Optionnel)</string>
-    <string name="label_date_from">De</string>
-    <string name="label_date_to">À</string>
+    <string name="label_select_date_range">Sélectionner une plage de dates (facultatif)</string>
+    <string name="label_date_from">Du</string>
+    <string name="label_date_to">Au</string>
     <string name="button_share_message">Partager par message</string>
     <string name="button_export_csv">Exporter en CSV</string>
     <string name="share_chooser_title">Partager le journal de pression artérielle</string>
@@ -101,73 +102,73 @@
     <string name="label_global_alarm">Rappels d\'alarme globaux</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Information sur la pression artérielle</string>
+    <string name="dialog_title_bp_info">Informations de Pression Artérielle</string>
     <string name="bp_info_what_is_title">Qu\'est-ce que la pression artérielle ?</string>
-    <string name="bp_info_what_is_desc">La force du sang poussant contre les parois des artères. Elle est mesurée avec deux nombres :</string>
-    <string name="bp_info_systolic_title">Systolique (Haut/Premier)</string>
+    <string name="bp_info_what_is_desc">La force du sang poussant contre les parois des artères. Elle est mesurée par deux chiffres :</string>
+    <string name="bp_info_systolic_title">Systolique (Supérieur/Premier)</string>
     <string name="bp_info_systolic_desc">Pression lorsque votre cœur bat.</string>
-    <string name="bp_info_diastolic_title">Diastolique (Bas/Second)</string>
+    <string name="bp_info_diastolic_title">Diastolique (Inférieur/Second)</string>
     <string name="bp_info_diastolic_desc">Pression lorsque votre cœur se repose entre les battements.</string>
     <string name="bp_info_why_matters_title">Pourquoi c\'est important</string>
-    <string name="bp_info_why_matters_desc">Les deux nombres sont critiques. Une pression élevée constante peut endommager les artères au fil du temps, entraînant des maladies cardiaques ou un AVC.</string>
-    <string name="bp_info_silent_killer_title">Le « tueur silencieux »</string>
-    <string name="bp_info_silent_killer_desc">L\'hypertension n\'a souvent aucun symptôme. Un suivi régulier est le seul moyen de savoir si vos niveaux sont sains.</string>
-    <string name="bp_info_when_to_see_doctor_title">Quand consulter un médecin</string>
-    <string name="bp_info_when_to_see_doctor_desc">Si vos lectures sont constamment au-dessus de votre plage cible (ex. 130/80 ou 140/90).</string>
-    <string name="bp_info_emergency_title">Urgence</string>
-    <string name="bp_info_emergency_desc">Si vous atteignez une « crise hypertensive » (180/120 ou plus), attendez 5 minutes et refaites le test. Si cela reste élevé, contactez immédiatement les services médicaux.</string>
-    <string name="cd_bp_info">Information sur la pression artérielle</string>
+    <string name="bp_info_why_matters_desc">Les deux chiffres sont importants. Une pression élevée constante peut endommager les artères avec le temps et influer sur votre bien-être à long terme.</string>
+    <string name="bp_info_silent_killer_title">Conscience Personnelle</string>
+    <string name="bp_info_silent_killer_desc">Les lectures hautes n\'ont souvent aucun symptôme. Le suivi régulier aide à comprendre vos tendances personnelles.</string>
+    <string name="bp_info_when_to_see_doctor_title">Quand consulter un Spécialiste</string>
+    <string name="bp_info_when_to_see_doctor_desc">Si vos mesures sont constamment au-dessus de votre zone cible (ex. : 130/80 ou 140/90).</string>
+    <string name="bp_info_emergency_title">Situations Critiques</string>
+    <string name="cd_bp_info">Pression Artérielle</string>
     <string name="label_active">Actif</string>
     <string name="label_alarm">Rappel</string>
     <string name="dialog_title_select_time">Sélectionner l\'heure</string>
     <string name="dialog_title_invalid_time">Créneau horaire invalide</string>
-    <string name="dialog_title_delete_tracker">Supprimer le suivi</string>
-    <string name="dialog_message_delete_tracker">Êtes-vous sûr de vouloir supprimer le suivi \"%1$s\" ? Cela supprimera également toutes ses valeurs enregistrées.</string>
+    <string name="dialog_title_delete_tracker">Supprimer le traqueur</string>
+    <string name="dialog_message_delete_tracker">Voulez-vous vraiment supprimer le traqueur \"%1$s\" ? Cela supprimera également toutes ses valeurs enregistrées.</string>
     <string name="button_delete">Supprimer</string>
     <string name="error_loading_settings">Erreur lors du chargement des paramètres</string>
 
     <!-- Exact Alarm Warning -->
-    <string name="warning_exact_alarms_title">Alarmes précises désactivées</string>
+    <string name="warning_exact_alarms_title">Alarmes exactes désactivées</string>
     <string name="warning_exact_alarms_body">Les alarmes peuvent être retardées jusqu\'à une heure. Veuillez accorder la permission pour une synchronisation précise.</string>
 
     <!-- Notifications -->
     <string name="notification_channel_name">Rappels de mesure</string>
-    <string name="notification_title">Temps pour une mesure</string>
-    <string name="notification_message">Il est temps d\'enregistrer votre pression artérielle pour le créneau %1$d.</string>
+    <string name="notification_title">Heure de la mesure</string>
+    <string name="notification_message">Il est temps d\'enregistrer votre lecture pour le créneau %1$d.</string>
 
     <!-- Chart Screen -->
-    <string name="title_chart">Graphique de pression artérielle</string>
-    <string name="cd_chart">Graphique de pression artérielle</string>
+    <string name="title_chart">Graphique de Tendance</string>
+    <string name="cd_chart">Graphique de Tendance</string>
     <string name="button_configure">Configurer</string>
     <string name="dialog_title_chart_config">Configuration du graphique</string>
     <string name="label_select_slots">Sélectionner les créneaux</string>
     <string name="label_select_types">Sélectionner les types de mesure</string>
-    <string name="label_select_trackers">Sélectionner les suivis</string>
+    <string name="label_select_trackers">Sélectionner les traqueurs</string>
     <string name="button_apply">Appliquer</string>
     <string name="error_no_slots_selected">Veuillez sélectionner au moins un créneau et un type.</string>
     <string name="error_no_data">Aucune donnée disponible</string>
     <string name="error_no_data_in_range">Aucune donnée dans la plage de dates sélectionnée</string>
     <string name="error_failed_to_export">Échec de l\'exportation du graphique : %1$s</string>
+    <string name="chart_disclaimer">*Les graphiques sont fournis pour la visualisation des tendances et le suivi de la condition physique. Ils ne sont pas destinés au diagnostic ou à un usage clinique.</string>
     <string name="label_chart_combined_format">%1$s - %2$s</string>
     <string name="error_invalid_date_format">Format de date invalide</string>
     <string name="error_from_after_to">La date de début ne peut pas être après la date de fin</string>
     <string name="placeholder_date">AAAA-MM-JJ</string>
     <string name="label_chart_mode_trend_by_slot">Par créneau</string>
-    <string name="label_chart_mode_chronological">Chronologique</string>
+    <string name="label_chart_mode_chronological">Chronologie</string>
     <string name="label_chart_mode_summary">Résumé</string>
-    <string name="label_distribution_bar_chart">Fréquence (Barres)</string>
-    <string name="label_distribution_pie_chart">Fréquence (Cercle)</string>
+    <string name="label_distribution_bar_chart">Fréquence (Barre)</string>
+    <string name="label_distribution_pie_chart">Fréquence (Camembert)</string>
     <string name="label_date_preset_7d">7 derniers jours</string>
     <string name="label_date_preset_30d">30 derniers jours</string>
     <string name="label_date_preset_month">Ce mois-ci</string>
     <string name="label_date_preset_custom">Personnalisé</string>
-    <string name="label_all_time">Depuis toujours</string>
+    <string name="label_all_time">Tout le temps</string>
     <string name="label_show_risk_zones">Afficher les zones de risque</string>
     <string name="label_show_rolling_average">Afficher la moyenne sur 7 jours</string>
     <string name="label_bar_frequency">Fréquence</string>
-    <string name="label_pie_distribution">Distribution</string>
-    <string name="label_show_slot_chips">Afficher les puces des créneaux</string>
-    <string name="label_visual_features">Caractéristiques visuelles</string>
+    <string name="label_pie_distribution">Répartition</string>
+    <string name="label_show_slot_chips">Afficher les jetons de créneau</string>
+    <string name="label_visual_features">Fonctionnalités visuelles</string>
     <string name="label_filter_summary">%1$s, %2$d créneaux</string>
     <string name="warning_large_date_range">Grande plage de dates sélectionnée. La lisibilité et les performances peuvent être affectées.</string>
     <string name="onboarding_version_label">Version : %1$s</string>
@@ -176,111 +177,111 @@
     <string name="label_repo">Code source (GitHub)</string>
     <string name="label_privacy_policy">Politique de confidentialité</string>
     <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/fr/privacy-policy.html</string>
-    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/fr/terms-of-service.html</string>
     <string name="label_terms_of_service">Conditions d\'utilisation</string>
+    <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/fr/terms-of-service.html</string>
     <string name="label_impressum">Impressum</string>
     <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
+
+    <string name="label_copyright">© 2026 Iaroslav Rykhalskyi</string>
 
     <string name="button_show_onboarding">Afficher l\'onboarding</string>
 
     <!-- Data Management Section -->
     <string name="header_classification_guidelines">Directives de classification</string>
     <string name="label_guideline_aha_title">Américaine (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">L\'hypertension commence à 130/80</string>
+    <string name="label_guideline_aha_subtitle">La Zone Haute commence à 130/80</string>
     <string name="label_guideline_esc_title">Européenne (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">L\'hypertension commence à 140/90</string>
+    <string name="label_guideline_esc_subtitle">La Zone Haute commence à 140/90</string>
 
     <string name="header_data_management">Gestion des données</string>
-    <string name="button_import_csv">Importer un CSV</string>
+    <string name="button_import_csv">Importer CSV</string>
     <string name="button_delete_all_data">Supprimer toutes les données</string>
     <string name="dialog_title_delete_all">Supprimer toutes les données</string>
-    <string name="dialog_message_delete_all">Ceci supprimera définitivement toutes les mesures et suivis personnalisés. Pour confirmer, tapez \"%1$s\" ci-dessous.</string>
+    <string name="dialog_message_delete_all">Cela supprimera définitivement toutes les mesures et traqueurs personnalisés. Pour confirmer, veuillez taper « %1$s » ci-dessous.</string>
     <string name="delete_confirmation_phrase">oui, supprimer</string>
     <string name="placeholder_type_confirmation">Tapez la confirmation ici</string>
     <string name="dialog_title_import">Importer des données</string>
     <string name="label_import_strategy">Gestion des collisions (même date/créneau) :</string>
     <string name="option_overwrite">Écraser l\'existant</string>
-    <string name="option_skip">Ignorer (garder l\'existant)</string>
+    <string name="option_skip">Passer (conserver l\'existant)</string>
     <string name="message_import_success">%1$d mesures importées avec succès.</string>
     <string name="message_import_error">Échec de l\'importation : %1$s</string>
-    <string name="import_chooser_title">Sélectionner un fichier CSV</string>
+    <string name="import_chooser_title">Sélectionner le fichier CSV</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_slide1_caption">Suivi UnderPressure</string>
-    <string name="onboarding_slide1_description">UnderPressure est un outil de suivi simple et privé de la pression artérielle et du pouls qui garde toutes vos données uniquement sur votre téléphone. Pas de serveurs, pas de collecte de données, pas de publicités, pas de paiements.</string>
-    <string name="onboarding_slide2_caption">Lectures planifiées &amp; à tout moment</string>
-    <string name="onboarding_slide2_description">Configurez jusqu\'à 4 créneaux horaires pour des lectures planifiées, ou enregistrez des lectures à tout moment en utilisant le bouton +. Basculez entre les vues Planifié et Tout pour voir vos données.</string>
+    <string name="onboarding_slide0_caption">Avis de Suivi</string>
+    <string name="onboarding_slide0_description">Cette application est un journal numérique pour suivre l\'évolution de la pression artérielle et est destinée à des fins d\'information et d\'éducation uniquement. Elle ne remplace pas un conseil professionnel, une évaluation ou un traitement. Elle ne mesure pas la pression artérielle, ne gère pas les conditions de santé et ne modifie pas les routines.</string>
+    <string name="onboarding_slide1_caption">Traqueur UnderPressure</string>
+    <string name="onboarding_slide1_description">UnderPressure est un traqueur simple et privé de pression artérielle et de pouls qui garde toutes vos données uniquement sur votre téléphone. Pas de serveurs, pas de collecte de données, pas de publicités, pas de paiements.</string>
+    <string name="onboarding_slide2_caption">Lectures programmées et flexibles</string>
+    <string name="onboarding_slide2_description">Configurez jusqu\'à 4 créneaux horaires pour des lectures programmées, ou enregistrez des lectures à tout moment à l\'aide du bouton +. Basculez entre les vues Programmé et Tout pour voir vos données.</string>
     <string name="onboarding_slide3_caption">Graphique des mesures</string>
     <string name="onboarding_slide3_description">Vous pouvez voir et partager des graphiques de mesures. Configurez les graphiques pour les créneaux et les données dont vous avez besoin.</string>
-    <string name="onboarding_slide4_caption">Partager des données</string>
-    <string name="onboarding_slide4_description">Vous pouvez partager des données si vous le souhaitez. Dans tous les autres cas, vos données ne quitteront pas votre téléphone. Nous ne collectons pas non plus de télémétrie ou de journaux.</string>
+    <string name="onboarding_slide4_caption">Partager les données</string>
+    <string name="onboarding_slide4_description">Vous pouvez partager vos données si vous le souhaitez. Dans tous les autres cas, vos données ne quitteront pas votre téléphone. Nous ne collectons aucune télémétrie ni aucun journal non plus.</string>
     <string name="onboarding_slide5_caption">Directives de classification</string>
-    <string name="onboarding_slide5_description">UnderPressure prend en charge les directives de classification ACC/AHA et ESC/ESH. Basculez entre elles dans les paramètres pour correspondre aux conseils de votre médecin.</string>
-    <string name="onboarding_slide6_caption">Suivis personnalisés</string>
-    <string name="onboarding_slide6_description">Ajoutez des suivis personnalisés comme le poids, l\'humeur ou les médicaments à vos mesures. Suivez plus que la simple pression artérielle pour obtenir des informations plus approfondies sur votre santé.</string>
+    <string name="onboarding_slide5_description">UnderPressure prend en charge les directives de classification ACC/AHA et ESC/ESH. Basculez entre elles dans les paramètres pour correspondre aux conseils de votre spécialiste.</string>
+    <string name="onboarding_slide6_caption">Traqueurs personnalisés</string>
+    <string name="onboarding_slide6_description">Ajoutez des traqueurs personnalisés comme le poids, l\'humeur ou des contrôles de routine à vos mesures. Suivez plus d\'une seule valeur pour obtenir des informations plus approfondies sur votre bien-être.</string>
     <string name="button_onboarding_close">Commencer</string>
 
     <!-- Guidance Popup -->
-    <string name="hint_edit_slot">Vous pouvez modifier la valeur du créneau %1$d en appuyant dessus.</string>
-    <string name="hint_cannot_create_slot">Impossible de créer un créneau maintenant. Il doit être à au moins 30 minutes des créneaux voisins. Utilisez le créneau suivant à %1$s.</string>
+    <string name="hint_edit_slot">Vous pouvez modifier la valeur du créneau %1$d en tapant dessus.</string>
+    <string name="hint_cannot_create_slot">Impossible de créer un créneau maintenant. Il doit être séparé d\'au moins 30 minutes des créneaux voisins. Utilisez le prochain créneau à %1$s.</string>
 
     <!-- View Mode Toggle -->
-    <string name="view_scheduled">Planifié</string>
+    <string name="view_scheduled">Programmé</string>
     <string name="view_all">Tout</string>
 
     <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Systolique</string>
-    <string name="chart_legend_diastolic">Diastolique</string>
+    <string name="chart_legend_systolic">Supérieur</string>
+    <string name="chart_legend_diastolic">Inférieur</string>
     <string name="chart_legend_pulse">Pouls</string>
     <!-- Anytime Readings -->
-    <string name="label_anytime_readings">À tout moment</string>
-    <string name="label_anytime_reading">Lecture à tout moment</string>
-    <string name="label_anytime_count">%1$d à tout moment</string>
-    <string name="hint_anytime_confirmation">La mesure planifiée est très proche à %1$s. Devons-nous attendre ou ajouter comme une lecture à tout moment ?</string>
-    <string name="button_anytime_yes">Oui, à tout moment</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Si votre pression artérielle est constamment aussi élevée ou plus :</string>
-    <string name="_1_pause_and_re_test">1. Faites une pause et refaites le test</string>
-    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Attendez 5 minutes, asseyez-vous tranquillement et refaites le test. Si elle reste élevée, consultez votre médecin.</string>
-    <string name="_2_check_for_emergency_symptoms">2. Vérifiez les symptômes d\'urgence</string>
-    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Si vous avez une tension artérielle élevée et des symptômes comme des douleurs thoraciques, un essoufflement, un engourdissement, une confusion ou un mal de tête sévère, consultez immédiatement un médecin d\'urgence.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Élévation sévère de la tension artérielle (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Élévation sévère de la tension artérielle (≥ 180/110)</string>
-    <string name="custom_trackers">Suivis personnalisés</string>
-    <string name="no_trackers_defined">Aucun suivi défini</string>
+    <string name="label_anytime_readings">Flexible</string>
+    <string name="label_anytime_reading">Lecture flexible</string>
+    <string name="label_anytime_count">%1$d flexible</string>
+    <string name="hint_anytime_confirmation">La mesure programmée est très proche à %1$s. Devons-nous attendre ou ajouter en tant que lecture flexible ?</string>
+    <string name="button_anytime_yes">Oui, flexible</string>
+    <string name="custom_trackers">Traqueurs personnalisés</string>
+    <string name="no_trackers_defined">Aucun traqueur défini</string>
     <string name="weight">Poids</string>
     <string name="temperature">Température</string>
     <string name="notes">Notes</string>
-    <string name="took_medication">Pris des médicaments</string>
-    <string name="add_tracker">Ajouter un suivi</string>
+    <string name="took_medication">Contrôle de Routine Quotidienne</string>
+    <string name="add_tracker">Ajouter un traqueur</string>
     <string name="back">Retour</string>
-    <string name="button_add_default_trackers">Ajouter des suivis par défaut</string>
-    <string name="dialog_title_add_tracker">Ajouter un nouveau suivi</string>
-    <string name="label_tracker_name">Nom (ex. Poids)</string>
+    <string name="button_add_default_trackers">Ajouter les traqueurs par défaut</string>
+    <string name="dialog_title_add_tracker">Ajouter un nouveau traqueur</string>
+    <string name="label_tracker_name">Nom (ex. : Poids)</string>
     <string name="label_tracker_type">Type</string>
     <string name="tracker_type_number">Nombre</string>
     <string name="tracker_type_boolean">oui/non</string>
     <string name="tracker_type_text">Texte</string>
-    <string name="label_tracker_unit">Unité (ex. kg)</string>
+    <string name="label_tracker_unit">Unité (ex. : kg)</string>
     <string name="label_tracker_min">Min</string>
     <string name="label_tracker_max">Max</string>
     <string name="button_add">Ajouter</string>
     <string name="button_edit">Modifier</string>
-    <string name="dialog_title_edit_tracker">Modifier le suivi</string>
+    <string name="dialog_title_edit_tracker">Modifier le traqueur</string>
     <string name="invalid_number_format">Format de nombre invalide</string>
     <string name="must_be_between_and">Doit être entre %1$s et %2$s</string>
     <string name="additional_info">Informations supplémentaires</string>
-    <string name="tap_to_show_hide_custom_readings">Appuyez pour afficher/masquer les mesures personnalisées</string>
-    <string name="active_custom_reading_s">%1$d mesure(s) personnalisée(s) active(s)</string>
+    <string name="tap_to_show_hide_custom_readings">Appuyez pour afficher/masquer les lectures personnalisées</string>
+    <string name="active_custom_reading_s">%1$d lecture(s) personnalisée(s) active(s)</string>
 
     <!-- Import Mapping -->
-    <string name="import_title">Importer des suivis</string>
-    <string name="import_description">Nous avons trouvé des suivis personnalisés dans votre CSV. Choisissez comment les mapper :</string>
+    <string name="import_title">Importer des traqueurs</string>
+    <string name="import_description">Nous avons trouvé des traqueurs personnalisés dans votre CSV. Choisissez comment les mapper :</string>
     <string name="overwrite_existing_data">Écraser les données existantes</string>
-    <string name="overwrite_hint">Si non coché, les mesures existantes pour la même date/heure seront ignorées.</string>
+    <string name="overwrite_hint">Si décoché, les lectures existantes pour la même date/heure seront ignorées.</string>
     <string name="button_start_import">Démarrer l\'importation</string>
-    <string name="mapping_map_to_existing">Mapper à l\'existant</string>
-    <string name="mapping_create_new">Créer un nouveau suivi</string>
-    <string name="mapping_skip">Ignorer cette colonne</string>
-    <string name="placeholder_select_tracker">Sélectionner un suivi</string>
+    <string name="mapping_map_to_existing">Mapper vers l\'existant</string>
+    <string name="mapping_create_new">Créer un nouveau traqueur</string>
+    <string name="mapping_skip">Passer cette colonne</string>
+    <string name="placeholder_select_tracker">Sélectionner un traqueur</string>
     <string name="contact_developer">Contacter le développeur</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Conformément aux directives de santé standard, les relevés dans cette plage sont considérés comme sévèrement élevés.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Plages de Référence (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Plages de Référence (≥ 180/110)</string>
 </resources>

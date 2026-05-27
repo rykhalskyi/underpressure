@@ -33,12 +33,12 @@
     <string name="placeholder_measurement">120/80 @72</string>
     <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
     <string name="error_syntax_format">Невірний формат. Використовуйте: 120/80 @72</string>
-    <string name="error_logic_sys_dia">Систолічний тиск має бути вищим за діастолічний</string>
+    <string name="error_logic_sys_dia">Верхнє значення має бути вищим за нижнє</string>
     <string name="error_range_out_of_human">Значення поза межами норми (наприклад, 40-300)</string>
     <string name="error_incorrect_measurements">Некоректні вимірювання</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Слот %1$d (%2$s)</string>
-    <string name="hypertension_warning">Попередження про гіпертонію</string>
+    <string name="hypertension_warning">Сигнал про високий показник</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Пошук вимірювань</string>
@@ -46,7 +46,7 @@
     <string name="helper_search_hint">РРРР, РРРР-ММ-ДД або 140 90 60</string>
     <string name="message_no_results">Результатів не знайдено</string>
     <string name="button_jump_to_date">Перейти до дати: %1$s</string>
-    <string name="label_measurement_details">Систолічний: %1$d, Діастолічний: %2$d, Пульс: %3$d</string>
+    <string name="label_measurement_details">Верхнє: %1$d, Нижнє: %2$d, Пульс: %3$d</string>
     <string name="error_invalid_date">Невірний формат дати (РРРР-ММ-ДД)</string>
 
     <!-- Share Dialog -->
@@ -56,7 +56,7 @@
     <string name="label_date_to">По</string>
     <string name="button_share_message">Поділитися як повідомлення</string>
     <string name="button_export_csv">Експортувати в CSV</string>
-    <string name="share_chooser_title">Поділитися журналом тиску</string>
+    <string name="share_chooser_title">Поділитися журналом артеріального тиску</string>
     <string name="export_chooser_title">Експорт CSV</string>
 
     <!-- Settings Screen -->
@@ -64,6 +64,23 @@
     <string name="header_measurement_slots">Слоти вимірювань</string>
     <string name="label_slot_number">Слот %1$d</string>
     <string name="label_global_alarm">Глобальні нагадування</string>
+
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Інформація про Артеріальний Тиск</string>
+    <string name="bp_info_what_is_title">Що таке артеріальний тиск?</string>
+    <string name="bp_info_what_is_desc">Сила, з якою кров тисне на стінки артерій. Вимірюється двома числами:</string>
+    <string name="bp_info_systolic_title">Систолічний (Верхнє/Перше)</string>
+    <string name="bp_info_systolic_desc">Тиск, коли ваше серце б\'ється.</string>
+    <string name="bp_info_diastolic_title">Діастолічний (Нижнє/Друге)</string>
+    <string name="bp_info_diastolic_desc">Тиск, коли ваше серце відпочиває між ударами.</string>
+    <string name="bp_info_why_matters_title">Чому це важливо</string>
+    <string name="bp_info_why_matters_desc">Обидва числа важливі. Постійно високий тиск може з часом пошкодити артерії та вплинути на ваше довгострокове благополуччя.</string>
+    <string name="bp_info_silent_killer_title">Особиста обізнаність</string>
+    <string name="bp_info_silent_killer_desc">Високі показники часто протікають безсимптомно. Регулярне відстеження допомагає розуміти особисті тенденції.</string>
+    <string name="bp_info_when_to_see_doctor_title">Коли звернутися до спеціаліста</string>
+    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище цільового діапазону (наприклад, 130/80 або 140/90).</string>
+    <string name="bp_info_emergency_title">Критичні ситуації</string>
+    <string name="cd_bp_info">Артеріальний Тиск</string>
     <string name="label_active">Активно</string>
     <string name="label_alarm">Нагадати</string>
     <string name="dialog_title_select_time">Вибрати час</string>
@@ -80,20 +97,22 @@
     <!-- Notifications -->
     <string name="notification_channel_name">Нагадування про вимірювання</string>
     <string name="notification_title">Час для вимірювання</string>
-    <string name="notification_message">Настав час записати ваш артеріальний тиск для слота %1$d.</string>
+    <string name="notification_message">Настав час записати ваш показник для слота %1$d.</string>
 
     <!-- Chart Screen -->
-    <string name="title_chart">Графік артеріального тиску</string>
-    <string name="cd_chart">Графік артеріального тиску</string>
+    <string name="title_chart">Графік тенденцій</string>
+    <string name="cd_chart">Графік тенденцій</string>
     <string name="button_configure">Налаштувати</string>
     <string name="dialog_title_chart_config">Конфігурація графіка</string>
     <string name="label_select_slots">Виберіть слоти</string>
     <string name="label_select_types">Виберіть типи вимірювань</string>
+    <string name="label_select_trackers">Виберіть трекери</string>
     <string name="button_apply">Застосувати</string>
     <string name="error_no_slots_selected">Будь ласка, виберіть принаймні один слот і один тип.</string>
     <string name="error_no_data">Дані відсутні</string>
     <string name="error_no_data_in_range">Дані у вибраному діапазоні дат відсутні</string>
     <string name="error_failed_to_export">Не вдалося експортувати графік: %1$s</string>
+    <string name="chart_disclaimer">*Графіки наведені для візуалізації тенденцій та фітнес-трекінгу. Вони не призначені для діагностики або клінічного використання.</string>
     <string name="label_chart_combined_format">%1$s - %2$s</string>
     <string name="error_invalid_date_format">Невірний формат дати</string>
     <string name="error_from_after_to">Дата \'З\' не може бути пізніше дати \'По\'</string>
@@ -142,28 +161,29 @@
 
     <string name="label_source_aha">Джерело: Рекомендації AHA/ACC 2017</string>
     <string name="label_source_esc">Джерело: Рекомендації ESC/ESH 2018</string>
+    <string name="classification_disclaimer">*Класифікації надаються як загальна довідка на основі рекомендацій у сфері охорони здоров’я та не є медичним діагнозом</string>
     <string name="label_classification_stats_format">%1$d вимірювань (%2$d%%)</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Гіпотонія</string>
-    <string name="bp_level_normal">Нормальний</string>
-    <string name="bp_level_elevated">Підвищений</string>
-    <string name="bp_level_high_normal">Високий нормальний</string>
-    <string name="bp_level_stage1">Гіпертензія 1 ст.</string>
-    <string name="bp_level_grade1">Гіпертензія 1 ст.</string>
-    <string name="bp_level_stage2">Гіпертензія 2 ст.</string>
-    <string name="bp_level_grade2">Гіпертензія 2 ст.</string>
-    <string name="bp_level_crisis">Гіпертонічний криз</string>
+    <string name="bp_level_hypotension">Низький діапазон*</string>
+    <string name="bp_level_normal">Оптимальний діапазон*</string>
+    <string name="bp_level_elevated">Підвищений діапазон*</string>
+    <string name="bp_level_high_normal">Високий оптимальний діапазон*</string>
+    <string name="bp_level_stage1">Діапазон 1 (Високий)*</string>
+    <string name="bp_level_grade1">Діапазон 1 (Високий)*</string>
+    <string name="bp_level_stage2">Діапазон 2 (Дуже високий)*</string>
+    <string name="bp_level_grade2">Діапазон 2 (Дуже високий)*</string>
+    <string name="bp_level_crisis">Критичний сигнал*</string>
 
     <string name="header_classification_guidelines">Рекомендації з класифікації</string>
     <string name="label_guideline_aha_title">Американські (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Гіпертензія від 130/80</string>
+    <string name="label_guideline_aha_subtitle">Високий діапазон від 130/80</string>
     <string name="label_guideline_esc_title">Європейські (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Гіпертензія від 140/90</string>
+    <string name="label_guideline_esc_subtitle">Високий діапазон від 140/90</string>
 
     <!-- Data Management Section -->
-    <string name="header_classification_summary">Зведення класифікації</string>
-    <string name="label_classification_all_time">За весь час</string>
+    <string name="header_classification_summary">Зведення діапазонів</string>
+    <string name="label_classification_all_time">за весь час</string>
     <string name="header_data_management">Керування даними</string>
     <string name="button_import_csv">Імпортувати CSV</string>
     <string name="button_delete_all_data">Видалити всі дані</string>
@@ -172,7 +192,7 @@
     <string name="delete_confirmation_phrase">так, видалити</string>
     <string name="placeholder_type_confirmation">Введіть підтвердження тут</string>
     <string name="dialog_title_import">Імпорт даних</string>
-    <string name="label_import_strategy">Обробка колізій (однакова дата/слот):</string>
+    <string name="label_import_strategy">Обробка колізій (одинакова дата/слот):</string>
     <string name="option_overwrite">Перезаписати існуючі</string>
     <string name="option_skip">Пропустити (залишити існуючі)</string>
     <string name="message_import_success">Успішно імпортовано %1$d вимірювань.</string>
@@ -180,18 +200,20 @@
     <string name="import_chooser_title">Виберіть CSV файл</string>
 
     <!-- Onboarding -->
+    <string name="onboarding_slide0_caption">Застереження</string>
+    <string name="onboarding_slide0_description">Цей застосунок є цифровим журналом для відстеження динаміки показників та призначений лише для інформаційних і освітніх цілей. Він не замінює професійну консультацію, оцінку чи лікування. Застосунок не вимірює тиск, не керує станом здоров\'я та не змінює звички.</string>
     <string name="onboarding_slide1_caption">Трекер UnderPressure</string>
     <string name="onboarding_slide1_description">UnderPressure — це простий і приватний трекер артеріального тиску та пульсу, який зберігає всі ваші дані лише на вашому телефоні. Жодних серверів, збору даних, реклами чи платежів.</string>
     <string name="onboarding_slide2_caption">Заплановані та довільні вимірювання</string>
-    <string name="onboarding_slide2_description">Налаштуйте до 4 часових слотів для запланованих вимірювань або додавайте вимірювання в будь-який час за допомогою кнопки +. Перемикайтеся між переглядами «Заплановані» та «Всі», щоб переглянути дані.</string>
+    <string name="onboarding_slide2_description">Налаштуйте до 4 часових слотів для запланованих вимірювань або додавайте вимірювання в будь-який час за допомогою кнопки +. Перемикайтеся між переглядами «Заплановані» та «Всі».</string>
     <string name="onboarding_slide3_caption">Графік вимірювань</string>
     <string name="onboarding_slide3_description">Ви можете переглядати та ділитися графіками вимірювань. Налаштуйте графіки для потрібних слотів і даних.</string>
     <string name="onboarding_slide4_caption">Поділитися даними</string>
     <string name="onboarding_slide4_description">Ви можете поділитися даними, якщо хочете. В інших випадках ваші дані не залишать ваш телефон. Ми також не збираємо жодної телеметрії чи журналів.</string>
     <string name="onboarding_slide5_caption">Рекомендації щодо класифікації</string>
-    <string name="onboarding_slide5_description">UnderPressure підтримує рекомендації щодо класифікації як ACC/AHA, так і ESC/ESH. Перемикайтеся між ними в налаштуваннях, щоб вони відповідали порадам вашого лікаря.</string>
+    <string name="onboarding_slide5_description">UnderPressure підтримує рекомендації щодо класифікації як ACC/AHA, так і ESC/ESH. Перемикайтеся між ними в налаштуваннях, щоб вони відповідали порадам вашого спеціаліста.</string>
     <string name="onboarding_slide6_caption">Користувацькі трекери</string>
-    <string name="onboarding_slide6_description">Додавайте користувацькі трекери, такі як вага, настрій або прийом ліків, до своїх вимірювань. Відстежуйте більше, ніж просто артеріальний тиск, щоб отримати глибше розуміння свого здоров\'я.</string>
+    <string name="onboarding_slide6_description">Додавайте користувацькі трекери, такі як вага, настрій або перевірки рутини, до своїх вимірювань. Відстежуйте більше, ніж просто один показник для глибшого розуміння здоров\'я.</string>
     <string name="button_onboarding_close">Розпочати</string>
 
     <!-- Guidance Popup -->
@@ -203,38 +225,18 @@
     <string name="view_all">Всі</string>
 
     <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Систолічний</string>
-    <string name="chart_legend_diastolic">Діастолічний</string>
+    <string name="chart_legend_systolic">Верхнє значення</string>
+    <string name="chart_legend_diastolic">Нижнє значення</string>
     <string name="chart_legend_pulse">Пульс</string>
     <!-- Anytime Readings -->
-    <string name="label_anytime_readings">Позапланові</string>
-    <string name="label_anytime_reading">Позапланове вимірювання</string>
-    <string name="label_anytime_count">%1$d позапланових</string>
-    <string name="hint_anytime_confirmation">Заплановане вимірювання зовсім близько о %1$s. Зачекаємо чи додати як позапланове?</string>
-    <string name="button_anytime_yes">Так, позапланово</string>
+    <string name="label_anytime_readings">Гнучкі</string>
+    <string name="label_anytime_reading">Гнучке вимірювання</string>
+    <string name="label_anytime_count">%1$d гнучких</string>
+    <string name="hint_anytime_confirmation">Заплановане вимірювання зовсім близько о %1$s. Зачекаємо чи додати як гнучке?</string>
+    <string name="button_anytime_yes">Так, гнучко</string>
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Інформація про артеріальний тиск</string>
-    <string name="bp_info_what_is_title">Що таке артеріальний тиск?</string>
-    <string name="bp_info_what_is_desc">Сила, з якою кров тисне на стінки артерій. Вимірюється двома числами:</string>
-    <string name="bp_info_systolic_title">Систолічний (Верхній/Перший)</string>
-    <string name="bp_info_systolic_desc">Тиск, коли ваше серце б\'ється.</string>
-    <string name="bp_info_diastolic_title">Діастолічний (Нижній/Другий)</string>
-    <string name="bp_info_diastolic_desc">Тиск, коли ваше серце відпочиває між ударами.</string>
-    <string name="bp_info_why_matters_title">Чому це важливо</string>
-    <string name="bp_info_why_matters_desc">Обидва числа критично важливі. Постійно високий тиск може з часом пошкодити артерії, що призведе до хвороб серця або інсульту.</string>
-    <string name="bp_info_silent_killer_title">\"Тихий вбивця\"</string>
-    <string name="bp_info_silent_killer_desc">Гіпертонія часто протікає безсимптомно. Регулярне відстеження — єдиний спосіб дізнатися, чи здорові ваші показники.</string>
-    <string name="bp_info_when_to_see_doctor_title">Коли звернутися до лікаря</string>
-    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище цільового діапазону (наприклад, 130/80 або 140/90).</string>
-    <string name="bp_info_emergency_title">Надзвичайна ситуація</string>
-    <string name="bp_info_emergency_desc">Якщо ви досягли \"Гіпертонічного кризу\" (180/120 або вище), зачекайте 5 хвилин і переміряйте. Якщо тиск залишається високим, негайно зв\'яжіться з екстреними службами.</string>
-    <string name="cd_bp_info">Інформація про артеріальний тиск</string>
     <string name="label_source_prefix">Джерело:</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Якщо ваш артеріальний тиск постійно такий же високий або вищий:</string>
-    <string name="_1_pause_and_re_test">1. Зробіть паузу та повторіть замірювання</string>
-    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Зачекайте 5 хвилин, посидьте спокійно та повторіть замірювання. Якщо тиск залишається високим, зверніться до лікаря.</string>
-    <string name="_2_check_for_emergency_symptoms">2. Перевірте наявність екстрених симптомів</string>
-    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Якщо у вас високий тиск та такі симптоми, як біль у грудях, задишка, оніміння, сплутаність свідомості або сильний головний біль, негайно зверніться за екстреною медичною допомогою.</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Якщо ваш артеріальний тиск постійно такий самий високий або вищий:</string>
     <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильне підвищення артеріального тиску (> 180/120)]]></string>
     <string name="severe_blood_pressure_elevation_180_110">Сильне підвищення артеріального тиску (≥ 180/110)</string>
     <string name="custom_trackers">Користувацькі трекери</string>
@@ -242,7 +244,7 @@
     <string name="weight">Вага</string>
     <string name="temperature">Температура</string>
     <string name="notes">Нотатки</string>
-    <string name="took_medication">Прийом ліків</string>
+    <string name="took_medication">Щоденна рутина виконана</string>
     <string name="add_tracker">Додати трекер</string>
     <string name="back">Назад</string>
     <string name="button_add_default_trackers">Додати стандартні трекери</string>
@@ -251,7 +253,7 @@
     <string name="label_tracker_type">Тип</string>
     <string name="tracker_type_number">Число</string>
     <string name="tracker_type_boolean">так/ні</string>
-    <string name="tracker_type_text">Текст</string>
+    <string name="tracker_type_text">Text</string>
     <string name="label_tracker_unit">Одиниця вим. (наприклад, кг)</string>
     <string name="label_tracker_min">Мін</string>
     <string name="label_tracker_max">Макс</string>
@@ -278,7 +280,6 @@
     <string name="contact_developer">Зв’язатися з розробником</string>
     <string name="url_privacy_policy">https://rykhalskyi.github.io/underpressure/uk/privacy-policy.html</string>
     <string name="url_terms_of_service">https://rykhalskyi.github.io/underpressure/uk/terms-of-service.html</string>
-    <string name="label_select_trackers">Вибрати трекери</string>
     <string name="warning_large_date_range">Вибрано великий діапазон дат. Це може вплинути на читабельність і продуктивність.</string>
 
 </resources>

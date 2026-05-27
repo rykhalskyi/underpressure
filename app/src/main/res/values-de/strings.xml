@@ -38,7 +38,43 @@
     <string name="error_incorrect_measurements">Fehlerhafte Messwerte</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
-    <string name="hypertension_warning">Bluthochdruck-Warnung</string>
+    <string name="hypertension_warning">Hoher Messwert-Alarm</string>
+
+    <!-- BP Levels -->
+    <string name="bp_level_hypotension">Niedriger Bereich*</string>
+    <string name="bp_level_normal">Optimaler Bereich*</string>
+    <string name="bp_level_elevated">Erhöhter Bereich*</string>
+    <string name="bp_level_high_normal">Hoher optimaler Bereich*</string>
+    <string name="bp_level_stage1">Bereich 1 (Hoch)*</string>
+    <string name="bp_level_grade1">Bereich 1 (Hoch)*</string>
+    <string name="bp_level_stage2">Bereich 2 (Sehr hoch)*</string>
+    <string name="bp_level_grade2">Bereich 2 (Sehr hoch)*</string>
+    <string name="bp_level_crisis">Kritischer Alarm*</string>
+
+    <!-- BP Ranges AHA -->
+    <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_aha_normal">&lt; 120 / &lt; 80</string>
+    <string name="bp_range_aha_elevated">120-129 / &lt; 80</string>
+    <string name="bp_range_aha_stage1">130-139 / 80-89</string>
+    <string name="bp_range_aha_stage2">≥ 140 / ≥ 90</string>
+    <string name="bp_range_aha_crisis">≥ 180 / ≥ 120</string>
+
+    <!-- BP Ranges ESC -->
+    <string name="bp_range_esc_hypotension">&lt; 90 / &lt; 60</string>
+    <string name="bp_range_esc_normal">&lt; 130 / &lt; 85</string>
+    <string name="bp_range_esc_elevated">130-139 / 85-89</string>
+    <string name="bp_range_esc_stage1">140-159 / 90-99</string>
+    <string name="bp_range_esc_stage2">160-179 / 100-109</string>
+    <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
+
+    <string name="label_source_prefix">Quelle:</string>
+    <string name="label_source_aha">Quelle: AHA/ACC 2017 Richtlinien</string>
+    <string name="label_source_esc">Quelle: ESC/ESH 2018 Richtlinien</string>
+    <string name="classification_disclaimer">*Bereiche dienen als allgemeiner Referenzwert basierend auf Richtlinien des öffentlichen Gesundheitswesens und stellen keine medizinische Diagnose dar</string>
+    <string name="label_classification_stats_format">%1$d Messungen (%2$d%%)</string>
+
+    <string name="header_classification_summary">Bereichszusammenfassung</string>
+    <string name="label_classification_all_time">Gesamtzeit</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Messungen suchen</string>
@@ -46,7 +82,7 @@
     <string name="helper_search_hint">JJJJ, JJJJ-MM-TT oder 140 90 60</string>
     <string name="message_no_results">Keine Ergebnisse gefunden</string>
     <string name="button_jump_to_date">Zum Datum springen: %1$s</string>
-    <string name="label_measurement_details">Systolisch: %1$d, Diastolisch: %2$d, Puls: %3$d</string>
+    <string name="label_measurement_details">Oberer: %1$d, Unterer: %2$d, Puls: %3$d</string>
     <string name="error_invalid_date">Ungültiges Datumsformat (JJJJ-MM-TT)</string>
 
     <!-- Share Dialog -->
@@ -64,6 +100,23 @@
     <string name="header_measurement_slots">Messzeitfenster</string>
     <string name="label_slot_number">Slot %1$d</string>
     <string name="label_global_alarm">Globale Alarmerinnerungen</string>
+
+    <!-- Blood Pressure Info Dialog -->
+    <string name="dialog_title_bp_info">Blutdruck-Informationen</string>
+    <string name="bp_info_what_is_title">Was ist Blutdruck?</string>
+    <string name="bp_info_what_is_desc">Die Kraft, mit der das Blut gegen die Arterienwände drückt. Er wird mit zwei Zahlen gemessen:</string>
+    <string name="bp_info_systolic_title">Systolisch (Oben/Erste)</string>
+    <string name="bp_info_systolic_desc">Druck, wenn Ihr Herz schlägt.</string>
+    <string name="bp_info_diastolic_title">Diastolisch (Unten/Zweite)</string>
+    <string name="bp_info_diastolic_desc">Druck, wenn Ihr Herz zwischen den Schlägen ruht.</string>
+    <string name="bp_info_why_matters_title">Warum das wichtig ist</string>
+    <string name="bp_info_why_matters_desc">Beide Zahlen sind wichtig. Ein konstant hoher Druck kann die Arterien mit der Zeit schädigen und die langfristige Wellness beeinflussen.</string>
+    <string name="bp_info_silent_killer_title">Persönliches Bewusstsein</string>
+    <string name="bp_info_silent_killer_desc">Hohe Messwerte haben oft keine Symptome. Regelmäßiges Tracking hilft Ihnen, Ihre persönlichen Trends zu verstehen.</string>
+    <string name="bp_info_when_to_see_doctor_title">Wann Sie einen Spezialisten aufsuchen sollten</string>
+    <string name="bp_info_when_to_see_doctor_desc">Wenn Ihre Messwerte konstant über Ihrem Zielbereich liegen (z. B. 130/80 oder 140/90).</string>
+    <string name="bp_info_emergency_title">Kritische Situationen</string>
+    <string name="cd_bp_info">Blutdruck-Informationen</string>
     <string name="label_active">Aktiv</string>
     <string name="label_alarm">Erinnern</string>
     <string name="dialog_title_select_time">Zeit auswählen</string>
@@ -80,11 +133,11 @@
     <!-- Notifications -->
     <string name="notification_channel_name">Messung-Erinnerungen</string>
     <string name="notification_title">Zeit für die Messung</string>
-    <string name="notification_message">Es ist Zeit, Ihren Blutdruck für Slot %1$d aufzuzeichnen.</string>
+    <string name="notification_message">Es ist Zeit, Ihren Messwert für Slot %1$d aufzuzeichnen.</string>
 
     <!-- Chart Screen -->
-    <string name="title_chart">Blutdruckdiagramm</string>
-    <string name="cd_chart">Blutdruckdiagramm</string>
+    <string name="title_chart">Trend-Diagramm</string>
+    <string name="cd_chart">Trend-Diagramm</string>
     <string name="button_configure">Konfigurieren</string>
     <string name="dialog_title_chart_config">Diagrammkonfiguration</string>
     <string name="label_select_slots">Zeitfenster auswählen</string>
@@ -94,6 +147,7 @@
     <string name="error_no_data">Keine Daten verfügbar</string>
     <string name="error_no_data_in_range">Keine Daten im ausgewählten Zeitraum verfügbar</string>
     <string name="error_failed_to_export">Diagramm konnte nicht exportiert werden: %1$s</string>
+    <string name="chart_disclaimer">*Diagramme dienen der Trendvisualisierung und dem Fitness-Tracking. Nicht für die medizinische Diagnose oder klinische Verwendung vorgesehen.</string>
     <string name="label_chart_combined_format">%1$s - %2$s</string>
     <string name="error_invalid_date_format">Ungültiges Datumsformat</string>
     <string name="error_from_after_to">Das Startdatum darf nicht nach dem Enddatum liegen</string>
@@ -127,64 +181,33 @@
     <string name="label_impressum">Impressum</string>
     <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
 
-    <string name="button_show_onboarding">Einführung anzeigen</string>
-
-    <!-- BP Ranges AHA -->
-    <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
-    <string name="bp_range_aha_normal">&lt; 120 / &lt; 80</string>
-    <string name="bp_range_aha_elevated">120-129 / &lt; 80</string>
-    <string name="bp_range_aha_stage1">130-139 / 80-89</string>
-    <string name="bp_range_aha_stage2">≥ 140 / ≥ 90</string>
-    <string name="bp_range_aha_crisis">≥ 180 / ≥ 120</string>
-
-    <!-- BP Ranges ESC -->
-    <string name="bp_range_esc_hypotension">&lt; 90 / &lt; 60</string>
-    <string name="bp_range_esc_normal">&lt; 130 / &lt; 85</string>
-    <string name="bp_range_esc_elevated">130-139 / 85-89</string>
-    <string name="bp_range_esc_stage1">140-159 / 90-99</string>
-    <string name="bp_range_esc_stage2">160-179 / 100-109</string>
-    <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
-
-    <string name="label_source_aha">Quelle: AHA/ACC 2017 Richtlinien</string>
-    <string name="label_source_esc">Quelle: ESC/ESH 2018 Richtlinien</string>
-    <string name="label_classification_stats_format">%1$d Messungen (%2$d%%)</string>
-
-    <!-- BP Levels -->
-    <string name="bp_level_hypotension">Hypotonie</string>
-    <string name="bp_level_normal">Normal</string>
-    <string name="bp_level_elevated">Erhöht</string>
-    <string name="bp_level_high_normal">Hoch Normal</string>
-    <string name="bp_level_stage1">Hypertonie Stadium 1</string>
-    <string name="bp_level_grade1">Hypertonie Grad 1</string>
-    <string name="bp_level_stage2">Hypertonie Stadium 2</string>
-    <string name="bp_level_grade2">Hypertonie Grad 2</string>
-    <string name="bp_level_crisis">Hypertensive Krise</string>
-
     <string name="header_classification_guidelines">Klassifizierungsrichtlinien</string>
     <string name="label_guideline_aha_title">Amerikanisch (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Hypertonie beginnt bei 130/80</string>
+    <string name="label_guideline_aha_subtitle">Hoher Bereich beginnt bei 130/80</string>
     <string name="label_guideline_esc_title">Europäisch (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Hypertonie beginnt bei 140/90</string>
+    <string name="label_guideline_esc_subtitle">Hoher Bereich beginnt bei 140/90</string>
 
-    <!-- Data Management Section -->
-    <string name="header_classification_summary">Klassifizierungsübersicht</string>
-    <string name="label_classification_all_time">Gesamt</string>
     <string name="header_data_management">Datenverwaltung</string>
     <string name="button_import_csv">CSV importieren</string>
     <string name="button_delete_all_data">Alle Daten löschen</string>
     <string name="dialog_title_delete_all">Alle Daten löschen</string>
-    <string name="dialog_message_delete_all">Dies löscht dauerhaft alle Messungen und benutzerdefinierten Tracker. Zur Bestätigung bitte "%1$s" eingeben.</string>
+    <string name="dialog_message_delete_all">Dies löscht dauerhaft alle Messungen und benutzerdefinierten Tracker. Um zu bestätigen, geben Sie bitte \"%1$s\" unten ein.</string>
     <string name="delete_confirmation_phrase">ja, löschen</string>
     <string name="placeholder_type_confirmation">Bestätigung hier eingeben</string>
     <string name="dialog_title_import">Daten importieren</string>
-    <string name="label_import_strategy">Umgang mit Kollisionen (gleiches Datum/Slot):</string>
+    <string name="label_import_strategy">Behandlung von Kollisionen (gleiches Datum/Slot):</string>
     <string name="option_overwrite">Vorhandene überschreiben</string>
-    <string name="option_skip">Überspringen (vorhandene behalten)</string>
+    <string name="option_skip">Überspringen (bestehende beibehalten)</string>
     <string name="message_import_success">%1$d Messungen erfolgreich importiert.</string>
     <string name="message_import_error">Import fehlgeschlagen: %1$s</string>
     <string name="import_chooser_title">CSV-Datei auswählen</string>
 
+    <string name="button_show_onboarding">Einführung anzeigen</string>
+    <string name="button_onboarding_close">Los geht\'s</string>
+
     <!-- Onboarding -->
+    <string name="onboarding_slide0_caption">Haftungsausschluss</string>
+    <string name="onboarding_slide0_description">Diese App ist ein digitales Logbuch zur Verfolgung von Blutdrucktrends und dient ausschließlich Informations- und Bildungszwecken. Sie ersetzt keine professionelle Beratung, Beurteilung oder Behandlung. Sie misst keinen Blutdruck, verwaltet keine Gesundheitszustände und verändert keine Routinen.</string>
     <string name="onboarding_slide1_caption">UnderPressure Tracker</string>
     <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Blutdruck- und Pulstracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>
     <string name="onboarding_slide2_caption">Geplante &amp; flexible Messungen</string>
@@ -194,18 +217,18 @@
     <string name="onboarding_slide4_caption">Daten teilen</string>
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
     <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
-    <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Arztes anzupassen.</string>
+    <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Spezialisten anzupassen.</string>
     <string name="onboarding_slide6_caption">Benutzerdefinierte Tracker</string>
-    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Medikamente zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur den Blutdruck, um tiefere Einblicke in Ihre Gesundheit zu erhalten.</string>
-    <string name="button_onboarding_close">Loslegen</string>
+    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Routine-Checks zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur einen Wert, um tiefere Einblicke in Ihre Gesundheit zu erhalten.</string>
 
     <!-- Guidance Popup -->
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
+    <string name="hint_cannot_create_slot">Slot kann jetzt nicht erstellt werden. Er muss mindestens 30 Minuten von benachbarten Slots entfernt sein. Verwenden Sie den nächsten Slot um %1$s.</string>
     <string name="warning_large_date_range">Großer Datumsbereich ausgewählt. Lesbarkeit und Leistung können beeinträchtigt sein.</string>
 
     <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Systolisch</string>
-    <string name="chart_legend_diastolic">Diastolisch</string>
+    <string name="chart_legend_systolic">Oberer Wert</string>
+    <string name="chart_legend_diastolic">Unterer Wert</string>
     <string name="chart_legend_pulse">Puls</string>
 
     <!-- View Mode Toggle -->
@@ -213,43 +236,17 @@
     <string name="view_all">Alle</string>
 
     <!-- Anytime Readings -->
-    <string name="label_anytime_readings">Unterwegs</string>
-    <string name="label_anytime_reading">Unterwegs-Messung</string>
-    <string name="label_anytime_count">%1$d unterwegs</string>
-    <string name="hint_anytime_confirmation">Die geplante Messung ist bald um %1$s. Sollen wir warten oder als unterwegs-Messung hinzufügen?</string>
-    <string name="button_anytime_yes">Ja, unterwegs</string>
-    <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Informationen zum Blutdruck</string>
-    <string name="bp_info_what_is_title">Was ist Blutdruck?</string>
-    <string name="bp_info_what_is_desc">Die Kraft, mit der das Blut gegen die Arterienwände drückt. Er wird mit zwei Zahlen gemessen:</string>
-    <string name="bp_info_systolic_title">Systolisch (Oben/Erste)</string>
-    <string name="bp_info_systolic_desc">Druck, wenn Ihr Herz schlägt.</string>
-    <string name="bp_info_diastolic_title">Diastolisch (Unten/Zweite)</string>
-    <string name="bp_info_diastolic_desc">Druck, wenn Ihr Herz zwischen den Schlägen ruht.</string>
-    <string name="bp_info_why_matters_title">Warum das wichtig ist</string>
-    <string name="bp_info_why_matters_desc">Beide Zahlen sind kritisch. Ein konstant hoher Druck kann die Arterien mit der Zeit schädigen und zu Herzkrankheiten oder Schlaganfällen führen.</string>
-    <string name="bp_info_silent_killer_title">Der "Stille Killer"</string>
-    <string name="bp_info_silent_killer_desc">Bluthochdruck hat oft keine Symptome. Regelmäßiges Messen ist der einzige Weg zu wissen, ob Ihre Werte gesund sind.</string>
-    <string name="bp_info_when_to_see_doctor_title">Wann Sie einen Arzt aufsuchen sollten</string>
-    <string name="bp_info_when_to_see_doctor_desc">Wenn Ihre Messwerte konstant über Ihrem Zielbereich liegen (z. B. 130/80 oder 140/90).</string>
-    <string name="bp_info_emergency_title">Notfall</string>
-    <string name="bp_info_emergency_desc">Wenn Sie eine "Hypertensive Krise" (180/120 oder höher) erreichen, warten Sie 5 Minuten und messen Sie erneut. Wenn er hoch bleibt, kontaktieren Sie sofort den medizinischen Notdienst.</string>
-    <string name="cd_bp_info">Informationen zum Blutdruck</string>
-    <string name="label_source_prefix">Quelle:</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Wenn Ihr Blutdruck dauerhaft so hoch oder höher ist:</string>
-    <string name="_1_pause_and_re_test">1. Pause machen und erneut testen</string>
-    <string name="wait_5_minutes_sit_quietly_and_re_test_if_it_remains_high_consult_your_doctor">Warten Sie 5 Minuten, sitzen Sie ruhig und testen Sie erneut. Wenn er hoch bleibt, konsultieren Sie Ihren Arzt.</string>
-    <string name="_2_check_for_emergency_symptoms">2. Auf Notfallsymptome prüfen</string>
-    <string name="if_you_have_high_bp_and_symptoms_like_chest_pain_shortness_of_breath_numbness_confusion_or_severe_headache_seek_emergency_medical_care_immediately">Wenn Sie hohen Blutdruck und Symptome wie Brustschmerzen, Kurzatmigkeit, Taubheit, Verwirrung oder starke Kopfschmerzen haben, suchen Sie sofort medizinische Notfallhilfe auf.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Starke Blutdruckerhöhung (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Starke Blutdruckerhöhung (≥ 180/110)</string>
-    <string name="hint_cannot_create_slot">Zeitfenster kann jetzt nicht erstellt werden. Es muss mindestens 30 Minuten von benachbarten Zeitfenstern entfernt sein. Verwenden Sie das nächste Zeitfenster um %1$s.</string>
+    <string name="label_anytime_readings">Flexibel</string>
+    <string name="label_anytime_reading">Flexible Messung</string>
+    <string name="label_anytime_count">%1$d flexibel</string>
+    <string name="hint_anytime_confirmation">Die geplante Messung ist bald um %1$s. Sollen wir warten oder als flexible Messung hinzufügen?</string>
+    <string name="button_anytime_yes">Ja, flexibel</string>
     <string name="custom_trackers">Benutzerdefinierte Tracker</string>
     <string name="no_trackers_defined">Keine Tracker definiert</string>
     <string name="weight">Gewicht</string>
     <string name="temperature">Temperatur</string>
     <string name="notes">Notizen</string>
-    <string name="took_medication">Medikamente eingenommen</string>
+    <string name="took_medication">Tägliche Routine überprüft</string>
     <string name="add_tracker">Tracker hinzufügen</string>
     <string name="back">Zurück</string>
     <string name="button_add_default_trackers">Standard-Tracker hinzufügen</string>
@@ -281,4 +278,7 @@
     <string name="placeholder_select_tracker">Tracker auswählen</string>
     <string name="contact_developer">Entwickler kontaktieren</string>
     <string name="label_select_trackers">Tracker auswählen</string>
+    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Gemäß den allgemeinen Gesundheitsrichtlinien gelten Messwerte in diesem Bereich als stark erhöht.</string>
+    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Referenzbereiche (> 180/120)]]></string>
+    <string name="severe_blood_pressure_elevation_180_110">Referenzbereiche (≥ 180/110)</string>
 </resources>

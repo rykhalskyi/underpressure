@@ -72,7 +72,6 @@ fun TrackerManagementScreen(
                         Button(onClick = {
                             // Add some default trackers
                             viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.weight), type = TrackerType.FLOAT, unit = "kg", min = 20.0, max = 320.0))
-                            viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.temperature), type = TrackerType.FLOAT, unit = "°C", min = 35.0, max = 42.5))
                             viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.took_medication), type = TrackerType.BOOLEAN))
                             viewModel.saveTracker(TrackerDefinition(name = context.getString(R.string.notes), type = TrackerType.STRING))
                         }) {

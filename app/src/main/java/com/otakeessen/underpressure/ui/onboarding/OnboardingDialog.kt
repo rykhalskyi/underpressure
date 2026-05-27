@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Share
@@ -30,10 +31,15 @@ fun OnboardingDialog(
 ) {
     val slides = listOf(
         OnboardingSlideData(
+            icon = Icons.Default.Info,
+            caption = stringResource(R.string.onboarding_slide0_caption),
+            description = stringResource(R.string.onboarding_slide0_description),
+            version = stringResource(R.string.onboarding_version_label, BuildConfig.VERSION_NAME)
+        ),
+        OnboardingSlideData(
             icon = Icons.Default.Security,
             caption = stringResource(R.string.onboarding_slide1_caption),
-            description = stringResource(R.string.onboarding_slide1_description),
-            version = stringResource(R.string.onboarding_version_label, BuildConfig.VERSION_NAME)
+            description = stringResource(R.string.onboarding_slide1_description)
         ),
         OnboardingSlideData(
             icon = Icons.Default.Schedule,

@@ -173,6 +173,17 @@ fun ChartScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+
+            // Medical Disclaimer at the very top
+            Text(
+                text = stringResource(R.string.chart_disclaimer),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 0.dp)
+            )
+
             // Mode Switcher at the top
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier
