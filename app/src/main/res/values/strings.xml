@@ -13,9 +13,9 @@
 
     <!-- Table Screen Headers -->
     <string name="header_date">Date</string>
-    <string name="header_systolic">Sys</string>
-    <string name="header_diastolic">Dia</string>
-    <string name="header_pulse">Pulse</string>
+    <string name="header_systolic">Upper</string>
+    <string name="header_diastolic">Lower</string>
+    <string name="header_pulse">Rate</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Toggle Alarms</string>
@@ -29,27 +29,27 @@
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Edit Measurement</string>
     <string name="dialog_title_add">Add Measurement</string>
-    <string name="label_measurement_format">SYS/DIA @PULSE</string>
+    <string name="label_measurement_format">Upper/Lower @Rate</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Invalid format. Use: SYS/DIA @PULSE</string>
+    <string name="error_invalid_format">Invalid format. Use: Upper/Lower @Rate</string>
     <string name="error_syntax_format">Invalid format. Use: 120/80 @72</string>
-    <string name="error_logic_sys_dia">Systolic must be higher than Diastolic</string>
-    <string name="error_range_out_of_human">Value outside human range (e.g., 40-300)</string>
+    <string name="error_logic_sys_dia">Upper value must be higher than Lower value</string>
+    <string name="error_range_out_of_human">Value outside valid range (e.g., 40-300)</string>
     <string name="error_incorrect_measurements">Incorrect measurements</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
-    <string name="hypertension_warning">High Reading Alert</string>
+    <string name="hypertension_warning">High Tension Alert</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Low Range*</string>
-    <string name="bp_level_normal">Optimal Range*</string>
-    <string name="bp_level_elevated">Elevated Range*</string>
-    <string name="bp_level_high_normal">High Optimal Range*</string>
-    <string name="bp_level_stage1">Range 1 (High)*</string>
-    <string name="bp_level_grade1">Range 1 (High)*</string>
-    <string name="bp_level_stage2">Range 2 (Very High)*</string>
-    <string name="bp_level_grade2">Range 2 (Very High)*</string>
-    <string name="bp_level_crisis">Critical Alert*</string>
+    <string name="bp_level_hypotension">Low Tension*</string>
+    <string name="bp_level_normal">Optimal Balance*</string>
+    <string name="bp_level_elevated">Elevated Tension*</string>
+    <string name="bp_level_high_normal">High Optimal Balance*</string>
+    <string name="bp_level_stage1">Moderate Tension*</string>
+    <string name="bp_level_grade1">Moderate Tension*</string>
+    <string name="bp_level_stage2">High Tension*</string>
+    <string name="bp_level_grade2">High Tension*</string>
+    <string name="bp_level_crisis">Tension Peak*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -68,9 +68,9 @@
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
     <string name="label_source_prefix">Source:</string>
-    <string name="label_source_aha">Source: AHA/ACC 2017 Guidelines</string>
-    <string name="label_source_esc">Source: ESC/ESH 2018 Guidelines</string>
-    <string name="classification_disclaimer">*Ranges are for informational tracking purposes based on general health guidelines and are NOT a medical diagnosis.</string>
+    <string name="label_source_aha">Source: Tension Standard USA</string>
+    <string name="label_source_esc">Source: Tension Standard EUR</string>
+    <string name="classification_disclaimer">*Ranges are for informational tracking purposes based on general wellness profiles and are NOT a medical diagnosis.</string>
     <string name="label_classification_stats_format">%1$d readings (%2$d%%)</string>
 
     <string name="header_classification_summary">Range Summary</string>
@@ -82,7 +82,7 @@
     <string name="helper_search_hint">YYYY, YYYY-MM-DD or 140 90 60</string>
     <string name="message_no_results">No results found</string>
     <string name="button_jump_to_date">Jump to Date: %1$s</string>
-    <string name="label_measurement_details">Upper: %1$d, Lower: %2$d, Pulse: %3$d</string>
+    <string name="label_measurement_details">Upper: %1$d, Lower: %2$d, Rate: %3$d</string>
     <string name="error_invalid_date">Invalid date format (YYYY-MM-DD)</string>
 
     <!-- Share Dialog -->
@@ -101,22 +101,22 @@
     <string name="label_slot_number">Slot %1$d</string>
     <string name="label_global_alarm">Global Alarm Reminders</string>
 
-    <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Blood Pressure Tracking Info</string>
-    <string name="bp_info_what_is_title">What is Blood Pressure?</string>
-    <string name="bp_info_what_is_desc">These readings represent the pressure in your circulatory system during and between heartbeats.</string>
-    <string name="bp_info_systolic_title">Systolic (First Number)</string>
-    <string name="bp_info_systolic_desc">Pressure when your heart beats.</string>
-    <string name="bp_info_diastolic_title">Diastolic (Second Number)</string>
-    <string name="bp_info_diastolic_desc">Pressure when your heart rests between beats.</string>
+    <!-- Stress & Body Tension Info Dialog -->
+    <string name="dialog_title_bp_info">Tension &amp; Rhythm Info</string>
+    <string name="bp_info_what_is_title">What is Body Tension?</string>
+    <string name="bp_info_what_is_desc">These readings represent physical strain and circulatory metrics during active and resting states.</string>
+    <string name="bp_info_systolic_title">Upper Bound (Active)</string>
+    <string name="bp_info_systolic_desc">Physical load indicator when active or under stress.</string>
+    <string name="bp_info_diastolic_title">Lower Bound (Resting)</string>
+    <string name="bp_info_diastolic_desc">Baseline load indicator when body rests.</string>
     <string name="bp_info_why_matters_title">Why it Matters</string>
-    <string name="bp_info_why_matters_desc">Both numbers are important. Consistent high pressure can affect your long-term wellness.</string>
-    <string name="bp_info_silent_killer_title">Personal Awareness</string>
-    <string name="bp_info_silent_killer_desc">High readings often have no symptoms. Regular tracking helps you understand your personal trends.</string>
-    <string name="bp_info_when_to_see_doctor_title">When to see a Professional</string>
-    <string name="bp_info_when_to_see_doctor_desc">If your readings are consistently above your target range (e.g., 130/80 or 140/90).</string>
-    <string name="bp_info_emergency_title">Critical Situations</string>
-    <string name="cd_bp_info">Blood Pressure Info</string>
+    <string name="bp_info_why_matters_desc">Both metrics are important. Consistent high strain can affect your long-term wellness.</string>
+    <string name="bp_info_silent_killer_title">Daily Awareness</string>
+    <string name="bp_info_silent_killer_desc">High tension indicators often go unnoticed. Regular tracking helps you understand your personal trend profile.</string>
+    <string name="bp_info_when_to_see_doctor_title">When to Review Habits</string>
+    <string name="bp_info_when_to_see_doctor_desc">If your readings are consistently above your normal target range (e.g., 130/80 or 140/90).</string>
+    <string name="bp_info_emergency_title">Stress Overload</string>
+    <string name="cd_bp_info">Tension &amp; Rhythm Info</string>
     <string name="label_active">Active</string>
     <string name="label_alarm">Remind</string>
     <string name="dialog_title_select_time">Select Time</string>
@@ -148,7 +148,7 @@
     <string name="error_no_data">No data available</string>
     <string name="error_no_data_in_range">No data in selected date range</string>
     <string name="error_failed_to_export">Failed to export chart: %1$s</string>
-    <string name="chart_disclaimer">*Charts are for trend visualization and fitness tracking. Not intended for health assessment or clinical use.</string>
+    <string name="chart_disclaimer">*Charts are for trend visualization and wellness tracking. Not intended for health assessment or clinical use.</string>
     <string name="label_chart_combined_format">%1$s - %2$s</string>
     <string name="error_invalid_date_format">Invalid date format</string>
     <string name="error_from_after_to">From date cannot be after To date</string>
@@ -187,11 +187,11 @@
     <string name="button_show_onboarding">Show Onboarding</string>
 
     <!-- Data Management Section -->
-    <string name="header_classification_guidelines">Classification Guidelines</string>
-    <string name="label_guideline_aha_title">American (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">High Range starts at 130/80</string>
-    <string name="label_guideline_esc_title">European (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">High Range starts at 140/90</string>
+    <string name="header_classification_guidelines">Tension Standards</string>
+    <string name="label_guideline_aha_title">Standard Profile USA</string>
+    <string name="label_guideline_aha_subtitle">Elevated level starts at 130/80</string>
+    <string name="label_guideline_esc_title">Standard Profile EUR</string>
+    <string name="label_guideline_esc_subtitle">Elevated level starts at 140/90</string>
 
     <string name="header_data_management">Data Management</string>
     <string name="button_import_csv">Import CSV</string>
@@ -210,19 +210,19 @@
 
     <!-- Onboarding -->
     <string name="onboarding_slide0_caption">Disclaimer</string>
-    <string name="onboarding_slide0_description">This app is a digital logbook for tracking blood pressure trends and is intended for informational and educational purposes only. It is not a substitute for professional guidance, assessment, or treatment. It does not measure blood pressure, manage health conditions, or alter routines.</string>
+    <string name="onboarding_slide0_description">This app is a digital logbook for tracking stress and physical tension trends and is intended for informational and educational purposes only. It is not a substitute for professional guidance, assessment, or treatment. It does not manage health conditions, or alter routines.</string>
     <string name="onboarding_slide1_caption">UnderPressure tracker</string>
-    <string name="onboarding_slide1_description">Underpressure is a simple and private blood pressure and pulse tracker that keeps all your data only on your phone. No servers, no data collection, no ads, no payments.</string>
+    <string name="onboarding_slide1_description">Underpressure is a simple and private tension and rhythm tracker that keeps all your data only on your phone. No servers, no data collection, no ads, no payments.</string>
     <string name="onboarding_slide2_caption">Scheduled &amp; Flexible Readings</string>
-    <string name="onboarding_slide2_description">Set up to 4 time slots for scheduled readings, or log readings anytime using the + button. Switch between Scheduled and All views to see your data.</string>
+    <string name="onboarding_slide2_description">Set up to 4 time slots for scheduled logs, or log readings anytime using the + button. Switch between Scheduled and All views to see your data.</string>
     <string name="onboarding_slide3_caption">Measurements Chart</string>
-    <string name="onboarding_slide3_description">You can see and share measurements charts. Configure charts for slots and data you need.</string>
+    <string name="onboarding_slide3_description">You can see and share tension charts. Configure charts for slots and data you need.</string>
     <string name="onboarding_slide4_caption">Share Data</string>
     <string name="onboarding_slide4_description">You can share data if you want to. In any other cases your data won\'t leave your phone. We don\'t collect any telemetry or logs too.</string>
-    <string name="onboarding_slide5_caption">Classification Guidelines</string>
-    <string name="onboarding_slide5_description">UnderPressure supports both ACC/AHA and ESC/ESH classification guidelines. Switch between them in settings to match your specialist\'s advice.</string>
+    <string name="onboarding_slide5_caption">Tension Standards</string>
+    <string name="onboarding_slide5_description">UnderPressure supports multiple wellness tension profiles. Switch between them in settings to match your wellness goals.</string>
     <string name="onboarding_slide6_caption">Custom Trackers</string>
-    <string name="onboarding_slide6_description">Add custom trackers like weight, mood, or routine checks to your measurements. Track more than just one value to gain deeper insights into your wellness.</string>
+    <string name="onboarding_slide6_description">Add custom trackers like weight, mood, or routine checks to your metrics. Track more than just one value to gain deeper insights into your wellness.</string>
     <string name="button_onboarding_close">Get Started</string>
 
     <!-- Guidance Popup -->
@@ -234,18 +234,18 @@
     <string name="view_all">All</string>
 
     <!-- Chart Legend -->
-    <string name="chart_legend_systolic">Systolic</string>
-    <string name="chart_legend_diastolic">Diastolic</string>
-    <string name="chart_legend_pulse">Pulse</string>
+    <string name="chart_legend_systolic">Upper Bound</string>
+    <string name="chart_legend_diastolic">Lower Bound</string>
+    <string name="chart_legend_pulse">Rate</string>
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Anytime</string>
     <string name="label_anytime_reading">Anytime Reading</string>
     <string name="label_anytime_count">%1$d anytime</string>
     <string name="hint_anytime_confirmation">The scheduled measurement is very close at %1$s. Should we wait or add as an anytime reading?</string>
     <string name="button_anytime_yes">Yes, Anytime</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">According to standard health guidelines, readings in this range are considered severely elevated.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Reference Ranges (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Reference Ranges (≥ 180/110)</string>
+    <string name="if_your_tension_is_consistently_this_high_or_higher">According to wellness standards, readings in this range are considered severely elevated.</string>
+    <string name="severe_tension_elevation_180_120"><![CDATA[Standard Ranges (> 180/120)]]></string>
+    <string name="severe_tension_elevation_180_110">Standard Ranges (≥ 180/110)</string>
     <string name="custom_trackers">Custom Trackers</string>
     <string name="no_trackers_defined">No trackers defined</string>
     <string name="weight">Weight</string>

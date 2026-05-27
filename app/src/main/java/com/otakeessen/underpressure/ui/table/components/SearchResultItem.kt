@@ -20,6 +20,8 @@ import com.otakeessen.underpressure.domain.BpGuidelines
 import com.otakeessen.underpressure.domain.TrackerDefinition
 import com.otakeessen.underpressure.domain.TrackerValue
 
+import com.otakeessen.underpressure.ui.theme.getTextColor
+
 /**
  * A reusable component to display an individual search result.
  */
@@ -76,7 +78,7 @@ fun SearchResultItem(
                 text = details,
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = if (classification.isBold) FontWeight.Bold else FontWeight.Normal,
-                color = classification.textColor
+                color = classification.level.getTextColor()
             )
 
             if (trackerValues.isNotEmpty()) {

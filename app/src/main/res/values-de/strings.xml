@@ -13,9 +13,9 @@
 
     <!-- Table Screen Headers -->
     <string name="header_date">Datum</string>
-    <string name="header_systolic">Sys</string>
-    <string name="header_diastolic">Dia</string>
-    <string name="header_pulse">Puls</string>
+    <string name="header_systolic">Oberer</string>
+    <string name="header_diastolic">Unterer</string>
+    <string name="header_pulse">Frequenz</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Alarme umschalten</string>
@@ -29,27 +29,27 @@
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Messung bearbeiten</string>
     <string name="dialog_title_add">Messung hinzufügen</string>
-    <string name="label_measurement_format">SYS/DIA @PULS</string>
+    <string name="label_measurement_format">Oberer/Unterer @Frequenz</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Ungültiges Format. Verwenden Sie: SYS/DIA @PULS</string>
+    <string name="error_invalid_format">Ungültiges Format. Verwenden Sie: Oberer/Unterer @Frequenz</string>
     <string name="error_syntax_format">Ungültiges Format. Verwenden Sie: 120/80 @72</string>
-    <string name="error_logic_sys_dia">Der systolische Wert muss höher als der diastolische sein</string>
-    <string name="error_range_out_of_human">Wert außerhalb des menschlichen Bereichs (z. B. 40-300)</string>
+    <string name="error_logic_sys_dia">Der obere Wert muss höher als der untere sein</string>
+    <string name="error_range_out_of_human">Wert außerhalb des gültigen Bereichs (z. B. 40-300)</string>
     <string name="error_incorrect_measurements">Fehlerhafte Messwerte</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
-    <string name="hypertension_warning">Hoher Messwert-Alarm</string>
+    <string name="hypertension_warning">Hohe Anspannungs-Warnung</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Niedriger Bereich*</string>
-    <string name="bp_level_normal">Optimaler Bereich*</string>
-    <string name="bp_level_elevated">Erhöhter Bereich*</string>
-    <string name="bp_level_high_normal">Hoher optimaler Bereich*</string>
-    <string name="bp_level_stage1">Bereich 1 (Hoch)*</string>
-    <string name="bp_level_grade1">Bereich 1 (Hoch)*</string>
-    <string name="bp_level_stage2">Bereich 2 (Sehr hoch)*</string>
-    <string name="bp_level_grade2">Bereich 2 (Sehr hoch)*</string>
-    <string name="bp_level_crisis">Kritischer Alarm*</string>
+    <string name="bp_level_hypotension">Niedrige Anspannung*</string>
+    <string name="bp_level_normal">Optimale Balance*</string>
+    <string name="bp_level_elevated">Erhöhte Anspannung*</string>
+    <string name="bp_level_high_normal">Hohe optimale Balance*</string>
+    <string name="bp_level_stage1">Mäßige Anspannung*</string>
+    <string name="bp_level_grade1">Mäßige Anspannung*</string>
+    <string name="bp_level_stage2">Hohe Anspannung*</string>
+    <string name="bp_level_grade2">Hohe Anspannung*</string>
+    <string name="bp_level_crisis">Anspannungs-Peak*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -67,10 +67,9 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
-    <string name="label_source_prefix">Quelle:</string>
-    <string name="label_source_aha">Quelle: AHA/ACC 2017 Richtlinien</string>
-    <string name="label_source_esc">Quelle: ESC/ESH 2018 Richtlinien</string>
-    <string name="classification_disclaimer">*Bereiche dienen als allgemeiner Referenzwert basierend auf Richtlinien des öffentlichen Gesundheitswesens und stellen keine medizinische Diagnose dar</string>
+    <string name="label_source_aha">Quelle: Anspannungs-Standard A</string>
+    <string name="label_source_esc">Quelle: Anspannungs-Standard B</string>
+    <string name="classification_disclaimer">*Bereiche dienen als allgemeiner Referenzwert basierend auf Wellness-Profilen und stellen keine medizinische Diagnose dar</string>
     <string name="label_classification_stats_format">%1$d Messungen (%2$d%%)</string>
 
     <string name="header_classification_summary">Bereichszusammenfassung</string>
@@ -82,7 +81,7 @@
     <string name="helper_search_hint">JJJJ, JJJJ-MM-TT oder 140 90 60</string>
     <string name="message_no_results">Keine Ergebnisse gefunden</string>
     <string name="button_jump_to_date">Zum Datum springen: %1$s</string>
-    <string name="label_measurement_details">Oberer: %1$d, Unterer: %2$d, Puls: %3$d</string>
+    <string name="label_measurement_details">Oberer: %1$d, Unterer: %2$d, Frequenz: %3$d</string>
     <string name="error_invalid_date">Ungültiges Datumsformat (JJJJ-MM-TT)</string>
 
     <!-- Share Dialog -->
@@ -102,21 +101,21 @@
     <string name="label_global_alarm">Globale Alarmerinnerungen</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Blutdruck-Informationen</string>
-    <string name="bp_info_what_is_title">Was ist Blutdruck?</string>
-    <string name="bp_info_what_is_desc">Die Kraft, mit der das Blut gegen die Arterienwände drückt. Er wird mit zwei Zahlen gemessen:</string>
-    <string name="bp_info_systolic_title">Systolisch (Oben/Erste)</string>
-    <string name="bp_info_systolic_desc">Druck, wenn Ihr Herz schlägt.</string>
-    <string name="bp_info_diastolic_title">Diastolisch (Unten/Zweite)</string>
-    <string name="bp_info_diastolic_desc">Druck, wenn Ihr Herz zwischen den Schlägen ruht.</string>
+    <string name="dialog_title_bp_info">Anspannung &amp; Rhythmus</string>
+    <string name="bp_info_what_is_title">Was ist Körperspannung?</string>
+    <string name="bp_info_what_is_desc">Diese Messwerte repräsentieren die physische Belastung und Kreislaufwerte während aktiver und ruhender Phasen.</string>
+    <string name="bp_info_systolic_title">Oberer Wert (Aktiv)</string>
+    <string name="bp_info_systolic_desc">Physischer Belastungsindikator bei Aktivität oder unter Stress.</string>
+    <string name="bp_info_diastolic_title">Unterer Wert (Ruhend)</string>
+    <string name="bp_info_diastolic_desc">Basis-Belastungsindikator, wenn der Körper ruht.</string>
     <string name="bp_info_why_matters_title">Warum das wichtig ist</string>
-    <string name="bp_info_why_matters_desc">Beide Zahlen sind wichtig. Ein konstant hoher Druck kann die Arterien mit der Zeit schädigen und die langfristige Wellness beeinflussen.</string>
-    <string name="bp_info_silent_killer_title">Persönliches Bewusstsein</string>
-    <string name="bp_info_silent_killer_desc">Hohe Messwerte haben oft keine Symptome. Regelmäßiges Tracking hilft Ihnen, Ihre persönlichen Trends zu verstehen.</string>
-    <string name="bp_info_when_to_see_doctor_title">Wann Sie einen Spezialisten aufsuchen sollten</string>
-    <string name="bp_info_when_to_see_doctor_desc">Wenn Ihre Messwerte konstant über Ihrem Zielbereich liegen (z. B. 130/80 oder 140/90).</string>
-    <string name="bp_info_emergency_title">Kritische Situationen</string>
-    <string name="cd_bp_info">Blutdruck-Informationen</string>
+    <string name="bp_info_why_matters_desc">Beide Werte sind wichtig. Eine konstant hohe Belastung kann die langfristige Wellness beeinflussen.</string>
+    <string name="bp_info_silent_killer_title">Tägliche Achtsamkeit</string>
+    <string name="bp_info_silent_killer_desc">Hohe Anspannungswerte werden oft nicht bemerkt. Regelmäßiges Tracking hilft Ihnen, Ihr persönliches Trendprofil zu verstehen.</string>
+    <string name="bp_info_when_to_see_doctor_title">Wann Sie Gewohnheiten prüfen sollten</string>
+    <string name="bp_info_when_to_see_doctor_desc">Wenn Ihre Messwerte konstant über Ihrem normalen Zielbereich liegen (z. B. 130/80 oder 140/90).</string>
+    <string name="bp_info_emergency_title">Stressüberlastung</string>
+    <string name="cd_bp_info">Anspannung &amp; Rhythmus</string>
     <string name="label_active">Aktiv</string>
     <string name="label_alarm">Erinnern</string>
     <string name="dialog_title_select_time">Zeit auswählen</string>
@@ -181,11 +180,11 @@
     <string name="label_impressum">Impressum</string>
     <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
 
-    <string name="header_classification_guidelines">Klassifizierungsrichtlinien</string>
-    <string name="label_guideline_aha_title">Amerikanisch (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Hoher Bereich beginnt bei 130/80</string>
-    <string name="label_guideline_esc_title">Europäisch (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Hoher Bereich beginnt bei 140/90</string>
+    <string name="header_classification_guidelines">Anspannungs-Standards</string>
+    <string name="label_guideline_aha_title">Standard-Profil A</string>
+    <string name="label_guideline_aha_subtitle">Erhöhter Wert beginnt bei 130/80</string>
+    <string name="label_guideline_esc_title">Standard-Profil B</string>
+    <string name="label_guideline_esc_subtitle">Erhöhter Wert beginnt bei 140/90</string>
 
     <string name="header_data_management">Datenverwaltung</string>
     <string name="button_import_csv">CSV importieren</string>
@@ -207,19 +206,19 @@
 
     <!-- Onboarding -->
     <string name="onboarding_slide0_caption">Haftungsausschluss</string>
-    <string name="onboarding_slide0_description">Diese App ist ein digitales Logbuch zur Verfolgung von Blutdrucktrends und dient ausschließlich Informations- und Bildungszwecken. Sie ersetzt keine professionelle Beratung, Beurteilung oder Behandlung. Sie misst keinen Blutdruck, verwaltet keine Gesundheitszustände und verändert keine Routinen.</string>
+    <string name="onboarding_slide0_description">Diese App ist ein digitales Logbuch zur Verfolgung von Stress und Körperspannungstrends und dient ausschließlich Informations- und Bildungszwecken. Sie ersetzt keine professionelle Beratung, Beurteilung oder Behandlung. Sie misst keinen Blutdruck, verwaltet keine Gesundheitszustände und verändert keine Routinen.</string>
     <string name="onboarding_slide1_caption">UnderPressure Tracker</string>
-    <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Blutdruck- und Pulstracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>
+    <string name="onboarding_slide1_description">UnderPressure ist ein einfacher und privater Anspannungs- und Rhythmustracker, der alle Ihre Daten nur auf Ihrem Telefon speichert. Keine Server, keine Datenerfassung, keine Werbung, keine Zahlungen.</string>
     <string name="onboarding_slide2_caption">Geplante &amp; flexible Messungen</string>
-    <string name="onboarding_slide2_description">Richten Sie bis zu 4 Zeitfenster für geplante Messungen ein oder erfassen Sie jederzeit Messwerte über die +-Taste. Wechseln Sie zwischen den Ansichten Geplant und Alle, um Ihre Daten anzuzeigen.</string>
-    <string name="onboarding_slide3_caption">Messwertdiagramm</string>
-    <string name="onboarding_slide3_description">Sie können Messwertdiagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
+    <string name="onboarding_slide2_description">Richten Sie bis zu 4 Zeitfenster für geplante Logs ein oder erfassen Sie jederzeit Messwerte über die +-Taste. Wechseln Sie zwischen den Ansichten Geplant und Alle, um Ihre Daten anzuzeigen.</string>
+    <string name="onboarding_slide3_caption">Diagramm</string>
+    <string name="onboarding_slide3_description">Sie können Diagramme ansehen und teilen. Konfigurieren Sie Diagramme für die benötigten Zeitfenster und Daten.</string>
     <string name="onboarding_slide4_caption">Daten teilen</string>
     <string name="onboarding_slide4_description">Sie können Daten teilen, wenn Sie möchten. In allen anderen Fällen verlassen Ihre Daten Ihr Telefon nicht. Wir erfassen auch keine Telemetriedaten oder Protokolle.</string>
-    <string name="onboarding_slide5_caption">Klassifizierungsrichtlinien</string>
-    <string name="onboarding_slide5_description">UnderPressure unterstützt sowohl ACC/AHA als auch ESC/ESH Klassifizierungsrichtlinien. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an die Empfehlungen Ihres Spezialisten anzupassen.</string>
+    <string name="onboarding_slide5_caption">Anspannungs-Standards</string>
+    <string name="onboarding_slide5_description">UnderPressure unterstützt mehrere Wellness-Anspannungsprofile. Wechseln Sie in den Einstellungen zwischen ihnen, um sie an Ihre Wellness-Ziele anzupassen.</string>
     <string name="onboarding_slide6_caption">Benutzerdefinierte Tracker</string>
-    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Routine-Checks zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur einen Wert, um tiefere Einblicke in Ihre Gesundheit zu erhalten.</string>
+    <string name="onboarding_slide6_description">Fügen Sie benutzerdefinierte Tracker wie Gewicht, Stimmung oder Routine-Checks zu Ihren Messungen hinzu. Verfolgen Sie mehr als nur einen Wert, um tiefere Einblicke in Ihre Wellness zu erhalten.</string>
 
     <!-- Guidance Popup -->
     <string name="hint_edit_slot">Du kannst den Wert von Slot %1$d ändern, indem du darauf tippst.</string>
@@ -229,7 +228,7 @@
     <!-- Chart Legend -->
     <string name="chart_legend_systolic">Oberer Wert</string>
     <string name="chart_legend_diastolic">Unterer Wert</string>
-    <string name="chart_legend_pulse">Puls</string>
+    <string name="chart_legend_pulse">Frequenz</string>
 
     <!-- View Mode Toggle -->
     <string name="view_scheduled">Geplant</string>
@@ -278,7 +277,8 @@
     <string name="placeholder_select_tracker">Tracker auswählen</string>
     <string name="contact_developer">Entwickler kontaktieren</string>
     <string name="label_select_trackers">Tracker auswählen</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Gemäß den allgemeinen Gesundheitsrichtlinien gelten Messwerte in diesem Bereich als stark erhöht.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Referenzbereiche (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Referenzbereiche (≥ 180/110)</string>
+    <string name="if_your_tension_is_consistently_this_high_or_higher">Gemäß den allgemeinen Wellness-Standards gelten Messwerte in diesem Bereich als stark erhöht.</string>
+    <string name="severe_tension_elevation_180_120"><![CDATA[Standardbereiche (> 180/120)]]></string>
+    <string name="severe_tension_elevation_180_110">Standardbereiche (≥ 180/110)</string>
+    <string name="label_source_prefix">Quelle:</string>
 </resources>

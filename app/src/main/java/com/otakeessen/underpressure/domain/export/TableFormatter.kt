@@ -22,7 +22,7 @@ class TableFormatter {
         if (headers.isEmpty()) return ""
 
         val sb = StringBuilder()
-        sb.append("Blood Pressure Log\n")
+        sb.append("UnderPressure Log\n")
         sb.append("$dateRange\n\n")
 
         // Define fixed widths based on requirements: Date ~ 10, Values ~ 10-12

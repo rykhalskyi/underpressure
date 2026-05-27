@@ -13,9 +13,9 @@
 
     <!-- Table Screen Headers -->
     <string name="header_date">Data</string>
-    <string name="header_systolic">Syc</string>
-    <string name="header_diastolic">Roz</string>
-    <string name="header_pulse">Puls</string>
+    <string name="header_systolic">Górne</string>
+    <string name="header_diastolic">Dolne</string>
+    <string name="header_pulse">Tętno</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Przełącz alarmy</string>
@@ -29,27 +29,27 @@
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Edytuj pomiar</string>
     <string name="dialog_title_add">Dodaj pomiar</string>
-    <string name="label_measurement_format">SYC/ROZ @PULS</string>
+    <string name="label_measurement_format">Górne/Dolne @Tętno</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Nieprawidłowy format. Użyj: SYC/ROZ @PULS</string>
+    <string name="error_invalid_format">Nieprawidłowy format. Użyj: Górne/Dolne @Tętno</string>
     <string name="error_syntax_format">Nieprawidłowy format. Użyj: 120/80 @72</string>
     <string name="error_logic_sys_dia">Wartość górna musi być wyższa niż dolna</string>
-    <string name="error_range_out_of_human">Wartość poza ludzkim zakresem (np. 40-300)</string>
+    <string name="error_range_out_of_human">Wartość poza prawidłowym zakresem (np. 40-300)</string>
     <string name="error_incorrect_measurements">Nieprawidłowe pomiary</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Slot %1$d (%2$s)</string>
-    <string name="hypertension_warning">Ostrzeżenie o Wysokim Wyniku</string>
+    <string name="hypertension_warning">Ostrzeżenie o Wysokim Napięciu</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Niski Zakres*</string>
-    <string name="bp_level_normal">Zakres Optymalny*</string>
-    <string name="bp_level_elevated">Zakres Podwyższony*</string>
-    <string name="bp_level_high_normal">Zakres Wysoki Optymalny*</string>
-    <string name="bp_level_stage1">Zakres 1 (Wysoki)*</string>
-    <string name="bp_level_grade1">Zakres 1 (Wysoki)*</string>
-    <string name="bp_level_stage2">Zakres 2 (Bardzo Wysoki)*</string>
-    <string name="bp_level_grade2">Zakres 2 (Bardzo Wysoki)*</string>
-    <string name="bp_level_crisis">Alarm Krytyczny*</string>
+    <string name="bp_level_hypotension">Niskie Napięcie*</string>
+    <string name="bp_level_normal">Optymalna Równowaga*</string>
+    <string name="bp_level_elevated">Podwyższone Napięcie*</string>
+    <string name="bp_level_high_normal">Wysoka Optymalna Równowaga*</string>
+    <string name="bp_level_stage1">Umiarkowane Napięcie*</string>
+    <string name="bp_level_grade1">Umiarkowane Napięcie*</string>
+    <string name="bp_level_stage2">Wysokie Napięcie*</string>
+    <string name="bp_level_grade2">Wysokie Napięcie*</string>
+    <string name="bp_level_crisis">Szczyt Napięcia*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -67,10 +67,9 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
-    <string name="label_source_prefix">Źródło:</string>
-    <string name="label_source_aha">Źródło: Wytyczne AHA/ACC 2017</string>
-    <string name="label_source_esc">Źródło: Wytyczne ESC/ESH 2018</string>
-    <string name="classification_disclaimer">*Zakresy są podawane jako odniesienie ogólne na podstawie wytycznych zdrowia publicznego i nie stanowią diagnozy medycznej</string>
+    <string name="label_source_aha">Źródło: Standard Napięcia A</string>
+    <string name="label_source_esc">Źródło: Standard Napięcia B</string>
+    <string name="classification_disclaimer">*Zakresy są podawane jako odniesienie ogólne na podstawie profili wellness i nie stanowią diagnozy medycznej</string>
     <string name="label_classification_stats_format">%1$d pomiarów (%2$d%%)</string>
 
     <string name="header_classification_summary">Podsumowanie Zakresów</string>
@@ -82,7 +81,7 @@
     <string name="helper_search_hint">RRRR, RRRR-MM-DD lub 140 90 60</string>
     <string name="message_no_results">Nie znaleziono wyników</string>
     <string name="button_jump_to_date">Skocz do daty: %1$s</string>
-    <string name="label_measurement_details">Górne: %1$d, Dolne: %2$d, Puls: %3$d</string>
+    <string name="label_measurement_details">Górne: %1$d, Dolne: %2$d, Tętno: %3$d</string>
     <string name="error_invalid_date">Nieprawidłowy format daty (RRRR-MM-DD)</string>
 
     <!-- Share Dialog -->
@@ -102,21 +101,21 @@
     <string name="label_global_alarm">Globalne przypomnienia</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Informacje o Ciśnieniu Tętniczym</string>
-    <string name="bp_info_what_is_title">Co to jest ciśnienie tętnicze?</string>
-    <string name="bp_info_what_is_desc">Siła krwi napierającej na ściany tętnic. Mierzy się ją dwiema liczbami:</string>
-    <string name="bp_info_systolic_title">Skurczowe (Górne/Pierwsza)</string>
-    <string name="bp_info_systolic_desc">Ciśnienie, gdy serce bije.</string>
-    <string name="bp_info_diastolic_title">Rozkurczowe (Dolne/Druga)</string>
-    <string name="bp_info_diastolic_desc">Ciśnienie, gdy serce odpoczywa między uderzeniami.</string>
+    <string name="dialog_title_bp_info">Napięcie i Rytm</string>
+    <string name="bp_info_what_is_title">Co to jest napięcie ciała?</string>
+    <string name="bp_info_what_is_desc">Te pomiary reprezentują obciążenie fizyczne i wskaźniki krążenia w stanach aktywności i spoczynku.</string>
+    <string name="bp_info_systolic_title">Górna Granica (Aktywność)</string>
+    <string name="bp_info_systolic_desc">Wskaźnik obciążenia fizycznego podczas aktywności lub stresu.</string>
+    <string name="bp_info_diastolic_title">Dolna Granica (Spoczynek)</string>
+    <string name="bp_info_diastolic_desc">Wskaźnik obciążenia bazowego, gdy ciało odpoczywa.</string>
     <string name="bp_info_why_matters_title">Dlaczego to ważne</string>
-    <string name="bp_info_why_matters_desc">Obie liczby są ważne. Stałe wysokie ciśnienie może z czasem uszkodzić tętnice i wpływać na Twoje długoterminowe samopoczucie.</string>
-    <string name="bp_info_silent_killer_title">Osobista Świadomość</string>
-    <string name="bp_info_silent_killer_desc">Wysokie wyniki często nie dają objawów. Regularne śledzenie pomaga zrozumieć Twoje osobiste trendy.</string>
-    <string name="bp_info_when_to_see_doctor_title">Kiedy skonsultować się ze Specjalistą</string>
-    <string name="bp_info_when_to_see_doctor_desc">Jeśli Twoje wyniki są stale powyżej zakresu docelowego (np. 130/80 lub 140/90).</string>
-    <string name="bp_info_emergency_title">Sytuacje Krytyczne</string>
-    <string name="cd_bp_info">Ciśnienie Tętnicze</string>
+    <string name="bp_info_why_matters_desc">Oba wskaźniki są ważne. Stałe wysokie obciążenie może wpływać na Twoje długoterminowe samopoczucie.</string>
+    <string name="bp_info_silent_killer_title">Codzienna Uważność</string>
+    <string name="bp_info_silent_killer_desc">Wskaźniki wysokiego napięcia często pozostają niezauważone. Regularne śledzenie pomaga zrozumieć Twój osobisty profil trendów.</string>
+    <string name="bp_info_when_to_see_doctor_title">Kiedy zweryfikować nawyki</string>
+    <string name="bp_info_when_to_see_doctor_desc">Jeśli Twoje wyniki są stale powyżej normalnego zakresu docelowego (np. 130/80 lub 140/90).</string>
+    <string name="bp_info_emergency_title">Przeciążenie Stresem</string>
+    <string name="cd_bp_info">Napięcie i Rytm</string>
     <string name="label_active">Aktywny</string>
     <string name="label_alarm">Przypomnij</string>
     <string name="dialog_title_select_time">Wybierz godzinę</string>
@@ -187,11 +186,11 @@
     <string name="button_show_onboarding">Pokaż wprowadzenie</string>
 
     <!-- Data Management Section -->
-    <string name="header_classification_guidelines">Wytyczne klasyfikacji</string>
-    <string name="label_guideline_aha_title">Amerykańskie (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Wysoki Zakres zaczyna się od 130/80</string>
-    <string name="label_guideline_esc_title">Europejskie (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Wysoki Zakres zaczyna się od 140/90</string>
+    <string name="header_classification_guidelines">Standardy Napięcia</string>
+    <string name="label_guideline_aha_title">Profil Standardowy A</string>
+    <string name="label_guideline_aha_subtitle">Poziom podwyższony zaczyna się od 130/80</string>
+    <string name="label_guideline_esc_title">Profil Standardowy B</string>
+    <string name="label_guideline_esc_subtitle">Poziom podwyższony zaczyna się od 140/90</string>
 
     <string name="header_data_management">Zarządzanie danymi</string>
     <string name="button_import_csv">Importuj CSV</string>
@@ -210,19 +209,19 @@
 
     <!-- Onboarding -->
     <string name="onboarding_slide0_caption">Zastrzeżenie</string>
-    <string name="onboarding_slide0_description">Ta aplikacja jest cyfrowym dziennikiem do śledzenia trendów ciśnienia tętniczego i jest przeznaczona wyłącznie do celów informacyjnych i edukacyjnych. Nie zastępuje profesjonalnej porady, oceny ani leczenia. Nie mierzy ciśnienia krwi, nie zarządza stanami zdrowia ani nie zmienia rutyn.</string>
+    <string name="onboarding_slide0_description">Ta aplikacja jest cyfrowym dziennikiem do śledzenia trendów stresu i napięcia fizycznego i jest przeznaczona wyłącznie do celów informacyjnych i edukacyjnych. Nie zastępuje profesjonalnej porady, oceny ani leczenia. Nie mierzy ciśnienia krwi, nie zarządza stanami zdrowia ani nie zmienia rutyn.</string>
     <string name="onboarding_slide1_caption">Tracker UnderPressure</string>
-    <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker ciśnienia tętniczego i pulsu, który przechowuje wszystkie dane tylko na Twoim telefonie. Brak serwerów, gromadzenia danych, reklam czy opłat.</string>
+    <string name="onboarding_slide1_description">UnderPressure to prosty i prywatny tracker napięcia i rytmu, który przechowuje wszystkie dane tylko na Twoim telefonie. Brak serwerów, gromadzenia danych, reklam czy opłat.</string>
     <string name="onboarding_slide2_caption">Pomiary zaplanowane i elastyczne</string>
-    <string name="onboarding_slide2_description">Ustaw do 4 slotów czasowych dla zaplanowanych pomiarów lub rejestruj je w dowolnym momencie za pomocą przycisku +. Przełączaj się między widokami Zaplanowane i Wszystkie.</string>
-    <string name="onboarding_slide3_caption">Wykres pomiarów</string>
-    <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy pomiarów. Konfiguruj wykresy dla potrzebnych slotów i danych.</string>
+    <string name="onboarding_slide2_description">Ustaw do 4 slotów czasowych dla zaplanowanych logów lub rejestruj je w dowolnym momencie za pomocą przycisku +. Przełączaj się między widokami Zaplanowane i Wszystkie.</string>
+    <string name="onboarding_slide3_caption">Wykres</string>
+    <string name="onboarding_slide3_description">Możesz przeglądać i udostępniać wykresy napięcia. Konfiguruj wykresy dla potrzebnych slotów i danych.</string>
     <string name="onboarding_slide4_caption">Udostępnij dane</string>
     <string name="onboarding_slide4_description">Możesz udostępnić dane, jeśli chcesz. W każdym innym przypadku Twoje dane nie opuszczą Twojego telefonu. Nie zbieramy również żadnej telemetrii ani logów.</string>
-    <string name="onboarding_slide5_caption">Wytyczne klasyfikacji</string>
-    <string name="onboarding_slide5_description">UnderPressure obsługuje wytyczne klasyfikacji ACC/AHA oraz ESC/ESH. Przełączaj się między nimi w ustawieniach, aby dopasować je do porad Twojego specjalisty.</string>
+    <string name="onboarding_slide5_caption">Standardy Napięcia</string>
+    <string name="onboarding_slide5_description">UnderPressure obsługuje wiele profili napięcia wellness. Przełączaj się między nimi w ustawieniach, aby dopasować je do swoich celów.</string>
     <string name="onboarding_slide6_caption">Niestandardowe trackery</string>
-    <string name="onboarding_slide6_description">Dodaj niestandardowe trackery, takie jak waga, nastrój lub kontrole rutyny do swoich pomiarów. Śledź więcej niż tylko jedną wartość, aby uzyskać głębszy wgląd w swoje zdrowie.</string>
+    <string name="onboarding_slide6_description">Dodaj niestandardowe trackery, takie jak waga, nastrój lub kontrole rutyny do swoich pomiarów. Śledź więcej niż tylko jedną wartość, aby uzyskać głębszy wgląd w swoje samopoczucie.</string>
     <string name="button_onboarding_close">Zaczynamy</string>
 
     <!-- Guidance Popup -->
@@ -236,7 +235,7 @@
     <!-- Chart Legend -->
     <string name="chart_legend_systolic">Górne</string>
     <string name="chart_legend_diastolic">Dolne</string>
-    <string name="chart_legend_pulse">Puls</string>
+    <string name="chart_legend_pulse">Tętno</string>
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Elastyczne</string>
     <string name="label_anytime_reading">Pomiar elastyczny</string>
@@ -281,7 +280,8 @@
     <string name="mapping_skip">Pomiń tę kolumnę</string>
     <string name="placeholder_select_tracker">Wybierz tracker</string>
     <string name="contact_developer">Skontaktuj się z deweloperem</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Zgodnie ze standardowymi wytycznymi zdrowotnymi, odczyty w tym zakresie są uważane za znacznie podwyższone.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Zakresy Referencyjne (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Zakresy Referencyjne (≥ 180/110)</string>
+    <string name="if_your_tension_is_consistently_this_high_or_higher">Zgodnie ze standardowymi wytycznymi wellness, odczyty w tym zakresie są uważane za znacznie podwyższone.</string>
+    <string name="severe_tension_elevation_180_120"><![CDATA[Zakresy Standardowe (> 180/120)]]></string>
+    <string name="severe_tension_elevation_180_110">Zakresy Standardowe (≥ 180/110)</string>
+    <string name="label_source_prefix">Źródło:</string>
 </resources>

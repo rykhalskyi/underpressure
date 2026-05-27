@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.otakeessen.underpressure.R
 import com.otakeessen.underpressure.domain.BloodPressureLevel
 import com.otakeessen.underpressure.domain.BpGuidelines
-import com.otakeessen.underpressure.domain.BloodPressureClassifier.toColor
+import com.otakeessen.underpressure.ui.theme.getTextColor
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
 
 /**
@@ -103,7 +103,7 @@ fun ClassificationSummary(
                         modifier = Modifier
                             .weight(weight)
                             .height(24.dp)
-                            .background(level.toColor())
+                            .background(level.getTextColor())
                     )
                 }
             }
@@ -128,7 +128,7 @@ fun ClassificationSummary(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .size(12.dp)
-                                .background(level.toColor(), RoundedCornerShape(2.dp))
+                                .background(level.getTextColor(), RoundedCornerShape(2.dp))
                         )
                         
                         Row(

@@ -64,6 +64,8 @@ import com.otakeessen.underpressure.domain.validation.BloodPressureValidator
 import com.otakeessen.underpressure.domain.validation.ValidationResult
 import com.otakeessen.underpressure.ui.table.MeasurementDialogState
 import com.otakeessen.underpressure.ui.util.BpLevelMapper
+import com.otakeessen.underpressure.ui.theme.getBackgroundColor
+import com.otakeessen.underpressure.ui.theme.getTextColor
 
 @Composable
 fun MeasurementEditDialog(
@@ -412,11 +414,11 @@ private fun ClassificationStatusPill(
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = classification.backgroundColor
+        color = classification.level.getBackgroundColor()
     ) {
         Text(
             text = text,
-            color = classification.textColor,
+            color = classification.level.getTextColor(),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)

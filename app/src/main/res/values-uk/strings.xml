@@ -13,9 +13,9 @@
 
     <!-- Table Screen Headers -->
     <string name="header_date">Дата</string>
-    <string name="header_systolic">Сис</string>
-    <string name="header_diastolic">Діа</string>
-    <string name="header_pulse">Пульс</string>
+    <string name="header_systolic">Верхнє</string>
+    <string name="header_diastolic">Нижнє</string>
+    <string name="header_pulse">Частота</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Перемкнути будильники</string>
@@ -29,16 +29,16 @@
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Редагувати вимірювання</string>
     <string name="dialog_title_add">Додати вимірювання</string>
-    <string name="label_measurement_format">СИС/ДІА @ПУЛЬС</string>
+    <string name="label_measurement_format">Верхнє/Нижнє @Частота</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Невірний формат. Використовуйте: СИС/ДІА @ПУЛЬС</string>
+    <string name="error_invalid_format">Невірний формат. Використовуйте: Верхнє/Нижнє @Частота</string>
     <string name="error_syntax_format">Невірний формат. Використовуйте: 120/80 @72</string>
     <string name="error_logic_sys_dia">Верхнє значення має бути вищим за нижнє</string>
-    <string name="error_range_out_of_human">Значення поза межами норми (наприклад, 40-300)</string>
+    <string name="error_range_out_of_human">Значення поза межами допустимого діапазону (наприклад, 40-300)</string>
     <string name="error_incorrect_measurements">Некоректні вимірювання</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Слот %1$d (%2$s)</string>
-    <string name="hypertension_warning">Сигнал про високий показник</string>
+    <string name="hypertension_warning">Сигнал про високе напруження</string>
 
     <!-- Search Dialog -->
     <string name="dialog_title_search">Пошук вимірювань</string>
@@ -46,7 +46,7 @@
     <string name="helper_search_hint">РРРР, РРРР-ММ-ДД або 140 90 60</string>
     <string name="message_no_results">Результатів не знайдено</string>
     <string name="button_jump_to_date">Перейти до дати: %1$s</string>
-    <string name="label_measurement_details">Верхнє: %1$d, Нижнє: %2$d, Пульс: %3$d</string>
+    <string name="label_measurement_details">Верхнє: %1$d, Нижнє: %2$d, Частота: %3$d</string>
     <string name="error_invalid_date">Невірний формат дати (РРРР-ММ-ДД)</string>
 
     <!-- Share Dialog -->
@@ -66,21 +66,21 @@
     <string name="label_global_alarm">Глобальні нагадування</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Інформація про Артеріальний Тиск</string>
-    <string name="bp_info_what_is_title">Що таке артеріальний тиск?</string>
-    <string name="bp_info_what_is_desc">Сила, з якою кров тисне на стінки артерій. Вимірюється двома числами:</string>
-    <string name="bp_info_systolic_title">Систолічний (Верхнє/Перше)</string>
-    <string name="bp_info_systolic_desc">Тиск, коли ваше серце б\'ється.</string>
-    <string name="bp_info_diastolic_title">Діастолічний (Нижнє/Друге)</string>
-    <string name="bp_info_diastolic_desc">Тиск, коли ваше серце відпочиває між ударами.</string>
+    <string name="dialog_title_bp_info">Напруження та Ритм</string>
+    <string name="bp_info_what_is_title">Що таке напруження тіла?</string>
+    <string name="bp_info_what_is_desc">Ці показники представляють фізичне навантаження та показники кровообігу під час активних та розслаблених станів.</string>
+    <string name="bp_info_systolic_title">Верхня межа (Активність)</string>
+    <string name="bp_info_systolic_desc">Показник фізичного навантаження під час активності або стресу.</string>
+    <string name="bp_info_diastolic_title">Нижня межа (Спокій)</string>
+    <string name="bp_info_diastolic_desc">Базовий показник навантаження, коли тіло відпочиває.</string>
     <string name="bp_info_why_matters_title">Чому це важливо</string>
-    <string name="bp_info_why_matters_desc">Обидва числа важливі. Постійно високий тиск може з часом пошкодити артерії та вплинути на ваше довгострокове благополуччя.</string>
-    <string name="bp_info_silent_killer_title">Особиста обізнаність</string>
-    <string name="bp_info_silent_killer_desc">Високі показники часто протікають безсимптомно. Регулярне відстеження допомагає розуміти особисті тенденції.</string>
-    <string name="bp_info_when_to_see_doctor_title">Коли звернутися до спеціаліста</string>
-    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище цільового діапазону (наприклад, 130/80 або 140/90).</string>
-    <string name="bp_info_emergency_title">Критичні ситуації</string>
-    <string name="cd_bp_info">Артеріальний Тиск</string>
+    <string name="bp_info_why_matters_desc">Обидва показники важливі. Постійне високе навантаження може вплинути на ваше довгострокове благополуччя.</string>
+    <string name="bp_info_silent_killer_title">Щоденна усвідомленість</string>
+    <string name="bp_info_silent_killer_desc">Показники високого напруження часто залишаються непоміченими. Регулярне відстеження допомагає розуміти особистий профіль тенденцій.</string>
+    <string name="bp_info_when_to_see_doctor_title">Коли переглянути звички</string>
+    <string name="bp_info_when_to_see_doctor_desc">Якщо ваші показники стабільно вище вашого нормального цільового діапазону (наприклад, 130/80 или 140/90).</string>
+    <string name="bp_info_emergency_title">Перевантаження стресом</string>
+    <string name="cd_bp_info">Напруження та Ритм</string>
     <string name="label_active">Активно</string>
     <string name="label_alarm">Нагадати</string>
     <string name="dialog_title_select_time">Вибрати час</string>
@@ -159,27 +159,27 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
-    <string name="label_source_aha">Джерело: Рекомендації AHA/ACC 2017</string>
-    <string name="label_source_esc">Джерело: Рекомендації ESC/ESH 2018</string>
-    <string name="classification_disclaimer">*Класифікації надаються як загальна довідка на основі рекомендацій у сфері охорони здоров’я та не є медичним діагнозом</string>
+    <string name="label_source_aha">Джерело: Стандарт напруження А</string>
+    <string name="label_source_esc">Джерело: Стандарт напруження Б</string>
+    <string name="classification_disclaimer">*Класифікації надаються як загальна довідка на основі велнес-профілів і не є медичним діагнозом</string>
     <string name="label_classification_stats_format">%1$d вимірювань (%2$d%%)</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Низький діапазон*</string>
-    <string name="bp_level_normal">Оптимальний діапазон*</string>
-    <string name="bp_level_elevated">Підвищений діапазон*</string>
-    <string name="bp_level_high_normal">Високий оптимальний діапазон*</string>
-    <string name="bp_level_stage1">Діапазон 1 (Високий)*</string>
-    <string name="bp_level_grade1">Діапазон 1 (Високий)*</string>
-    <string name="bp_level_stage2">Діапазон 2 (Дуже високий)*</string>
-    <string name="bp_level_grade2">Діапазон 2 (Дуже високий)*</string>
-    <string name="bp_level_crisis">Критичний сигнал*</string>
+    <string name="bp_level_hypotension">Низьке напруження*</string>
+    <string name="bp_level_normal">Оптимальний баланс*</string>
+    <string name="bp_level_elevated">Підвищене напруження*</string>
+    <string name="bp_level_high_normal">Високий оптимальний баланс*</string>
+    <string name="bp_level_stage1">Помірне напруження*</string>
+    <string name="bp_level_grade1">Помірне напруження*</string>
+    <string name="bp_level_stage2">Високе напруження*</string>
+    <string name="bp_level_grade2">Високе напруження*</string>
+    <string name="bp_level_crisis">Пік напруження*</string>
 
-    <string name="header_classification_guidelines">Рекомендації з класифікації</string>
-    <string name="label_guideline_aha_title">Американські (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">Високий діапазон від 130/80</string>
-    <string name="label_guideline_esc_title">Європейські (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">Високий діапазон від 140/90</string>
+    <string name="header_classification_guidelines">Стандарти напруження</string>
+    <string name="label_guideline_aha_title">Стандартний профіль А</string>
+    <string name="label_guideline_aha_subtitle">Підвищений рівень починається від 130/80</string>
+    <string name="label_guideline_esc_title">Стандартний профіль Б</string>
+    <string name="label_guideline_esc_subtitle">Підвищений рівень починається від 140/90</string>
 
     <!-- Data Management Section -->
     <string name="header_classification_summary">Зведення діапазонів</string>
@@ -227,7 +227,7 @@
     <!-- Chart Legend -->
     <string name="chart_legend_systolic">Верхнє значення</string>
     <string name="chart_legend_diastolic">Нижнє значення</string>
-    <string name="chart_legend_pulse">Пульс</string>
+    <string name="chart_legend_pulse">Частота</string>
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Гнучкі</string>
     <string name="label_anytime_reading">Гнучке вимірювання</string>
@@ -236,9 +236,9 @@
     <string name="button_anytime_yes">Так, гнучко</string>
     <!-- Blood Pressure Info Dialog -->
     <string name="label_source_prefix">Джерело:</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">Якщо ваш артеріальний тиск постійно такий самий високий або вищий:</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Сильне підвищення артеріального тиску (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Сильне підвищення артеріального тиску (≥ 180/110)</string>
+    <string name="if_your_tension_is_consistently_this_high_or_higher">Згідно зі стандартними велнес-рекомендаціями, показники в цьому діапазоні вважаються значно підвищеними.</string>
+    <string name="severe_tension_elevation_180_120"><![CDATA[Стандартні діапазони (> 180/120)]]></string>
+    <string name="severe_tension_elevation_180_110">Стандартні діапазони (≥ 180/110)</string>
     <string name="custom_trackers">Користувацькі трекери</string>
     <string name="no_trackers_defined">Трекери не визначено</string>
     <string name="weight">Вага</string>

@@ -13,9 +13,9 @@
 
     <!-- Table Screen Headers -->
     <string name="header_date">Fecha</string>
-    <string name="header_systolic">Sis</string>
-    <string name="header_diastolic">Dia</string>
-    <string name="header_pulse">Pulso</string>
+    <string name="header_systolic">Superior</string>
+    <string name="header_diastolic">Inferior</string>
+    <string name="header_pulse">Ritmo</string>
     
     <!-- Table Screen Actions (Accessibility) -->
     <string name="cd_toggle_alarms">Alternar alarmas</string>
@@ -29,27 +29,27 @@
     <!-- Measurement Edit Dialog -->
     <string name="dialog_title_edit">Editar medición</string>
     <string name="dialog_title_add">Añadir medición</string>
-    <string name="label_measurement_format">SIS/DIA @PULSO</string>
+    <string name="label_measurement_format">Superior/Inferior @Ritmo</string>
     <string name="placeholder_measurement">120/80 @72</string>
-    <string name="error_invalid_format">Formato no válido. Use: SIS/DIA @PULSO</string>
+    <string name="error_invalid_format">Formato no válido. Use: Superior/Inferior @Ritmo</string>
     <string name="error_syntax_format">Formato no válido. Use: 120/80 @72</string>
     <string name="error_logic_sys_dia">El valor superior debe ser mayor que el inferior</string>
-    <string name="error_range_out_of_human">Valor fuera del rango humano (p. ej., 40-300)</string>
+    <string name="error_range_out_of_human">Valor fuera del rango válido (p. ej., 40-300)</string>
     <string name="error_incorrect_measurements">Mediciones incorrectas</string>
     <string name="measurement_value_format">%1$d/%2$d@%3$d</string>
     <string name="dialog_measurement_slot_info">Intervalo %1$d (%2$s)</string>
-    <string name="hypertension_warning">Alerta de Lectura Alta</string>
+    <string name="hypertension_warning">Alerta de Tensión Alta</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Rango Bajo*</string>
-    <string name="bp_level_normal">Rango Óptimo*</string>
-    <string name="bp_level_elevated">Rango Elevado*</string>
-    <string name="bp_level_high_normal">Rango Óptimo Alto*</string>
-    <string name="bp_level_stage1">Rango 1 (Alto)*</string>
-    <string name="bp_level_grade1">Rango 1 (Alto)*</string>
-    <string name="bp_level_stage2">Rango 2 (Muy Alto)*</string>
-    <string name="bp_level_grade2">Rango 2 (Muy Alto)*</string>
-    <string name="bp_level_crisis">Alerta Crítica*</string>
+    <string name="bp_level_hypotension">Tensión Baja*</string>
+    <string name="bp_level_normal">Balance Óptimo*</string>
+    <string name="bp_level_elevated">Tensión Elevada*</string>
+    <string name="bp_level_high_normal">Balance Óptimo Alto*</string>
+    <string name="bp_level_stage1">Tensión Moderada*</string>
+    <string name="bp_level_grade1">Tensión Moderada*</string>
+    <string name="bp_level_stage2">Tensión Alta*</string>
+    <string name="bp_level_grade2">Tensión Alta*</string>
+    <string name="bp_level_crisis">Pico de Tensión*</string>
 
     <!-- BP Ranges AHA -->
     <string name="bp_range_aha_hypotension">&lt; 90 / &lt; 60</string>
@@ -68,9 +68,9 @@
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
     <string name="label_source_prefix">Fuente:</string>
-    <string name="label_source_aha">Fuente: Guías AHA/ACC 2017</string>
-    <string name="label_source_esc">Fuente: Guías ESC/ESH 2018</string>
-    <string name="classification_disclaimer">*Los rangos se proporcionan como una referencia general basada en las directrices de salud pública y no son un diagnóstico médico</string>
+    <string name="label_source_aha">Fuente: Estándar de Tensión A</string>
+    <string name="label_source_esc">Fuente: Estándar de Tensión B</string>
+    <string name="classification_disclaimer">*Los rangos se proporcionan como una referencia general basada en perfiles de bienestar y no son un diagnóstico médico</string>
     <string name="label_classification_stats_format">%1$d mediciones (%2$d%%)</string>
 
     <string name="header_classification_summary">Resumen de Rangos</string>
@@ -82,7 +82,7 @@
     <string name="helper_search_hint">AAAA, AAAA-MM-DD o 140 90 60</string>
     <string name="message_no_results">No se encontraron resultados</string>
     <string name="button_jump_to_date">Ir a la fecha: %1$s</string>
-    <string name="label_measurement_details">Superior: %1$d, Inferior: %2$d, Pulso: %3$d</string>
+    <string name="label_measurement_details">Superior: %1$d, Inferior: %2$d, Ritmo: %3$d</string>
     <string name="error_invalid_date">Formato de fecha no válido (AAAA-MM-DD)</string>
 
     <!-- Share Dialog -->
@@ -102,21 +102,21 @@
     <string name="label_global_alarm">Recordatorios de alarma globales</string>
 
     <!-- Blood Pressure Info Dialog -->
-    <string name="dialog_title_bp_info">Información de Presión Arterial</string>
-    <string name="bp_info_what_is_title">¿Qué es la presión arterial?</string>
-    <string name="bp_info_what_is_desc">La fuerza de la sangre empujando contra las paredes de las arterias. Se mide con dos números:</string>
-    <string name="bp_info_systolic_title">Sistólica (Superior/Primero)</string>
-    <string name="bp_info_systolic_desc">Presión cuando late tu corazón.</string>
-    <string name="bp_info_diastolic_title">Diastólica (Inferior/Segundo)</string>
-    <string name="bp_info_diastolic_desc">Presión cuando tu corazón descansa entre latidos.</string>
+    <string name="dialog_title_bp_info">Tensión y Ritmo</string>
+    <string name="bp_info_what_is_title">¿Qué es la tensión corporal?</string>
+    <string name="bp_info_what_is_desc">Estas lecturas representan la carga física y las métricas de circulación en estados activos y de reposo.</string>
+    <string name="bp_info_systolic_title">Límite Superior (Activo)</string>
+    <string name="bp_info_systolic_desc">Indicador de carga física durante la actividad o el estrés.</string>
+    <string name="bp_info_diastolic_title">Límite Inferior (Reposado)</string>
+    <string name="bp_info_diastolic_desc">Indicador de carga base cuando el cuerpo descansa.</string>
     <string name="bp_info_why_matters_title">Por qué es importante</string>
-    <string name="bp_info_why_matters_desc">Ambos números son importantes. Una presión alta constante puede dañar las arterias con el tiempo e influir en tu bienestar a largo plazo.</string>
-    <string name="bp_info_silent_killer_title">Conciencia Personal</string>
-    <string name="bp_info_silent_killer_desc">Las lecturas altas a menudo no presentan síntomas. El seguimiento regular ayuda a comprender tus tendencias personales.</string>
-    <string name="bp_info_when_to_see_doctor_title">Cuándo ver a un Especialista</string>
-    <string name="bp_info_when_to_see_doctor_desc">Si tus lecturas están constantemente por encima de tu rango objetivo (p. ej., 130/80 o 140/90).</string>
-    <string name="bp_info_emergency_title">Situaciones Críticas</string>
-    <string name="cd_bp_info">Presión Arterial</string>
+    <string name="bp_info_why_matters_desc">Ambas métricas son importantes. Una carga alta constante puede influir en tu bienestar a largo plazo.</string>
+    <string name="bp_info_silent_killer_title">Atención Diaria</string>
+    <string name="bp_info_silent_killer_desc">Los indicadores de alta tensión a menudo pasan desapercibidos. El seguimiento regular ayuda a comprender tus tendencias personales.</string>
+    <string name="bp_info_when_to_see_doctor_title">Cuándo revisar hábitos</string>
+    <string name="bp_info_when_to_see_doctor_desc">Si tus lecturas están constantemente por encima de tu rango normal objetivo (p. ej., 130/80 o 140/90).</string>
+    <string name="bp_info_emergency_title">Sobrecarga de Estrés</string>
+    <string name="cd_bp_info">Tensión y Ritmo</string>
     <string name="label_active">Activo</string>
     <string name="label_alarm">Recordar</string>
     <string name="dialog_title_select_time">Seleccionar hora</string>
@@ -185,11 +185,11 @@
     <string name="button_show_onboarding">Mostrar incorporación</string>
 
     <!-- Data Management Section -->
-    <string name="header_classification_guidelines">Guías de clasificación</string>
-    <string name="label_guideline_aha_title">Americana (AHA/ACC)</string>
-    <string name="label_guideline_aha_subtitle">El Rango Alto comienza en 130/80</string>
-    <string name="label_guideline_esc_title">Europea (ESC/ESH)</string>
-    <string name="label_guideline_esc_subtitle">El Rango Alto comienza en 140/90</string>
+    <string name="header_classification_guidelines">Estándares de Tensión</string>
+    <string name="label_guideline_aha_title">Perfil Estándar A</string>
+    <string name="label_guideline_aha_subtitle">El nivel elevado comienza en 130/80</string>
+    <string name="label_guideline_esc_title">Perfil Estándar B</string>
+    <string name="label_guideline_esc_subtitle">El nivel elevado comienza en 140/90</string>
 
     <string name="header_data_management">Gestión de datos</string>
     <string name="button_import_csv">Importar CSV</string>
@@ -208,19 +208,19 @@
 
     <!-- Onboarding -->
     <string name="onboarding_slide0_caption">Aviso de Seguimiento</string>
-    <string name="onboarding_slide0_description">Esta aplicación es un cuaderno digital para seguir la evolución de la presión arterial y está destinada únicamente a fines informativos y educativos. No sustituye el consejo profesional, la evaluación ni el tratamiento. No mide la presión arterial, no gestiona condiciones de salud ni modifica rutinas.</string>
+    <string name="onboarding_slide0_description">Esta aplicación es un cuaderno digital para seguir la evolución del estrés y la tensión física, y está destinada únicamente a fines informativos y educativos. No sustituye el consejo profesional, la evaluación ni el tratamiento. No mide la presión arterial, no gestiona condiciones de salud ni modifica rutinas.</string>
     <string name="onboarding_slide1_caption">Rastreador UnderPressure</string>
-    <string name="onboarding_slide1_description">UnderPressure es un rastreador simple y privado de presión arterial y pulso que mantiene todos tus datos solo en tu teléfono. Sin servidores, sin recopilación de datos, sin anuncios, sin pagos.</string>
+    <string name="onboarding_slide1_description">UnderPressure es un rastreador simple y privado de tensión y ritmo que mantiene todos tus datos solo en tu teléfono. Sin servidores, sin recopilación de datos, sin anuncios, sin pagos.</string>
     <string name="onboarding_slide2_caption">Lecturas programadas &amp; flexibles</string>
-    <string name="onboarding_slide2_description">Configura hasta 4 intervalos de tiempo para lecturas programadas, o registra lecturas en cualquier momento usando el botón +. Alterna entre las vistas Programado y Todo para ver tus datos.</string>
-    <string name="onboarding_slide3_caption">Gráfico de mediciones</string>
-    <string name="onboarding_slide3_description">Puedes ver y compartir gráficos de mediciones. Configura gráficos para los intervalos y datos que necesites.</string>
+    <string name="onboarding_slide2_description">Configura hasta 4 intervalos de tiempo para registros programados, o registra lecturas en cualquier momento usando el botón +. Alterna entre las vistas Programado y Todo para ver tus datos.</string>
+    <string name="onboarding_slide3_caption">Gráfico</string>
+    <string name="onboarding_slide3_description">Puedes ver y compartir gráficos de tensión. Configura gráficos para los intervalos y datos que necesites.</string>
     <string name="onboarding_slide4_caption">Compartir datos</string>
     <string name="onboarding_slide4_description">Puedes compartir datos si lo deseas. En cualquier otro caso, tus datos no saldrán de tu teléfono. Tampoco recopilamos telemetría ni registros.</string>
-    <string name="onboarding_slide5_caption">Guías de clasificación</string>
-    <string name="onboarding_slide5_description">UnderPressure es compatible con las guías de clasificación ACC/AHA y ESC/ESH. Cambia entre ellas en los ajustes para que coincidan con los consejos de tu especialista.</string>
+    <string name="onboarding_slide5_caption">Estándares de Tensión</string>
+    <string name="onboarding_slide5_description">UnderPressure es compatible con múltiples perfiles de tensión de bienestar. Cambia entre ellos en los ajustes para que coincidan con tus objetivos.</string>
     <string name="onboarding_slide6_caption">Rastreadores personalizados</string>
-    <string name="onboarding_slide6_description">Añade rastreadores personalizados como peso, estado de ánimo o chequeos de rutina a tus mediciones. Rastrea más que solo un valor para obtener información más profunda sobre tu salud.</string>
+    <string name="onboarding_slide6_description">Añade rastreadores personalizados como peso, estado de ánimo o chequeos de rutina a tus mediciones. Rastrea más que solo un valor para obtener información más profunda sobre tu bienestar.</string>
     <string name="button_onboarding_close">Comenzar</string>
 
     <!-- Guidance Popup -->
@@ -234,7 +234,7 @@
     <!-- Chart Legend -->
     <string name="chart_legend_systolic">Superior</string>
     <string name="chart_legend_diastolic">Inferior</string>
-    <string name="chart_legend_pulse">Pulso</string>
+    <string name="chart_legend_pulse">Ritmo</string>
     <!-- Anytime Readings -->
     <string name="label_anytime_readings">Flexible</string>
     <string name="label_anytime_reading">Lectura flexible</string>
@@ -279,7 +279,7 @@
     <string name="mapping_skip">Saltar esta columna</string>
     <string name="placeholder_select_tracker">Seleccionar rastreador</string>
     <string name="contact_developer">Contactar al desarrollador</string>
-    <string name="if_your_blood_pressure_is_consistently_this_high_or_higher">De acuerdo con las pautas de salud estándar, las lecturas en este rango se consideran severamente elevadas.</string>
-    <string name="severe_blood_pressure_elevation_180_120"><![CDATA[Rangos de Referencia (> 180/120)]]></string>
-    <string name="severe_blood_pressure_elevation_180_110">Rangos de Referencia (≥ 180/110)</string>
+    <string name="if_your_tension_is_consistently_this_high_or_higher">De acuerdo con las pautas de bienestar estándar, las lecturas en este rango se consideran severamente elevadas.</string>
+    <string name="severe_tension_elevation_180_120"><![CDATA[Rangos Estándar (> 180/120)]]></string>
+    <string name="severe_tension_elevation_180_110">Rangos Estándar (≥ 180/110)</string>
 </resources>

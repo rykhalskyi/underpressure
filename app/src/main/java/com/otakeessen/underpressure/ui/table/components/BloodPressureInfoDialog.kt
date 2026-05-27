@@ -36,9 +36,9 @@ fun BloodPressureInfoDialog(
     
     // AHA/ACC Crisis threshold is >180/120; ESC/ESH Grade 3 threshold is ≥180/110
     val crisisText = if (guidelines == BpGuidelines.AHA_ACC) {
-        stringResource(R.string.severe_blood_pressure_elevation_180_120)
+        stringResource(R.string.severe_tension_elevation_180_120)
     } else {
-        stringResource(R.string.severe_blood_pressure_elevation_180_110)
+        stringResource(R.string.severe_tension_elevation_180_110)
     }
     
     AlertDialog(
@@ -90,7 +90,7 @@ fun BloodPressureInfoDialog(
 
                 InfoSection(
                     title = crisisText,
-                    description = stringResource(R.string.if_your_blood_pressure_is_consistently_this_high_or_higher)
+                    description = stringResource(R.string.if_your_tension_is_consistently_this_high_or_higher)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

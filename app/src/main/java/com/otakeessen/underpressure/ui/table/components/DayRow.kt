@@ -32,6 +32,8 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import com.otakeessen.underpressure.ui.theme.getTextColor
+
 /**
  * A single row in the measurement table showing multiple slots.
  */
@@ -106,7 +108,7 @@ fun DayRow(
                     weight = 1f,
                     fontSize = measurementFontSize,
                     isBold = classification?.isBold ?: false,
-                    textColor = if (isSummaryVisible) (classification?.textColor ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
+                    textColor = if (isSummaryVisible) (classification?.level?.getTextColor() ?: Color.Unspecified) else MaterialTheme.colorScheme.onSurfaceVariant,
                     backgroundColor = Color.Transparent,
                     trackerValues = data?.trackerValues ?: emptyMap(),
                     activeTrackers = activeTrackers,
