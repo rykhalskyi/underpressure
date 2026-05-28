@@ -15,8 +15,8 @@ android {
         applicationId = "com.otakeessen.underpressure"
         minSdk = 29
         targetSdk = 36
-        versionCode = 53
-        versionName = "1.8-260527"
+        versionCode = 54
+        versionName = "1.8-260528"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "IMPRESSUM_CONTENT", "\"Hier steht der Impressumstext. Bitte ersetzen Sie diesen Text durch Ihren tatsächlichen Impressumsinhalt.\"")

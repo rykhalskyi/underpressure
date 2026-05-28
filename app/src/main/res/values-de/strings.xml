@@ -41,14 +41,14 @@
     <string name="hypertension_warning">Hohe Anspannungs-Warnung</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Niedrige*</string>
-    <string name="bp_level_normal">Normale*</string>
-    <string name="bp_level_elevated">Erhöhte*</string>
-    <string name="bp_level_high_normal">Erhöhte*</string>
-    <string name="bp_level_stage1">Mäßige*</string>
-    <string name="bp_level_grade1">Mäßige*</string>
-    <string name="bp_level_stage2">Hohe*</string>
-    <string name="bp_level_grade2">Hohe*</string>
+    <string name="bp_level_hypotension">Niedrig*</string>
+    <string name="bp_level_normal">Normal*</string>
+    <string name="bp_level_elevated">Erhöht*</string>
+    <string name="bp_level_high_normal">Erhöht*</string>
+    <string name="bp_level_stage1">Mäßig*</string>
+    <string name="bp_level_grade1">Mäßig*</string>
+    <string name="bp_level_stage2">Hoch*</string>
+    <string name="bp_level_grade2">Hoch*</string>
     <string name="bp_level_crisis">Anspannungs-Peak*</string>
 
     <!-- BP Ranges AHA -->
@@ -67,8 +67,8 @@
     <string name="bp_range_esc_stage2">160-179 / 100-109</string>
     <string name="bp_range_esc_crisis">≥ 180 / ≥ 110</string>
 
-    <string name="label_source_aha">Quelle: Anspannungs-Standard A</string>
-    <string name="label_source_esc">Quelle: Anspannungs-Standard B</string>
+    <string name="label_source_aha">Quelle: Anspannungs-Standard USA</string>
+    <string name="label_source_esc">Quelle: Anspannungs-Standard EUR</string>
     <string name="classification_disclaimer">*Bereiche dienen als allgemeiner Referenzwert basierend auf Wellness-Profilen und stellen keine medizinische Diagnose dar</string>
     <string name="label_classification_stats_format">%1$d Messungen (%2$d%%)</string>
 
@@ -181,9 +181,9 @@
     <string name="url_impressum">https://github.com/rykhalskyi/underpressure/blob/main/de/IMPRESSUM.md</string>
 
     <string name="header_classification_guidelines">Anspannungs-Standards</string>
-    <string name="label_guideline_aha_title">Standard-Profil A</string>
+    <string name="label_guideline_aha_title">Standard-Profil USA</string>
     <string name="label_guideline_aha_subtitle">Erhöhter Wert beginnt bei 130/80</string>
-    <string name="label_guideline_esc_title">Standard-Profil B</string>
+    <string name="label_guideline_esc_title">Standard-Profil EUR</string>
     <string name="label_guideline_esc_subtitle">Erhöhter Wert beginnt bei 140/90</string>
 
     <string name="header_data_management">Datenverwaltung</string>
