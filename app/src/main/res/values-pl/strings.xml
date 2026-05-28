@@ -44,7 +44,7 @@
     <string name="bp_level_hypotension">Niskie Napięcie*</string>
     <string name="bp_level_normal">Optymalna Równowaga*</string>
     <string name="bp_level_elevated">Podwyższone Napięcie*</string>
-    <string name="bp_level_high_normal">Wysoka Optymalna Równowaga*</string>
+    <string name="bp_level_high_normal">Podwyższone Napięcie*</string>
     <string name="bp_level_stage1">Umiarkowane Napięcie*</string>
     <string name="bp_level_grade1">Umiarkowane Napięcie*</string>
     <string name="bp_level_stage2">Wysokie Napięcie*</string>

@@ -41,14 +41,14 @@
     <string name="hypertension_warning">Hohe Anspannungs-Warnung</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Niedrige Anspannung*</string>
-    <string name="bp_level_normal">Optimale Balance*</string>
-    <string name="bp_level_elevated">Erhöhte Anspannung*</string>
-    <string name="bp_level_high_normal">Hohe optimale Balance*</string>
-    <string name="bp_level_stage1">Mäßige Anspannung*</string>
-    <string name="bp_level_grade1">Mäßige Anspannung*</string>
-    <string name="bp_level_stage2">Hohe Anspannung*</string>
-    <string name="bp_level_grade2">Hohe Anspannung*</string>
+    <string name="bp_level_hypotension">Niedrige*</string>
+    <string name="bp_level_normal">Normale*</string>
+    <string name="bp_level_elevated">Erhöhte*</string>
+    <string name="bp_level_high_normal">Erhöhte*</string>
+    <string name="bp_level_stage1">Mäßige*</string>
+    <string name="bp_level_grade1">Mäßige*</string>
+    <string name="bp_level_stage2">Hohe*</string>
+    <string name="bp_level_grade2">Hohe*</string>
     <string name="bp_level_crisis">Anspannungs-Peak*</string>
 
     <!-- BP Ranges AHA -->

@@ -167,14 +167,14 @@
     <string name="label_classification_stats_format">%1$d измерений (%2$d%%)</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Низкое напряжение*</string>
+    <string name="bp_level_hypotension">Низкое*</string>
     <string name="bp_level_normal">Оптимальный баланс*</string>
-    <string name="bp_level_elevated">Повышенное напряжение*</string>
-    <string name="bp_level_high_normal">Высокий оптимальный баланс*</string>
-    <string name="bp_level_stage1">Умеренное напряжение*</string>
-    <string name="bp_level_grade1">Умеренное напряжение*</string>
-    <string name="bp_level_stage2">Высокое напряжение*</string>
-    <string name="bp_level_grade2">Высокое напряжение*</string>
+    <string name="bp_level_elevated">Повышенное*</string>
+    <string name="bp_level_high_normal">Повышенное*</string>
+    <string name="bp_level_stage1">Умеренно Высокое*</string>
+    <string name="bp_level_grade1">Умеренно Высокое*</string>
+    <string name="bp_level_stage2">Высокое*</string>
+    <string name="bp_level_grade2">Высокое*</string>
     <string name="bp_level_crisis">Пик напряжения*</string>
 
     <string name="header_classification_guidelines">Стандарты напряжения</string>

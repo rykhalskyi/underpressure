@@ -165,20 +165,20 @@
     <string name="label_classification_stats_format">%1$d вимірювань (%2$d%%)</string>
 
     <!-- BP Levels -->
-    <string name="bp_level_hypotension">Низьке напруження*</string>
-    <string name="bp_level_normal">Оптимальний баланс*</string>
-    <string name="bp_level_elevated">Підвищене напруження*</string>
-    <string name="bp_level_high_normal">Високий оптимальний баланс*</string>
-    <string name="bp_level_stage1">Помірне напруження*</string>
-    <string name="bp_level_grade1">Помірне напруження*</string>
-    <string name="bp_level_stage2">Високе напруження*</string>
-    <string name="bp_level_grade2">Високе напруження*</string>
+    <string name="bp_level_hypotension">Низький*</string>
+    <string name="bp_level_normal">Нормальний*</string>
+    <string name="bp_level_elevated">Підвищений*</string>
+    <string name="bp_level_high_normal">Підвищений*</string>
+    <string name="bp_level_stage1">Помірно високий*</string>
+    <string name="bp_level_grade1">Помірно високий*</string>
+    <string name="bp_level_stage2">Високий*</string>
+    <string name="bp_level_grade2">Високий*</string>
     <string name="bp_level_crisis">Пік напруження*</string>
 
     <string name="header_classification_guidelines">Стандарти напруження</string>
-    <string name="label_guideline_aha_title">Стандартний профіль А</string>
+    <string name="label_guideline_aha_title">Стандартний профіль США</string>
     <string name="label_guideline_aha_subtitle">Підвищений рівень починається від 130/80</string>
-    <string name="label_guideline_esc_title">Стандартний профіль Б</string>
+    <string name="label_guideline_esc_title">Стандартний профіль ЕС</string>
     <string name="label_guideline_esc_subtitle">Підвищений рівень починається від 140/90</string>
 
     <!-- Data Management Section -->

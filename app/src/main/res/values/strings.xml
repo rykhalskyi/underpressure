@@ -42,9 +42,9 @@
 
     <!-- BP Levels -->
     <string name="bp_level_hypotension">Low Tension*</string>
-    <string name="bp_level_normal">Optimal Balance*</string>
+    <string name="bp_level_normal">Normal Tension*</string>
     <string name="bp_level_elevated">Elevated Tension*</string>
-    <string name="bp_level_high_normal">High Optimal Balance*</string>
+    <string name="bp_level_high_normal">Elevated Tension*</string>
     <string name="bp_level_stage1">Moderate Tension*</string>
     <string name="bp_level_grade1">Moderate Tension*</string>
     <string name="bp_level_stage2">High Tension*</string>

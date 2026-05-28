@@ -45,15 +45,6 @@ fun ClassificationSummary(
 ) {
     if (stats.isEmpty()) return
 
-    var showInfoDialog by remember { mutableStateOf(false) }
-
-    if (showInfoDialog) {
-        BloodPressureInfoDialog(
-            guidelines = guidelines,
-            onDismiss = { showInfoDialog = false }
-        )
-    }
-
     val total = stats.values.sum().toFloat()
 
     Column(
@@ -74,18 +65,6 @@ fun ClassificationSummary(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
             )
-
-            IconButton(
-                onClick = { showInfoDialog = true },
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = stringResource(R.string.cd_bp_info),
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
         }
 
         // Bar visualization
