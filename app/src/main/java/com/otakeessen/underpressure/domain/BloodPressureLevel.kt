@@ -61,19 +61,19 @@ object BloodPressureClassifier {
     private const val HYPOTENSION_DIA = 60
 
     // Centralized colors
-    val COLOR_HYPOTENSION = Color(0xFF8497f6)
-    val COLOR_NORMAL = Color(0xFFa498f8)
-    val COLOR_ELEVATED = Color(0xFFc399f9)
-    val COLOR_STAGE_1 = Color(0xFFdda4f9)
-    val COLOR_STAGE_2 = Color(0xFFf7aef8)
-    val COLOR_CRISIS = Color(0xFFfa50a7)
+    val COLOR_HYPOTENSION = Color(0xFF1976D2) // Blue
+    val COLOR_NORMAL = Color(0xFF2E7D32)   // Green
+    val COLOR_ELEVATED = Color(0xFFE6AC00) // Amber
+    val COLOR_STAGE_1 = Color(0xFFE67E22)  // Orange
+    val COLOR_STAGE_2 = Color(0xFFC0392B)  // Red
+    val COLOR_CRISIS = Color(0xFF8B0000)   // Dark Red
 
-    private val BG_HYPOTENSION = Color(0xFFEDF0FE)
-    private val BG_NORMAL = Color(0xFFF1F0FE)
-    private val BG_ELEVATED = Color(0xFFF4F0FE)
-    private val BG_STAGE_1 = Color(0xFFF7F1FE)
-    private val BG_STAGE_2 = Color(0xFFFEF2FE)
-    private val BG_CRISIS = Color(0xFFFEE9F3)
+    val BG_HYPOTENSION = Color(0xFFE3F2FD) // Very Light Blue
+    val BG_NORMAL = Color(0xFFE8F5E9)      // Very Light Green
+    val BG_ELEVATED = Color(0xFFFFF9C4)    // Very Light Yellow
+    val BG_STAGE_1 = Color(0xFFFFE0B2)    // Very Light Orange
+    val BG_STAGE_2 = Color(0xFFFFCDD2)    // Very Light Red
+    val BG_CRISIS = Color(0xFFFFBDBB)     // Light Red
 
     /**
      * Returns all level colors as ARGB integers for use in non-Compose contexts (like charts).

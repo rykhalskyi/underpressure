@@ -1,6 +1,7 @@
 package com.otakeessen.underpressure.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.otakeessen.underpressure.domain.BloodPressureClassifier
 
 // Primary/Secondary Palette
 val PrimaryLight = Color(0xFF613DC1)
@@ -13,21 +14,21 @@ val OnPrimaryDark = Color(0xFF381E72)
 val SecondaryDark = Color(0xFF8497F6)
 val TertiaryDark = Color(0xFFF7AEF8)
 
-// Status Colors (User provided)
-val ColorHypotension = Color(0xFF8497f6)
-val ColorNormal = Color(0xFFa498f8)
-val ColorElevated = Color(0xFFc399f9)
-val ColorStage1 = Color(0xFFdda4f9)
-val ColorStage2 = Color(0xFFf7aef8)
-val ColorCrisis = Color(0xFFfa50a7)
+// Status Colors (Centralized in BloodPressureLevel.kt)
+val ColorHypotension = BloodPressureClassifier.COLOR_HYPOTENSION
+val ColorNormal = BloodPressureClassifier.COLOR_NORMAL
+val ColorElevated = BloodPressureClassifier.COLOR_ELEVATED
+val ColorStage1 = BloodPressureClassifier.COLOR_STAGE_1
+val ColorStage2 = BloodPressureClassifier.COLOR_STAGE_2
+val ColorCrisis = BloodPressureClassifier.COLOR_CRISIS
 
-// Status Backgrounds (Light Mode - Subtle Tints)
-val BgHypotensionLight = Color(0xFFEDF0FE)
-val BgNormalLight = Color(0xFFF1F0FE)
-val BgElevatedLight = Color(0xFFF4F0FE)
-val BgStage1Light = Color(0xFFF7F1FE)
-val BgStage2Light = Color(0xFFFEF2FE)
-val BgCrisisLight = Color(0xFFFEE9F3)
+// Status Backgrounds (Light Mode - Centralized in BloodPressureLevel.kt)
+val BgHypotensionLight = BloodPressureClassifier.BG_HYPOTENSION
+val BgNormalLight = BloodPressureClassifier.BG_NORMAL
+val BgElevatedLight = BloodPressureClassifier.BG_ELEVATED
+val BgStage1Light = BloodPressureClassifier.BG_STAGE_1
+val BgStage2Light = BloodPressureClassifier.BG_STAGE_2
+val BgCrisisLight = BloodPressureClassifier.BG_CRISIS
 
 // Status Backgrounds (Dark Mode - Subtle Tints)
 val BgHypotensionDark = Color(0xFF2B3252)
